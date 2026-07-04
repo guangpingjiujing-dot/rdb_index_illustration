@@ -11,7 +11,7 @@ export function Header() {
           <div className="flex items-center gap-1">
             <TopicNavDrawer />
             <Link
-              href="/"
+              href="/rdb-index"
               className="flex items-center gap-2.5 font-bold tracking-tight"
             >
               <LogoMark />

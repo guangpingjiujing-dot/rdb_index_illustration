@@ -4,8 +4,6 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import "./globals.css";
-import { Header } from "@/components/layout/Header";
-import { Footer } from "@/components/layout/Footer";
 import { site } from "@/lib/site";
 import { SiteJsonLd } from "@/components/seo/JsonLd";
 
@@ -56,12 +54,10 @@ export default function RootLayout({
   return (
     <html
       lang="ja"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-[var(--background)]">
-        <Header />
-        <main className="flex-1">{children}</main>
-        <Footer />
+      <body>
+        {children}
         <SiteJsonLd />
         <Analytics />
         <SpeedInsights />
