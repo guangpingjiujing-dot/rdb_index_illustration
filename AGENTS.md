@@ -79,26 +79,14 @@ npm run test:e2e:ui
 - `docs/OPERATIONS.md`: アカウント・DNS・支払い等の非公開ディテール
 - `docs/MONETIZATION_ROADMAP.md`: 収益化ロードマップと進捗
 
-# Amazon Associates
+# Amazon Associates ガードレール
 
-- **Store ID**: `taitech-22`（非公開情報は `docs/OPERATIONS.md`）
-- **書籍リンクの形式**: `https://www.amazon.co.jp/dp/<ASIN>?tag=taitech-22`
-  - `?tag=taitech-22` を削除すると収益化されない。**リンク編集時は必ず維持**
-- **書籍データ**: `src/content/books.ts` に `Book[]` として定義。`booksForTopic(slug)` はトピック関連順に全書籍を返す
-- **表示箇所**: 各トピックページで `AffiliateBooks`（カード型グリッド）と `BookSidebar`（右サイドバー sticky, lg+）に表示
-- **開示表記**: `AffiliateBooks.tsx` の「本セクションはAmazonアソシエイトのリンクを含みます。」は Amazon 運営規約と景表法（ステマ規制）対応で必須。**削除禁止**
-- **書影**: PA-API 未有効化（3件発送成立が条件）。Amazon 商品画像の hotlink は規約違反。書影追加は PA-API 解放後まで待つ
+コードを読んでも分からない規約制約。違反するとアカウント停止 or 収益ゼロになる。
 
-# Site navigation
+- **書籍 URL の `?tag=taitech-22` を削除しない**。Store ID は `taitech-22`。詳細は `docs/OPERATIONS.md`
+- **`AffiliateBooks.tsx` の「本セクションはAmazonアソシエイトのリンクを含みます。」を削除しない**。Amazon 運営規約と景表法（ステマ規制）で必須
+- **Amazon 商品画像の hotlink 禁止**。PA-API 経由でのみ許可され、PA-API は 3件発送成立まで解放されない。書影を扱う場合は必ず PA-API 有効化後
 
-- **ヘッダー左の「☰ トピック一覧」**: `TopicNavDrawer`（client component）でトピック一覧ドロワーを開く。全ページ共通
-- **右サイドバー (`BookSidebar`)**: トピックページのみ、lg+ で sticky 表示。書籍リスト + `MentorSidebarCTA`（無料相談への常時導線）
-- **記事末尾 CTA**: `RelatedTopics` → `AffiliateBooks`（書籍カード） → `MentorCTA`（フルワイド）の順で配置
+# Monetization 優先順位
 
-# Monetization CTAs
-
-収益化の本命は **menta 無料相談への送客**（1件で月数千〜数万円 継続）。Amazon アフィリは補助的位置付け。
-
-- `MentorCTA`: 記事末尾のフルワイドバナー
-- `MentorSidebarCTA`: サイドバー下部の sticky カード（スクロール中も常に見える）
-- Amazon アフィリを追加するときは menta CTA の視認性を下げないこと
+収益化の本命は **menta 無料相談への送客**（1件で月数千〜数万円 継続）。Amazon アフィリは補助的位置付け。CTA を追加・変更するときは menta CTA の視認性を下げないこと。
