@@ -6,17 +6,17 @@ import { site } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "著者について",
-  description: `${site.author.name}のプロフィール。SQL・データベース・クラウド・IPA試験対策を1対1で教えるオンラインエンジニア講師。`,
+  description: `${site.author.name}のプロフィール。SQL・データベース・クラウド・AI活用・IPA試験対策を1対1で教えるオンラインエンジニア講師。`,
   alternates: { canonical: "/about" },
 };
 
 const experiences = [
   {
-    title: "5年以上のWeb系実務経験",
+    title: "6年以上のWeb系実務経験・現役エンジニア",
     body: "自社開発企業でバックエンド・データエンジニア・クラウド設計を担当。",
   },
   {
-    title: "SQL・データベース設計が専門",
+    title: "SQL・データベース設計・データ分析基盤とそのパイプライン開発と運用・データガバナンスが専門",
     body: "PostgreSQL / MySQL / BigQuery / Redshift 等を実務で運用。dbt・Airflowなどのデータ基盤も構築。",
   },
   {
@@ -26,6 +26,37 @@ const experiences = [
   {
     title: "IPAデータベーススペシャリスト ほか",
     body: "IPAデータベーススペシャリスト、応用情報技術者ほか多数の資格を保有。",
+  },
+  {
+    title: "AIエージェント自作 / AIプロダクト開発",
+    body: "LLM を組み込んだプロダクトの設計・実装経験に加え、業務要件に合わせて AI エージェントを自ら作れる。Claude Code など既製エージェントを使いこなす立場と、内部を理解して作る立場の両方を持つ。当サイトも AI エージェントとの協働で構築。",
+  },
+];
+
+const techStack = [
+  {
+    category: "クラウド",
+    items: "AWS / GCP / Azure",
+  },
+  {
+    category: "データベース・DWH",
+    items: "PostgreSQL / MySQL / SQL Server / DuckDB / MongoDB / Supabase / Neon / BigQuery / Amazon RDS / Athena / Azure SQL Database / Treasure Data / Microsoft Access",
+  },
+  {
+    category: "データ基盤・ETL/ELT・可視化",
+    items: "dbt / Digdag / Dagster / Airflow / Redash / Lightdash / Evidence / Superset",
+  },
+  {
+    category: "言語",
+    items: "Python / SQL / Java / TypeScript",
+  },
+  {
+    category: "AI・AI Agent",
+    items: "Claude Code / Codex / Cursor / Google ADK / RAG / LangChain / Langfuse",
+  },
+  {
+    category: "その他",
+    items: "Power Platform / Apache Tomcat",
   },
 ];
 
@@ -41,9 +72,14 @@ const plans = [
       "SQL基礎〜応用、データベース設計、パフォーマンスチューニング、データパイプライン構築まで。",
   },
   {
-    title: "IPAデータベーススペシャリスト対策",
+    title: "IPA・AWS試験対策",
     description:
       "試験範囲の体系学習、過去問解説、記述式・午後II対策まで実務者視点で。",
+  },
+  {
+    title: "AIエージェント開発 / AIプロダクト開発",
+    description:
+      "LLM API を使ったプロダクト設計、AI エージェントの自作、Claude Code など既製エージェントの実務導入まで。「使う側」で止まらず「作る側」に回りたいエンジニア向け。",
   },
 ];
 
@@ -62,8 +98,8 @@ export default function AboutPage() {
 
       <p className="mt-8 leading-relaxed">{site.author.bio}</p>
       <p className="mt-4 text-sm text-[var(--muted-foreground)] leading-relaxed">
-        話しやすいと言われることが多く、生徒の希望・レベルに合わせて内容をカスタマイズします。
-        現在10名前後の生徒がSQL・DB・クラウド・資格対策を学習中。
+        生徒の希望・レベルに合わせて内容をカスタマイズします。
+        今まで数多くの生徒のSQL・DB・クラウド・開発・資格対策学習をサポート。
       </p>
 
       <h2 className="mt-16 text-xs font-bold tracking-wider uppercase text-[var(--muted-foreground)]">
@@ -79,6 +115,23 @@ export default function AboutPage() {
           </li>
         ))}
       </ul>
+
+      <h2 className="mt-16 text-xs font-bold tracking-wider uppercase text-[var(--muted-foreground)]">
+        技術スタック
+      </h2>
+      <ul className="mt-4 border-y border-[var(--border)] divide-y divide-[var(--border)]">
+        {techStack.map((t) => (
+          <li key={t.category} className="py-4">
+            <div className="text-xs font-bold uppercase tracking-wider text-[var(--muted-foreground)]">
+              {t.category}
+            </div>
+            <p className="mt-1 leading-relaxed">{t.items}</p>
+          </li>
+        ))}
+      </ul>
+      <p className="mt-3 text-xs text-[var(--muted-foreground)] leading-relaxed">
+        DX 推進、データ分析基盤の構築・運用、業務システム開発、可視化ツール開発など、複数プロジェクトで運用してきた技術群。
+      </p>
 
       <h2 className="mt-16 text-xs font-bold tracking-wider uppercase text-[var(--muted-foreground)]">
         提供プラン
