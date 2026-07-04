@@ -9,9 +9,8 @@ export const site = {
     name: "たいてっく",
     handle: "taitech",
     role: "エンジニア講師 / データエンジニア",
-    bio: "Web系自社開発企業のデータエンジニア。AWS認定全冠経験者、IPAデータベーススペシャリスト、応用情報技術者ほかIPA系資格を多数保有。AIエージェント自作・AIプロダクト開発の実務経験もあり。個別指導でSQL・データベース・クラウド・AI活用を教えている。",
+    bio: "Web系自社開発企業のデータエンジニア。AWS認定全冠保持経験、IPAデータベーススペシャリスト、応用情報技術者ほかIPA系資格を多数保有。AIエージェント自作・AIプロダクト開発の実務経験もあり。個別指導でSQL・データベース・クラウド・AI活用を教えている。",
     mentorUrl: "https://menta.work/plan/17058",
-    twitterUrl: "https://twitter.com/",
   },
   contact: {
     email: "guangpingjiujing@gmail.com",

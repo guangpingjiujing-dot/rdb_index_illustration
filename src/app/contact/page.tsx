@@ -54,10 +54,6 @@ export default function ContactPage() {
           </a>
         </li>
       </ul>
-
-      <p className="mt-8 text-xs text-[var(--muted-foreground)]">
-        業務多忙のため返信までお時間をいただく場合があります。あらかじめご了承ください。
-      </p>
     </Container>
   );
 }

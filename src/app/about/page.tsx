@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Container } from "@/components/ui/Container";
 import { MentorCTA } from "@/components/cta/MentorCTA";
+import { FAQ } from "@/components/layout/FAQ";
+import { AuthorJsonLd } from "@/components/seo/JsonLd";
 import { site } from "@/lib/site";
 
 export const metadata: Metadata = {
@@ -16,19 +18,19 @@ const experiences = [
     body: "自社開発企業でバックエンド・データエンジニア・クラウド設計を担当。",
   },
   {
-    title: "SQL・データベース設計・データ分析基盤とそのパイプライン開発と運用・データガバナンスが専門",
+    title: "SQL・データベース設計・データ分析基盤とそのパイプライン開発と運用・データガバナンス",
     body: "PostgreSQL / MySQL / BigQuery / Redshift 等を実務で運用。dbt・Airflowなどのデータ基盤も構築。",
   },
   {
-    title: "AWS認定全冠",
-    body: "AWS認定資格を全て取得。クラウドインフラ〜サーバーレスまでカバー。",
+    title: "AWS認定全冠保持経験",
+    body: "AWS認定資格を全て取得した経験を持つ。クラウドインフラ〜サーバーレスまでカバー。",
   },
   {
     title: "IPAデータベーススペシャリスト ほか",
     body: "IPAデータベーススペシャリスト、応用情報技術者ほか多数の資格を保有。",
   },
   {
-    title: "AIエージェント自作 / AIプロダクト開発",
+    title: "AIエージェント / AIプロダクト開発",
     body: "LLM を組み込んだプロダクトの設計・実装経験に加え、業務要件に合わせて AI エージェントを自ら作れる。Claude Code など既製エージェントを使いこなす立場と、内部を理解して作る立場の両方を持つ。当サイトも AI エージェントとの協働で構築。",
   },
 ];
@@ -40,7 +42,7 @@ const techStack = [
   },
   {
     category: "データベース・DWH",
-    items: "PostgreSQL / MySQL / SQL Server / DuckDB / MongoDB / Supabase / Neon / BigQuery / Amazon RDS / Athena / Azure SQL Database / Treasure Data / Microsoft Access",
+    items: "PostgreSQL / MySQL / SQL Server / DuckDB / MongoDB / Supabase / Neon / BigQuery / Amazon RDS / Amazon Redshift / Athena / Azure SQL Database / Treasure Data / Microsoft Access",
   },
   {
     category: "データ基盤・ETL/ELT・可視化",
@@ -83,9 +85,34 @@ const plans = [
   },
 ];
 
+const faq = [
+  {
+    q: "無料相談だけで終わっても大丈夫ですか？",
+    a: "問題ありません。相性・希望・レベル感を確認する場なので、そのままご検討を終えていただいてOKです。",
+  },
+  {
+    q: "初心者すぎても対応してくれますか？",
+    a: "プログラミング未経験・SQL未経験・DB初学者・AI未経験から、IPA・AWS試験レベル、実務のパフォーマンスチューニング・本格的なデータ基盤の構築まで幅広く対応しています。事前ヒアリングでレベルに合わせて内容を組み立てます。",
+  },
+  {
+    q: "対応時間帯・頻度は？",
+    a: "オンライン中心で、時間帯・頻度は事前相談で柔軟に調整します。月ごとに変えることも可能です。",
+  },
+  {
+    q: "教材は用意してくれますか？",
+    a: "専用の教材は原則ありません。書籍・公式ドキュメント・実際の業務課題を組み合わせて、あなたに必要な形で構成します。",
+  },
+  {
+    q: "オンラインのみですか？",
+    a: "はい、Google MeetやZoom等を使ったオンライン指導です。全国どこからでも受講できます。",
+  },
+];
+
 export default function AboutPage() {
   return (
     <Container size="narrow" className="py-12 md:py-16">
+      <AuthorJsonLd faq={faq} />
+
       <div className="text-[10px] font-bold uppercase tracking-widest text-[var(--muted-foreground)]">
         著者について
       </div>
@@ -101,6 +128,23 @@ export default function AboutPage() {
         生徒の希望・レベルに合わせて内容をカスタマイズします。
         今まで数多くの生徒のSQL・DB・クラウド・開発・資格対策学習をサポート。
       </p>
+
+      <div className="mt-8 flex flex-wrap gap-4 items-center">
+        <Link
+          href={site.author.mentorUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center bg-[var(--foreground)] text-white px-5 py-2.5 text-sm font-bold hover:bg-[#262626] transition-colors"
+        >
+          無料相談を予約する →
+        </Link>
+        <Link
+          href="#mentor"
+          className="text-sm text-[var(--muted-foreground)] underline underline-offset-4 hover:text-[var(--foreground)]"
+        >
+          提供プランを見る
+        </Link>
+      </div>
 
       <h2 className="mt-16 text-xs font-bold tracking-wider uppercase text-[var(--muted-foreground)]">
         実績・強み
@@ -157,6 +201,8 @@ export default function AboutPage() {
           プラン詳細と申込みはこちら →
         </Link>
       </div>
+
+      <FAQ items={faq} />
 
       <MentorCTA />
     </Container>
