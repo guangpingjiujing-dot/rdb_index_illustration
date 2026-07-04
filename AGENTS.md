@@ -45,3 +45,60 @@ printf "value" | vercel env add NAME production
 # ドメイン状態
 vercel domains inspect taitech.dev
 ```
+
+# Development
+
+## Package manager
+
+`npm` を使う。`bun` はローカルに入っていない環境がある。
+
+## Common commands
+
+```bash
+# 型チェック（package.json に script が無いので直接叩く）
+npx tsc --noEmit
+
+# 開発サーバー
+npm run dev
+
+# 本番ビルド
+npm run build
+
+# E2E テスト（Playwright、全ページのコンソールエラー/警告検知含む30件）
+npm run test:e2e
+
+# E2E UI モード
+npm run test:e2e:ui
+```
+
+コンポーネント追加・レイアウト変更後は E2E テスト実行推奨。全ページで console error / warning が出ないことを保証している。
+
+## Monorepo 情報 (docs/)
+
+`docs/` は `.gitignore` 済み。ローカル専用の運用メモを置く場所。GitHub には公開しない。
+- `docs/OPERATIONS.md`: アカウント・DNS・支払い等の非公開ディテール
+- `docs/MONETIZATION_ROADMAP.md`: 収益化ロードマップと進捗
+
+# Amazon Associates
+
+- **Store ID**: `taitech-22`（非公開情報は `docs/OPERATIONS.md`）
+- **書籍リンクの形式**: `https://www.amazon.co.jp/dp/<ASIN>?tag=taitech-22`
+  - `?tag=taitech-22` を削除すると収益化されない。**リンク編集時は必ず維持**
+- **書籍データ**: `src/content/books.ts` に `Book[]` として定義。`booksForTopic(slug)` はトピック関連順に全書籍を返す
+- **表示箇所**: 各トピックページで `AffiliateBooks`（カード型グリッド）と `BookSidebar`（右サイドバー sticky, lg+）に表示
+- **開示表記**: `AffiliateBooks.tsx` の「本セクションはAmazonアソシエイトのリンクを含みます。」は Amazon 運営規約と景表法（ステマ規制）対応で必須。**削除禁止**
+- **書影**: PA-API 未有効化（3件発送成立が条件）。Amazon 商品画像の hotlink は規約違反。書影追加は PA-API 解放後まで待つ
+
+# Site navigation
+
+- **ヘッダー左の「☰ トピック一覧」**: `TopicNavDrawer`（client component）でトピック一覧ドロワーを開く。全ページ共通
+- **右サイドバー (`BookSidebar`)**: トピックページのみ、lg+ で sticky 表示。書籍リスト + `MentorSidebarCTA`（無料相談への常時導線）
+- **記事末尾 CTA**: `RelatedTopics` → `AffiliateBooks`（書籍カード） → `MentorCTA`（フルワイド）の順で配置
+
+# Monetization CTAs
+
+収益化の本命は **menta 無料相談への送客**（1件で月数千〜数万円 継続）。Amazon アフィリは補助的位置付け。
+
+- `MentorCTA`: 記事末尾のフルワイドバナー
+- `MentorSidebarCTA`: サイドバー下部の sticky カード（スクロール中も常に見える）
+- Amazon アフィリを追加するときは menta CTA の視認性を下げないこと

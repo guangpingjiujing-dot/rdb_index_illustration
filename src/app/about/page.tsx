@@ -139,7 +139,9 @@ export default function AboutPage() {
           無料相談を予約する →
         </Link>
         <Link
-          href="#mentor"
+          href="https://menta.work/user/179723"
+          target="_blank"
+          rel="noopener noreferrer"
           className="text-sm text-[var(--muted-foreground)] underline underline-offset-4 hover:text-[var(--foreground)]"
         >
           提供プランを見る

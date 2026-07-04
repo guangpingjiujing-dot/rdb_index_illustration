@@ -1,26 +1,24 @@
 import Link from "next/link";
 import { Container } from "@/components/ui/Container";
+import { TopicNavDrawer } from "@/components/layout/TopicNavDrawer";
 import { site } from "@/lib/site";
 
 export function Header() {
   return (
     <header className="sticky top-0 z-40 border-b border-[var(--border)] bg-[var(--background)]">
       <Container size="wide">
-        <div className="flex h-14 items-center justify-between">
-          <Link
-            href="/"
-            className="flex items-center gap-2.5 font-bold tracking-tight"
-          >
-            <LogoMark />
-            <span className="hidden sm:inline">{site.name}</span>
-          </Link>
-          <nav className="flex items-center gap-1 text-sm">
+        <div className="flex h-14 items-center justify-between gap-2">
+          <div className="flex items-center gap-1">
+            <TopicNavDrawer />
             <Link
-              href="/#topics"
-              className="hidden sm:inline-block px-3 py-2 text-[var(--muted-foreground)] hover:text-[var(--foreground)]"
+              href="/"
+              className="flex items-center gap-2.5 font-bold tracking-tight"
             >
-              トピック
+              <LogoMark />
+              <span className="hidden sm:inline">{site.name}</span>
             </Link>
+          </div>
+          <nav className="flex items-center gap-1 text-sm">
             <Link
               href="/about"
               className="hidden sm:inline-block px-3 py-2 text-[var(--muted-foreground)] hover:text-[var(--foreground)]"
@@ -48,12 +46,24 @@ function LogoMark() {
       aria-hidden
       width="24"
       height="24"
-      viewBox="0 0 32 32"
-      className="text-[var(--foreground)]"
+      viewBox="0 0 64 64"
+      fill="none"
     >
-      <rect x="4" y="6" width="24" height="4" fill="currentColor" opacity="0.25" />
-      <rect x="4" y="14" width="24" height="4" fill="currentColor" opacity="0.55" />
-      <rect x="4" y="22" width="24" height="4" fill="currentColor" />
+      <rect width="64" height="64" rx="12" fill="#0a0a0a" />
+      <g
+        stroke="#fafafa"
+        strokeWidth="3"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        fill="none"
+      >
+        <ellipse cx="32" cy="14" rx="20" ry="5" />
+        <line x1="12" y1="14" x2="12" y2="50" />
+        <line x1="52" y1="14" x2="52" y2="50" />
+        <path d="M 12 26 Q 32 36 52 26" />
+        <path d="M 12 38 Q 32 48 52 38" />
+        <path d="M 12 50 Q 32 60 52 50" />
+      </g>
     </svg>
   );
 }

@@ -61,18 +61,6 @@ npm run build
 - Google Analytics 4 タグ挿入（`NEXT_PUBLIC_GA_ID` 設定時）
 - Vercel Analytics + Speed Insights を有効化済み
 
-## デプロイ手順（Vercel）
-
-1. GitHubリポジトリを作成してこのコードをpush
-2. https://vercel.com/new でリポジトリをインポート
-3. Framework Preset は自動で `Next.js` に。Root Directory / Build Command は変更不要
-4. Environment Variables に `NEXT_PUBLIC_SITE_URL` を本番URLで登録（後述のドメイン設定後）
-5. Deploy を押す → 数分で `<project-name>.vercel.app` で公開
-
-### 独自ドメイン
-
-Cloudflare Registrar 等でドメイン取得後、Vercel の Project Settings → Domains で追加。DNS レコードは Vercel の指示通りに設定。証明書は自動。
-
 ### アナリティクス
 
 - **Vercel Analytics** / **Speed Insights**: プロジェクト設定でオンにするだけで動作

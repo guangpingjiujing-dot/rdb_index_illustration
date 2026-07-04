@@ -1,9 +1,9 @@
 import Link from "next/link";
 import { Container } from "@/components/ui/Container";
 import { LevelBadge } from "@/components/ui/Badge";
-import { TopicNav } from "@/components/layout/TopicNav";
 import { MentorCTA } from "@/components/cta/MentorCTA";
 import { AffiliateBooks } from "@/components/cta/AffiliateBooks";
+import { BookSidebar } from "@/components/cta/BookSidebar";
 import { RelatedTopics } from "@/components/layout/RelatedTopics";
 import { findTopic } from "@/content/topics";
 
@@ -19,11 +19,7 @@ export function TopicLayout({
 
   return (
     <Container size="wide" className="py-8 md:py-12">
-      <div className="grid gap-8 lg:gap-10 lg:grid-cols-[10rem_1fr]">
-        <aside className="lg:sticky lg:top-20 lg:self-start">
-          <TopicNav currentSlug={slug} />
-        </aside>
-
+      <div className="grid gap-8 lg:gap-10 lg:grid-cols-[1fr_15rem]">
         <article className="min-w-0">
           <nav
             aria-label="パンくず"
@@ -68,6 +64,8 @@ export function TopicLayout({
 
           <MentorCTA />
         </article>
+
+        <BookSidebar topicSlug={slug} />
       </div>
     </Container>
   );

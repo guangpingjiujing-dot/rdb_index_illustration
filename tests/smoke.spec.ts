@@ -35,7 +35,7 @@ function watchConsole(page: Page) {
     const text = msg.text();
     if (IGNORE_PATTERNS.some((p) => p.test(text))) return;
     if (type === "error") errors.push(text);
-    if (type === "warning" || type === "warn") warnings.push(text);
+    if (type === "warning") warnings.push(text);
   });
   page.on("pageerror", (err) => {
     errors.push(`PageError: ${err.message}`);
