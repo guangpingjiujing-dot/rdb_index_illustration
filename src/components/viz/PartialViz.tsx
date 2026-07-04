@@ -3,27 +3,57 @@
 import { useState } from "react";
 import { motion } from "motion/react";
 import { VizFrame } from "./VizFrame";
+import { BTreeNote } from "./BTreeNote";
 
-type Order = { id: number; status: "pending" | "shipped" | "cancelled"; amount: number };
+const ROWS_PER_PAGE = 4;
 
-const ORDERS: Order[] = [
-  { id: 1, status: "shipped", amount: 5000 },
-  { id: 2, status: "pending", amount: 1200 },
-  { id: 3, status: "cancelled", amount: 8800 },
-  { id: 4, status: "shipped", amount: 3300 },
-  { id: 5, status: "pending", amount: 400 },
-  { id: 6, status: "shipped", amount: 12000 },
-  { id: 7, status: "cancelled", amount: 900 },
-  { id: 8, status: "pending", amount: 2500 },
-  { id: 9, status: "shipped", amount: 7100 },
-  { id: 10, status: "shipped", amount: 4600 },
+function rowIdFor(i: number) {
+  const page = Math.floor(i / ROWS_PER_PAGE) + 1;
+  const offset = i % ROWS_PER_PAGE;
+  return `(${page},${offset})`;
+}
+
+type User = { email: string; deleted_at: string | null };
+
+const USERS: User[] = [
+  { email: "alice@example.com", deleted_at: null },
+  { email: "bob@example.com", deleted_at: "2025-06-01" },
+  { email: "carol@example.com", deleted_at: null },
+  { email: "dave@example.com", deleted_at: null },
+  { email: "eve@example.com", deleted_at: "2025-05-20" },
+  { email: "frank@example.com", deleted_at: null },
+  { email: "grace@example.com", deleted_at: "2025-04-10" },
+  { email: "henry@example.com", deleted_at: null },
+  { email: "ivy@example.com", deleted_at: null },
+  { email: "jack@example.com", deleted_at: null },
 ];
+
+// インデックスは email 順にソート
+const sortedIndex = USERS.map((u, i) => ({
+  ...u,
+  rowId: rowIdFor(i),
+})).sort((a, b) => a.email.localeCompare(b.email));
 
 export function PartialViz() {
   const [mode, setMode] = useState<"full" | "partial">("full");
   const partial = mode === "partial";
-  const inIndex = (o: Order) => (partial ? o.status === "pending" : true);
-  const included = ORDERS.filter(inIndex);
+  const inIndex = (u: User) => (partial ? u.deleted_at === null : true);
+  const included = USERS.filter(inIndex);
+
+  const createIndexSql = partial
+    ? `-- 部分インデックス（未削除ユーザーのみ）
+CREATE INDEX idx_users_email_active
+  ON users (email)
+  WHERE deleted_at IS NULL;`
+    : `-- 通常インデックス（全行を含む）
+CREATE INDEX idx_users_email
+  ON users (email);`;
+
+  const selectSql = `-- 検索クエリ
+SELECT *
+FROM users
+WHERE email = 'alice@example.com'
+  AND deleted_at IS NULL;`;
 
   return (
     <VizFrame
@@ -48,61 +78,24 @@ export function PartialViz() {
                 : "bg-white hover:bg-[var(--muted)]"
             }`}
           >
-            部分インデックス（pending のみ）
+            部分インデックス（deleted_at IS NULL）
           </button>
         </div>
       }
       legend={
         <span>
-          「未処理注文だけを高速に引きたい」のような要件に部分インデックスは有効。インデックスサイズと更新コストを大きく減らせる。
+          論理削除された行を除外して「アクティブなユーザーだけのインデックス」を作る典型例。インデックスサイズと更新コストを大きく減らせる。
         </span>
       }
     >
       <div className="grid gap-8 md:grid-cols-2">
         <div>
-          <div className="mb-2 text-sm font-bold">
-            インデックス{" "}
-            <code>
-              {partial
-                ? "(status) WHERE status = 'pending'"
-                : "(status)"}
-            </code>
-          </div>
-          <div className="border border-[var(--border)]">
-            <div className="text-[10px] uppercase tracking-wider text-[var(--muted-foreground)] bg-[var(--muted)] px-3 py-1.5">
-              エントリ数 <span className="font-bold text-[var(--foreground)]">{included.length}</span> / {ORDERS.length}
-            </div>
-            {ORDERS.map((o) => {
-              const active = inIndex(o);
-              return (
-                <motion.div
-                  key={o.id}
-                  animate={{
-                    opacity: active ? 1 : 0.2,
-                  }}
-                  className="grid grid-cols-3 items-center border-t border-[var(--border)] px-3 py-1.5 font-mono text-xs"
-                >
-                  <span>#{o.id}</span>
-                  <span
-                    className={
-                      o.status === "pending"
-                        ? "font-bold"
-                        : "text-[var(--muted-foreground)]"
-                    }
-                  >
-                    {o.status}
-                  </span>
-                  <span>¥{o.amount}</span>
-                </motion.div>
-              );
-            })}
-          </div>
-        </div>
-        <div>
           <div className="text-[10px] font-bold uppercase tracking-wider text-[var(--muted-foreground)]">
             SQL
           </div>
-          <pre className="mt-1 text-xs font-mono border border-[var(--border)] bg-white p-3">{`SELECT *\nFROM orders\nWHERE status = 'pending';`}</pre>
+          <pre className="mt-1 text-xs font-mono border border-[var(--border)] bg-white p-3 leading-relaxed">{`${createIndexSql}
+
+${selectSql}`}</pre>
 
           <div className="mt-6 border-l-2 border-[var(--foreground)] pl-4 py-1">
             <div className="text-[10px] font-bold uppercase tracking-wider text-[var(--muted-foreground)]">
@@ -110,9 +103,62 @@ export function PartialViz() {
             </div>
             <p className="mt-1 text-sm leading-relaxed">
               {partial
-                ? "対象データが pending の3件だけなので、インデックスサイズが小さく、統計情報も無駄がない。他のstatus更新時に部分インデックスは影響を受けない。"
-                : "全10件を対象とするインデックス。特定のstatusしか検索しないなら、インデックスの2/3は無駄になる。"}
+                ? `対象は未削除の ${included.length} 件だけなので、インデックスサイズが小さく、統計情報も無駄がない。削除済みユーザーへの更新は部分インデックスに一切影響しない。`
+                : `全 ${USERS.length} 件を対象とするインデックス。削除済みユーザーの分もインデックスに含まれ、その分だけ肥大化する。`}
             </p>
+          </div>
+        </div>
+        <div>
+          <div className="mb-2 flex items-baseline justify-between gap-2">
+            <div className="text-sm font-bold">
+              インデックス <code>(email)</code>
+              {partial && (
+                <span className="text-[var(--muted-foreground)]">
+                  {" "}
+                  WHERE deleted_at IS NULL
+                </span>
+              )}
+            </div>
+            <div className="text-[10px] uppercase tracking-wider text-[var(--muted-foreground)]">
+              エントリ{" "}
+              <span className="font-bold text-[var(--foreground)]">
+                {included.length}
+              </span>{" "}
+              / {USERS.length}
+            </div>
+          </div>
+          <BTreeNote />
+          <div className="mt-2 border border-[var(--border)]">
+            <div className="grid grid-cols-[1fr_5.5rem_4rem] px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-[var(--muted-foreground)] bg-[var(--muted)]">
+              <div>email</div>
+              <div>deleted_at</div>
+              <div>→ 行ID</div>
+            </div>
+            {sortedIndex.map((u) => {
+              const active = inIndex(u);
+              const isDeleted = u.deleted_at !== null;
+              return (
+                <motion.div
+                  key={u.email}
+                  animate={{
+                    opacity: active ? 1 : 0.2,
+                  }}
+                  className="grid grid-cols-[1fr_5.5rem_4rem] items-center border-t border-[var(--border)] px-3 py-1.5 font-mono text-xs"
+                >
+                  <span>{u.email}</span>
+                  <span
+                    className={
+                      isDeleted
+                        ? "text-[var(--foreground)]"
+                        : "text-[var(--muted-foreground)]"
+                    }
+                  >
+                    {u.deleted_at ?? "NULL"}
+                  </span>
+                  <span className="opacity-70">{u.rowId}</span>
+                </motion.div>
+              );
+            })}
           </div>
         </div>
       </div>

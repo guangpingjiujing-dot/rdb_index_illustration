@@ -4,9 +4,8 @@ export type BNode = {
   children: BNode[];
 };
 
-// B-tree order t=2 (max 2*t-1 = 3 keys per node, min t-1 = 1)
-// For simpler visualization we use ORDER=2 (max 2 keys per node, splits when reaching 3)
-export const MAX_KEYS = 3;
+export const DEFAULT_MAX_KEYS = 3;
+export const MAX_KEYS_OPTIONS = [2, 3, 4, 5, 7] as const;
 
 let counter = 0;
 export function makeNode(keys: number[], children: BNode[] = []): BNode {
@@ -54,12 +53,12 @@ export function searchPath(root: BNode, target: number): SearchStep[] {
   return steps;
 }
 
-// Insert value into tree, returning new root. Splits nodes when they exceed MAX_KEYS.
-export function insert(root: BNode, value: number): BNode {
+// Insert value into tree, returning new root. Splits nodes when they exceed maxKeys.
+export function insert(root: BNode, value: number, maxKeys: number): BNode {
   const tree = cloneTree(root);
   if (tree.keys.includes(value)) return tree;
-  insertNonFull(tree, value);
-  if (tree.keys.length > MAX_KEYS) {
+  insertNonFull(tree, value, maxKeys);
+  if (tree.keys.length > maxKeys) {
     // split root
     const { leftKeys, rightKeys, midKey, leftChildren, rightChildren } =
       splitKeys(tree);
@@ -71,7 +70,7 @@ export function insert(root: BNode, value: number): BNode {
   return tree;
 }
 
-function insertNonFull(node: BNode, value: number) {
+function insertNonFull(node: BNode, value: number, maxKeys: number) {
   if (isLeaf(node)) {
     let i = node.keys.length - 1;
     while (i >= 0 && node.keys[i] > value) i--;
@@ -81,8 +80,8 @@ function insertNonFull(node: BNode, value: number) {
   let i = 0;
   while (i < node.keys.length && value > node.keys[i]) i++;
   const child = node.children[i];
-  insertNonFull(child, value);
-  if (child.keys.length > MAX_KEYS) {
+  insertNonFull(child, value, maxKeys);
+  if (child.keys.length > maxKeys) {
     // split child
     const { leftKeys, rightKeys, midKey, leftChildren, rightChildren } =
       splitKeys(child);
@@ -104,11 +103,16 @@ function splitKeys(n: BNode) {
   return { leftKeys, rightKeys, midKey, leftChildren, rightChildren };
 }
 
-// Build an initial demo tree
-export function buildInitialTree(): BNode {
+// Fixed set of initial values chosen to produce a 3-level tree at DEFAULT_MAX_KEYS=3.
+// With larger maxKeys the resulting tree is shallower but still meaningfully populated.
+const INITIAL_VALUES = [
+  10, 20, 5, 6, 12, 30, 7, 17, 25, 35, 15, 22, 27, 33, 40, 44, 8, 3, 45, 50,
+];
+
+export function buildInitialTree(maxKeys: number = DEFAULT_MAX_KEYS): BNode {
   let t = makeNode([]);
-  for (const v of [10, 20, 5, 6, 12, 30, 7, 17, 25, 35, 15, 22, 27, 33, 40]) {
-    t = insert(t, v);
+  for (const v of INITIAL_VALUES) {
+    t = insert(t, v, maxKeys);
   }
   return t;
 }

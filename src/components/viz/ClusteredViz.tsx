@@ -6,6 +6,8 @@ import { VizFrame } from "./VizFrame";
 
 type Row = { id: number; name: string; email: string };
 
+const ROWS_PER_PAGE = 4;
+
 const HEAP_ROWS: Row[] = [
   { id: 42, name: "Sato", email: "sato@example.com" },
   { id: 15, name: "Tanaka", email: "tanaka@example.com" },
@@ -18,6 +20,12 @@ const HEAP_ROWS: Row[] = [
 ];
 
 const CLUSTERED_ROWS = [...HEAP_ROWS].sort((a, b) => a.id - b.id);
+
+function rowId(index: number) {
+  const page = Math.floor(index / ROWS_PER_PAGE) + 1;
+  const offset = index % ROWS_PER_PAGE;
+  return { page, offset, label: `(${page},${offset})` };
+}
 
 export function ClusteredViz() {
   const [range, setRange] = useState<[number, number]>([25, 65]);
@@ -54,72 +62,84 @@ export function ClusteredViz() {
       }
       legend={
         <span>
-          クラスタ化インデックスは実データそのものが順序を持つため、範囲検索が連続領域の読み取りで済む。ヒープ表は該当行が飛び飛びに散らばる。
+          左端は行ID <code>(page, offset)</code>で、ページ番号とページ内オフセットの組。
+          クラスタ化表は<code>id</code>順に物理配置されているので、範囲検索の該当行が同じページ内に固まる。
         </span>
       }
     >
       <div className="grid gap-8 md:grid-cols-2">
-        <div>
-          <div className="mb-2 flex items-baseline justify-between">
-            <div className="text-sm font-bold">ヒープ表（非クラスタ）</div>
-            <div className="text-[10px] uppercase tracking-wider text-[var(--muted-foreground)]">
-              挿入順にバラバラ配置
-            </div>
-          </div>
-          <div className="border border-[var(--border)]">
-            {HEAP_ROWS.map((r, i) => {
-              const inRange = r.id >= range[0] && r.id <= range[1];
-              return (
-                <motion.div
-                  key={r.id}
-                  animate={{
-                    backgroundColor: inRange ? "#0a0a0a" : "#ffffff",
-                    color: inRange ? "#ffffff" : "#0a0a0a",
-                  }}
-                  className="grid grid-cols-[2rem_3rem_1fr] items-center border-t first:border-t-0 border-[var(--border)] px-2 py-1 text-xs"
-                >
-                  <span className="font-mono opacity-70">#{i}</span>
-                  <span className="font-mono font-bold">{r.id}</span>
-                  <span className="opacity-80">{r.name}</span>
-                </motion.div>
-              );
-            })}
-          </div>
-          <p className="mt-3 text-xs text-[var(--muted-foreground)] leading-relaxed">
-            該当行が飛び地なので、範囲検索でも各行にランダムアクセスが必要。
-          </p>
-        </div>
-        <div>
-          <div className="mb-2 flex items-baseline justify-between">
-            <div className="text-sm font-bold">クラスタ化表</div>
-            <div className="text-[10px] uppercase tracking-wider text-[var(--muted-foreground)]">
-              キー順に物理配置
-            </div>
-          </div>
-          <div className="border border-[var(--border)]">
-            {CLUSTERED_ROWS.map((r, i) => {
-              const inRange = r.id >= range[0] && r.id <= range[1];
-              return (
-                <motion.div
-                  key={r.id}
-                  animate={{
-                    backgroundColor: inRange ? "#0a0a0a" : "#ffffff",
-                    color: inRange ? "#ffffff" : "#0a0a0a",
-                  }}
-                  className="grid grid-cols-[2rem_3rem_1fr] items-center border-t first:border-t-0 border-[var(--border)] px-2 py-1 text-xs"
-                >
-                  <span className="font-mono opacity-70">#{i}</span>
-                  <span className="font-mono font-bold">{r.id}</span>
-                  <span className="opacity-80">{r.name}</span>
-                </motion.div>
-              );
-            })}
-          </div>
-          <p className="mt-3 text-xs text-[var(--muted-foreground)] leading-relaxed">
-            該当行が連続領域に固まっているのでシーケンシャル読み取りで効率的。
-          </p>
-        </div>
+        <TableView
+          title="ヒープ表（非クラスタ）"
+          caption="挿入順にバラバラ配置"
+          rows={HEAP_ROWS}
+          range={range}
+          footNote="該当行が飛び地なので、範囲検索でも各行にランダムアクセスが必要。"
+        />
+        <TableView
+          title="クラスタ化表"
+          caption="キー順に物理配置"
+          rows={CLUSTERED_ROWS}
+          range={range}
+          footNote="該当行が連続領域に固まっているのでシーケンシャル読み取りで効率的。"
+        />
       </div>
     </VizFrame>
+  );
+}
+
+function TableView({
+  title,
+  caption,
+  rows,
+  range,
+  footNote,
+}: {
+  title: string;
+  caption: string;
+  rows: Row[];
+  range: [number, number];
+  footNote: string;
+}) {
+  return (
+    <div>
+      <div className="mb-2 flex items-baseline justify-between">
+        <div className="text-sm font-bold">{title}</div>
+        <div className="text-[10px] uppercase tracking-wider text-[var(--muted-foreground)]">
+          {caption}
+        </div>
+      </div>
+      <div className="border border-[var(--border)]">
+        <div className="grid grid-cols-[4.5rem_3rem_1fr] items-center bg-[var(--muted)] px-2 py-1.5 text-[10px] font-bold uppercase tracking-wider text-[var(--muted-foreground)]">
+          <div>行ID</div>
+          <div>id</div>
+          <div>name</div>
+        </div>
+        {rows.map((r, i) => {
+          const inRange = r.id >= range[0] && r.id <= range[1];
+          const { page, offset, label } = rowId(i);
+          const isNewPage = offset === 0 && i > 0;
+          return (
+            <motion.div
+              key={r.id}
+              animate={{
+                backgroundColor: inRange ? "#0a0a0a" : "#ffffff",
+                color: inRange ? "#ffffff" : "#0a0a0a",
+              }}
+              className={`grid grid-cols-[4.5rem_3rem_1fr] items-center px-2 py-1 text-xs border-t border-[var(--border)] ${
+                isNewPage ? "border-t-2 border-t-[var(--border-strong)]" : ""
+              }`}
+              title={`Page ${page} · offset ${offset}`}
+            >
+              <span className="font-mono opacity-80">{label}</span>
+              <span className="font-mono font-bold">{r.id}</span>
+              <span className="opacity-80">{r.name}</span>
+            </motion.div>
+          );
+        })}
+      </div>
+      <p className="mt-3 text-xs text-[var(--muted-foreground)] leading-relaxed">
+        {footNote}
+      </p>
+    </div>
   );
 }

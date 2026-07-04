@@ -42,13 +42,16 @@ export default function Page() {
       <h2>典型的なユースケース</h2>
       <ul>
         <li>
-          <strong>アクティブ行だけの検索</strong>: <code>WHERE status = &#39;pending&#39;</code> を高速化
+          <strong>論理削除された行を除外</strong>（最頻）:{" "}
+          <code>(email) WHERE deleted_at IS NULL</code> のように、ソフトデリートを採用したテーブルで「アクティブ行だけ」のインデックスを作る
         </li>
         <li>
-          <strong>NULLでない値だけのユニーク</strong>: <code>(email) WHERE email IS NOT NULL</code>
+          <strong>特定ステータスの行だけの検索</strong>:{" "}
+          <code>(order_id) WHERE status = &#39;pending&#39;</code> のように、頻繁に引く一部の状態だけをインデックス化
         </li>
         <li>
-          <strong>論理削除された行を除外</strong>: <code>(user_id) WHERE deleted_at IS NULL</code>
+          <strong>NULLでない値だけのユニーク</strong>:{" "}
+          <code>UNIQUE (email) WHERE email IS NOT NULL</code> のように、NULLは許容しつつ入力された値だけ一意にしたいとき
         </li>
       </ul>
 

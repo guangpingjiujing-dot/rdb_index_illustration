@@ -6,19 +6,47 @@ import { VizFrame } from "../VizFrame";
 import { Button } from "@/components/ui/Button";
 import {
   buildInitialTree,
+  DEFAULT_MAX_KEYS,
   insert,
+  isLeaf,
   layout,
+  MAX_KEYS_OPTIONS,
   searchPath,
   KEY_W,
   KEY_PAD,
   NODE_H,
   type BNode,
+  type SearchStep,
 } from "./btree-model";
 
 type Mode = "search" | "insert";
 
+function describeStep(step: SearchStep | undefined, target: number): string {
+  if (!step) return "";
+  const keys = step.node.keys.join(", ");
+  if (step.matchIndex !== undefined) {
+    return `ノード [${keys}] のキーと一致 → 発見`;
+  }
+  if (isLeaf(step.node)) {
+    return `葉ノード [${keys}] に ${target} は含まれない → 探索終了`;
+  }
+  if (step.childIndex !== undefined) {
+    const boundary =
+      step.childIndex === 0
+        ? `${target} < ${step.node.keys[0]}`
+        : step.childIndex === step.node.keys.length
+        ? `${step.node.keys[step.node.keys.length - 1]} < ${target}`
+        : `${step.node.keys[step.childIndex - 1]} < ${target} < ${step.node.keys[step.childIndex]}`;
+    return `ノード [${keys}] を確認 → ${boundary} なので第${step.childIndex + 1}子へ`;
+  }
+  return `ノード [${keys}] を確認`;
+}
+
 export function BTreeViz() {
-  const [tree, setTree] = useState<BNode>(() => buildInitialTree());
+  const [maxKeys, setMaxKeys] = useState<number>(DEFAULT_MAX_KEYS);
+  const [tree, setTree] = useState<BNode>(() =>
+    buildInitialTree(DEFAULT_MAX_KEYS)
+  );
   const [mode, setMode] = useState<Mode>("search");
   const [target, setTarget] = useState<number>(17);
   const [pathStep, setPathStep] = useState<number>(-1);
@@ -32,32 +60,46 @@ export function BTreeViz() {
   const laid = useMemo(() => layout(tree), [tree]);
   const path = useMemo(() => searchPath(tree, target), [tree, target]);
 
+  // Auto-play: advance one step every 600ms while running.
   useEffect(() => {
     if (!running) return;
-    if (pathStep >= path.length - 1) {
-      setRunning(false);
-      const last = path[path.length - 1];
-      if (last?.matchIndex !== undefined) {
-        setFoundState("found");
-        setMessage(`ルートから ${path.length} ノード辿るだけで発見。`);
-      } else {
-        setFoundState("notfound");
-        setMessage(`${target} は木の中に存在しない（${path.length} ノードで判定）。`);
-      }
-      return;
-    }
-    const t = setTimeout(() => {
-      setPathStep(pathStep + 1);
-    }, 600);
+    if (pathStep >= path.length - 1) return;
+    const t = setTimeout(() => setPathStep(pathStep + 1), 600);
     return () => clearTimeout(t);
-  }, [running, pathStep, path, target]);
+  }, [running, pathStep, path.length]);
 
-  const startSearch = () => {
-    setPathStep(-1);
-    setFoundState("idle");
-    setMessage("");
-    setRunning(true);
+  // Finalize: when we reach the last step (via auto-play or manual step),
+  // mark found/notfound and stop auto-play.
+  useEffect(() => {
+    if (pathStep < 0) return;
+    if (foundState !== "idle") return;
+    if (pathStep < path.length - 1) return;
+    const last = path[path.length - 1];
+    if (last?.matchIndex !== undefined) {
+      setFoundState("found");
+      setMessage(`ルートから ${path.length} ノード辿るだけで発見。`);
+    } else {
+      setFoundState("notfound");
+      setMessage(
+        `${target} は木の中に存在しない（${path.length} ノードで判定）。`
+      );
+    }
+    setRunning(false);
+  }, [pathStep, path, foundState, target]);
+
+  const canAdvance = pathStep < path.length - 1 && foundState === "idle";
+
+  const stepOnce = () => {
+    setRunning(false);
+    if (!canAdvance) return;
+    setPathStep(pathStep + 1);
   };
+
+  const toggleAutoplay = () => {
+    if (!canAdvance) return;
+    setRunning((v) => !v);
+  };
+
   const reset = () => {
     setPathStep(-1);
     setRunning(false);
@@ -65,8 +107,17 @@ export function BTreeViz() {
     setMessage("");
   };
   const resetTree = () => {
-    setTree(buildInitialTree());
+    setTree(buildInitialTree(maxKeys));
     reset();
+  };
+
+  const changeMaxKeys = (n: number) => {
+    setMaxKeys(n);
+    setTree(buildInitialTree(n));
+    setPathStep(-1);
+    setRunning(false);
+    setFoundState("idle");
+    setMessage(`ノードの最大キー数を ${n} に変更し、木を再構築した。`);
   };
 
   const doInsert = () => {
@@ -74,8 +125,10 @@ export function BTreeViz() {
     if (!raw) return;
     const v = Number(raw);
     if (Number.isNaN(v)) return;
-    setTree((prev) => insert(prev, v));
-    setMessage(`${v} を挿入。ノードのキー数が上限（3）を超えると自動で分割される。`);
+    setTree((prev) => insert(prev, v, maxKeys));
+    setMessage(
+      `${v} を挿入。ノードのキー数が上限（${maxKeys}）を超えると自動で分割される。`
+    );
     if (inputRef.current) inputRef.current.value = "";
   };
 
@@ -139,8 +192,24 @@ export function BTreeViz() {
                   className="ml-2 w-20 border border-[var(--border-strong)] bg-white px-2 py-1 text-sm"
                 />
               </label>
-              <Button size="sm" onClick={startSearch} disabled={running}>
-                探索開始
+              <Button size="sm" onClick={stepOnce} disabled={!canAdvance}>
+                1ステップ
+              </Button>
+              <Button
+                size="sm"
+                variant={running ? "secondary" : "primary"}
+                onClick={toggleAutoplay}
+                disabled={!canAdvance}
+              >
+                {running ? "一時停止" : "自動再生"}
+              </Button>
+              <Button
+                size="sm"
+                variant="secondary"
+                onClick={reset}
+                disabled={pathStep < 0 && foundState === "idle" && !running}
+              >
+                リセット
               </Button>
             </div>
           ) : (
@@ -159,6 +228,20 @@ export function BTreeViz() {
               </Button>
             </div>
           )}
+          <label className="text-sm font-semibold">
+            最大キー数：
+            <select
+              value={maxKeys}
+              onChange={(e) => changeMaxKeys(Number(e.target.value))}
+              className="ml-2 border border-[var(--border-strong)] bg-white px-2 py-1 text-sm"
+            >
+              {MAX_KEYS_OPTIONS.map((n) => (
+                <option key={n} value={n}>
+                  {n}
+                </option>
+              ))}
+            </select>
+          </label>
           <Button size="sm" variant="secondary" onClick={resetTree}>
             木をリセット
           </Button>
@@ -166,7 +249,7 @@ export function BTreeViz() {
       }
       legend={
         <span>
-          この木は「1ノードあたり最大3キー」の設定。実際のRDBのB-treeはノードあたり数百キー入るため、数億件でも数段の辿りで済む。
+          この木は「1ノードあたり最大{maxKeys}キー」の設定。実際のRDBのB-treeはノードあたり数百キー入るため、数億件でも数段の辿りで済む。
         </span>
       }
     >
@@ -292,8 +375,13 @@ export function BTreeViz() {
         <p className="mt-1 text-sm leading-relaxed">
           {message ||
             (mode === "search"
-              ? "「探索開始」で、ルートから目的の値までノードを辿るアニメーションを再生。"
-              : "「挿入」で値を追加。3キー超になったノードは中央値を親に押し上げて分割される。")}
+              ? pathStep < 0
+                ? "「1ステップ」でノードを1つずつ辿る、または「自動再生」で連続再生。"
+                : `ステップ ${pathStep + 1} / ${path.length} — ${describeStep(
+                    path[pathStep],
+                    target
+                  )}`
+              : `「挿入」で値を追加。${maxKeys}キー超になったノードは中央値を親に押し上げて分割される。`)}
         </p>
       </div>
     </VizFrame>

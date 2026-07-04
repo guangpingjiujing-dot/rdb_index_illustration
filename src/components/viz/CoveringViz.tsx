@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { motion } from "motion/react";
 import { VizFrame } from "./VizFrame";
+import { BTreeNote } from "./BTreeNote";
 
 type Mode = "not-covering" | "covering";
 
@@ -75,7 +76,8 @@ export function CoveringViz() {
                 : "(user_id, order_id)"}
             </code>
           </div>
-          <div className="overflow-x-auto border border-[var(--border)]">
+          <BTreeNote />
+          <div className="mt-2 overflow-x-auto border border-[var(--border)]">
             {covering ? (
               <div className="min-w-[36rem] grid grid-cols-[8rem_10rem_10rem]">
                 {INDEX_COVERING.map((r, i) => {

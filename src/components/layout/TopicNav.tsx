@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { topics, type Topic } from "@/content/topics";
-import { LevelBadge } from "@/components/ui/Badge";
 import { cn } from "@/lib/utils";
 
 const GROUP_LABEL: Record<Topic["group"], string> = {
@@ -33,15 +32,14 @@ export function TopicNav({ currentSlug }: { currentSlug?: string }) {
                   <Link
                     href={t.path}
                     className={cn(
-                      "flex items-center justify-between gap-2 border-l-2 -ml-px px-3 py-1.5 transition-colors",
+                      "block border-l-2 -ml-px px-3 py-1.5 leading-snug transition-colors",
                       active
                         ? "border-[var(--foreground)] text-[var(--foreground)] font-semibold bg-[var(--muted)]/60"
                         : "border-transparent text-[var(--muted-foreground)] hover:border-[var(--border-strong)] hover:text-[var(--foreground)]"
                     )}
                     aria-current={active ? "page" : undefined}
                   >
-                    <span>{t.shortTitle}</span>
-                    <LevelBadge level={t.level} />
+                    {t.shortTitle}
                   </Link>
                 </li>
               );

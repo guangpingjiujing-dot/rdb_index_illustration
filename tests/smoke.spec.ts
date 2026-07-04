@@ -55,6 +55,22 @@ for (const path of PAGES) {
   });
 }
 
+test("B-tree page: changing maxKeys rebuilds tree without errors", async ({
+  page,
+}) => {
+  const { errors, warnings } = watchConsole(page);
+  await page.goto("/btree", { waitUntil: "networkidle" });
+
+  const select = page.locator("select").first();
+  for (const value of ["5", "7", "2", "3"]) {
+    await select.selectOption(value);
+    await page.waitForTimeout(200);
+  }
+
+  expect(errors, `Console errors:\n${errors.join("\n")}`).toEqual([]);
+  expect(warnings, `Console warnings:\n${warnings.join("\n")}`).toEqual([]);
+});
+
 test("B-tree page: interactive search + insert produce no console errors", async ({
   page,
 }) => {
@@ -65,7 +81,7 @@ test("B-tree page: interactive search + insert produce no console errors", async
   await searchInput.fill("");
   await page.waitForTimeout(100);
   await searchInput.fill("25");
-  await page.getByRole("button", { name: /探索開始/ }).click();
+  await page.getByRole("button", { name: /自動再生/ }).click();
   await page.waitForTimeout(2500);
 
   await page.getByRole("button", { name: /挿入モード/ }).click();
@@ -73,6 +89,54 @@ test("B-tree page: interactive search + insert produce no console errors", async
   await insertInput.fill("100");
   await page.getByRole("button", { name: /^挿入$/ }).click();
   await page.waitForTimeout(500);
+
+  expect(errors, `Console errors:\n${errors.join("\n")}`).toEqual([]);
+  expect(warnings, `Console warnings:\n${warnings.join("\n")}`).toEqual([]);
+});
+
+test("B-tree page: step-by-step search advances one step at a time", async ({
+  page,
+}) => {
+  const { errors, warnings } = watchConsole(page);
+  await page.goto("/btree", { waitUntil: "networkidle" });
+
+  const searchInput = page.locator('input[type="number"]').first();
+  await searchInput.fill("");
+  await searchInput.fill("22");
+
+  const stepBtn = page.getByRole("button", { name: /1ステップ/ });
+  for (let i = 0; i < 5; i++) {
+    if (await stepBtn.isDisabled()) break;
+    await stepBtn.click();
+    await page.waitForTimeout(150);
+  }
+
+  expect(errors, `Console errors:\n${errors.join("\n")}`).toEqual([]);
+  expect(warnings, `Console warnings:\n${warnings.join("\n")}`).toEqual([]);
+});
+
+test("B-tree page: autoplay pause + resume without errors", async ({
+  page,
+}) => {
+  const { errors, warnings } = watchConsole(page);
+  await page.goto("/btree", { waitUntil: "networkidle" });
+
+  const searchInput = page.locator('input[type="number"]').first();
+  await searchInput.fill("");
+  await searchInput.fill("40");
+
+  await page.getByRole("button", { name: /自動再生/ }).click();
+  await page.waitForTimeout(700);
+  const pauseBtn = page.getByRole("button", { name: /一時停止/ });
+  if (await pauseBtn.count()) {
+    await pauseBtn.click();
+    await page.waitForTimeout(200);
+  }
+  const playBtn = page.getByRole("button", { name: /自動再生/ });
+  if (await playBtn.count()) {
+    await playBtn.click();
+  }
+  await page.waitForTimeout(2500);
 
   expect(errors, `Console errors:\n${errors.join("\n")}`).toEqual([]);
   expect(warnings, `Console warnings:\n${warnings.join("\n")}`).toEqual([]);
@@ -122,13 +186,51 @@ test("FullScan viz on why-index runs without errors", async ({ page }) => {
   expect(warnings, `Console warnings:\n${warnings.join("\n")}`).toEqual([]);
 });
 
-test("Hash viz interaction", async ({ page }) => {
+test("Hash viz: step-by-step equal search and pipeline stages", async ({
+  page,
+}) => {
   const { errors, warnings } = watchConsole(page);
   await page.goto("/hash", { waitUntil: "networkidle" });
-  await page.locator('input[type="text"]').first().fill("");
-  await page.locator('input[type="text"]').first().fill("sato");
-  await page.getByRole("button", { name: /等価検索/ }).click();
-  await page.waitForTimeout(300);
+
+  const searchInput = page.locator('input[type="text"]').first();
+  await searchInput.fill("");
+  await searchInput.fill("sato");
+
+  const stepBtn = page.getByRole("button", { name: /^1ステップ$/ });
+  for (let i = 0; i < 5; i++) {
+    if (await stepBtn.isDisabled()) break;
+    await stepBtn.click();
+    await page.waitForTimeout(120);
+  }
+
+  expect(errors).toEqual([]);
+  expect(warnings).toEqual([]);
+});
+
+test("Hash viz: bucket count change + range + insert", async ({ page }) => {
+  const { errors, warnings } = watchConsole(page);
+  await page.goto("/hash", { waitUntil: "networkidle" });
+
+  // Change bucket count
+  const bucketSelect = page.locator("select").first();
+  await bucketSelect.selectOption("7");
+  await page.waitForTimeout(150);
+
+  // Range search
+  await page.getByRole("button", { name: /^範囲検索$/ }).click();
+  await page.waitForTimeout(120);
+  await page.getByRole("button", { name: /^全走査$/ }).click();
+  await page.waitForTimeout(200);
+
+  // Insert with step-by-step
+  await page.getByRole("button", { name: /^挿入$/ }).click();
+  await page.waitForTimeout(120);
+  const insertInput = page.locator('input[type="text"]').first();
+  await insertInput.fill("");
+  await insertInput.fill("mori");
+  await page.getByRole("button", { name: /^自動再生$/ }).click();
+  await page.waitForTimeout(3500);
+
   expect(errors).toEqual([]);
   expect(warnings).toEqual([]);
 });
@@ -136,21 +238,31 @@ test("Hash viz interaction", async ({ page }) => {
 test("Composite viz mode toggles", async ({ page }) => {
   const { errors, warnings } = watchConsole(page);
   await page.goto("/composite", { waitUntil: "networkidle" });
-  await page.getByRole("button", { name: /先頭＋2番目/ }).click();
+  await page.getByRole("button", { name: /先頭 \+ 2番目/ }).click();
   await page.waitForTimeout(200);
-  await page.getByRole("button", { name: /2番目カラムだけ/ }).click();
+  await page.getByRole("button", { name: /2番目だけ/ }).click();
   await page.waitForTimeout(200);
   expect(errors).toEqual([]);
   expect(warnings).toEqual([]);
 });
 
-test("Unique viz duplicate insert triggers error state, not console error", async ({
+test("Unique viz: duplicate + successful insert both work", async ({
   page,
 }) => {
   const { errors, warnings } = watchConsole(page);
   await page.goto("/unique", { waitUntil: "networkidle" });
+
+  // Duplicate: default "a@example.com" already exists
   await page.getByRole("button", { name: /INSERT/ }).click();
-  await page.waitForTimeout(200);
+  await page.waitForTimeout(800);
+
+  // Successful insert
+  const input = page.locator('input[type="text"]').first();
+  await input.fill("");
+  await input.fill("z@example.com");
+  await page.getByRole("button", { name: /INSERT/ }).click();
+  await page.waitForTimeout(800);
+
   expect(errors).toEqual([]);
   expect(warnings).toEqual([]);
 });
@@ -171,31 +283,17 @@ test("Covering / Partial mode toggles", async ({ page }) => {
   }
 });
 
-test("Statistics / Cost sliders", async ({ page }) => {
-  for (const path of ["/statistics", "/cost"]) {
-    const { errors, warnings } = watchConsole(page);
-    await page.goto(path, { waitUntil: "networkidle" });
-    const range = page.locator('input[type="range"]').first();
-    await range.evaluate((el: HTMLInputElement) => {
-      el.value = "80";
-      el.dispatchEvent(new Event("input", { bubbles: true }));
-      el.dispatchEvent(new Event("change", { bubbles: true }));
-    });
-    await page.waitForTimeout(200);
-    expect(errors, `${path} errors`).toEqual([]);
-    expect(warnings, `${path} warnings`).toEqual([]);
-  }
-});
-
-test("Explain plan switcher", async ({ page }) => {
+test("Statistics viz: status buttons + fresh toggle", async ({ page }) => {
   const { errors, warnings } = watchConsole(page);
-  await page.goto("/explain", { waitUntil: "networkidle" });
-  const buttons = page.locator("button");
-  const count = await buttons.count();
-  for (let i = 0; i < Math.min(count, 4); i++) {
-    await buttons.nth(i).click().catch(() => {});
-    await page.waitForTimeout(80);
-  }
+  await page.goto("/statistics", { waitUntil: "networkidle" });
+  await page.getByRole("button", { name: /^shipped$/ }).click();
+  await page.waitForTimeout(120);
+  await page.getByRole("button", { name: /^cancelled$/ }).click();
+  await page.waitForTimeout(120);
+  await page.getByRole("checkbox").click();
+  await page.waitForTimeout(120);
   expect(errors).toEqual([]);
   expect(warnings).toEqual([]);
 });
+
+

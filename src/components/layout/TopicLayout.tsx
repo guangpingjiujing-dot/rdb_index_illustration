@@ -19,12 +19,12 @@ export function TopicLayout({
 
   return (
     <Container size="wide" className="py-8 md:py-12">
-      <div className="grid gap-10 lg:grid-cols-[16rem_1fr]">
+      <div className="grid gap-8 lg:gap-10 lg:grid-cols-[10rem_1fr]">
         <aside className="lg:sticky lg:top-20 lg:self-start">
           <TopicNav currentSlug={slug} />
         </aside>
 
-        <article>
+        <article className="min-w-0">
           <nav
             aria-label="パンくず"
             className="mb-6 text-xs text-[var(--muted-foreground)]"
