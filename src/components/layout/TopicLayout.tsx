@@ -25,8 +25,8 @@ export function TopicLayout({
             aria-label="パンくず"
             className="mb-6 text-xs text-[var(--muted-foreground)]"
           >
-            <Link href="/" className="hover:text-[var(--foreground)]">
-              トップ
+            <Link href="/rdb-index" className="hover:text-[var(--foreground)]">
+              RDBインデックス図解
             </Link>
             <span className="mx-2">/</span>
             <span>{topic.shortTitle}</span>

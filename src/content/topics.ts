@@ -15,7 +15,7 @@ export type Topic = {
 export const topics: Topic[] = [
   {
     slug: "why-index",
-    path: "/basics/why-index",
+    path: "/rdb-index/basics/why-index",
     title: "なぜインデックスが必要か（フルスキャンの限界）",
     shortTitle: "なぜインデックスが必要か",
     level: "basic",
@@ -28,7 +28,7 @@ export const topics: Topic[] = [
   },
   {
     slug: "data-structure",
-    path: "/basics/data-structure",
+    path: "/rdb-index/basics/data-structure",
     title: "テーブルはディスクにどう置かれているか（ファイル・ページ・行ID）",
     shortTitle: "ページと行ID",
     level: "basic",
@@ -51,7 +51,7 @@ export const topics: Topic[] = [
   },
   {
     slug: "btree",
-    path: "/btree",
+    path: "/rdb-index/btree",
     title: "B-treeインデックス",
     shortTitle: "B-tree",
     level: "basic",
@@ -64,7 +64,7 @@ export const topics: Topic[] = [
   },
   {
     slug: "hash",
-    path: "/hash",
+    path: "/rdb-index/hash",
     title: "ハッシュインデックス",
     shortTitle: "ハッシュ",
     level: "basic",
@@ -77,7 +77,7 @@ export const topics: Topic[] = [
   },
   {
     slug: "clustered",
-    path: "/clustered",
+    path: "/rdb-index/clustered",
     title: "クラスタ化インデックス",
     shortTitle: "クラスタ化",
     level: "basic",
@@ -90,7 +90,7 @@ export const topics: Topic[] = [
   },
   {
     slug: "composite",
-    path: "/composite",
+    path: "/rdb-index/composite",
     title: "複合インデックス",
     shortTitle: "複合",
     level: "basic",
@@ -103,7 +103,7 @@ export const topics: Topic[] = [
   },
   {
     slug: "unique",
-    path: "/unique",
+    path: "/rdb-index/unique",
     title: "ユニークインデックス",
     shortTitle: "ユニーク",
     level: "basic",
@@ -116,7 +116,7 @@ export const topics: Topic[] = [
   },
   {
     slug: "covering",
-    path: "/covering",
+    path: "/rdb-index/covering",
     title: "カバリングインデックス",
     shortTitle: "カバリング",
     level: "advanced",
@@ -129,7 +129,7 @@ export const topics: Topic[] = [
   },
   {
     slug: "partial",
-    path: "/partial",
+    path: "/rdb-index/partial",
     title: "部分インデックス",
     shortTitle: "部分",
     level: "advanced",
@@ -142,7 +142,7 @@ export const topics: Topic[] = [
   },
   {
     slug: "explain",
-    path: "/explain",
+    path: "/rdb-index/explain",
     title: "実行計画（EXPLAIN）の読み方",
     shortTitle: "実行計画",
     level: "advanced",
@@ -155,7 +155,7 @@ export const topics: Topic[] = [
   },
   {
     slug: "statistics",
-    path: "/statistics",
+    path: "/rdb-index/statistics",
     title: "統計情報とオプティマイザ",
     shortTitle: "統計情報",
     level: "advanced",
@@ -168,7 +168,7 @@ export const topics: Topic[] = [
   },
   {
     slug: "cost",
-    path: "/cost",
+    path: "/rdb-index/cost",
     title: "インデックスのコスト（更新オーバーヘッド）",
     shortTitle: "更新コスト",
     level: "advanced",

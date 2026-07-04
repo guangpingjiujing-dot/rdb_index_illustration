@@ -4,7 +4,7 @@ import { topics } from "@/content/topics";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const now = new Date();
-  const staticPaths = ["/", "/about", "/privacy", "/terms", "/contact"];
+  const staticPaths = ["/", "/rdb-index", "/about", "/privacy", "/terms", "/contact"];
   const topicPaths = topics.map((t) => t.path);
   return [...staticPaths, ...topicPaths].map((p) => ({
     url: `${site.url}${p}`,

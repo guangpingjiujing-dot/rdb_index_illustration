@@ -3,7 +3,7 @@ export const site = {
   fullName: "RDBインデックスの仕組みを動く図解で理解する",
   description:
     "B-tree、ハッシュ、クラスタ化インデックス、複合インデックス…RDBのインデックスの仕組みを図解とアニメーションで直感的に理解できるサイト。",
-  url: "https://rdb-index.example.com",
+  url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://taitech.dev",
   ogImage: "/og-default.png",
   author: {
     name: "たいてっく",

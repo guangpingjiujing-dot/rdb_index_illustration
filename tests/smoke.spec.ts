@@ -3,18 +3,18 @@ import { test, expect, type Page } from "@playwright/test";
 const PAGES = [
   "/",
   "/about",
-  "/basics/why-index",
-  "/basics/data-structure",
-  "/btree",
-  "/hash",
-  "/clustered",
-  "/composite",
-  "/unique",
-  "/covering",
-  "/partial",
-  "/explain",
-  "/statistics",
-  "/cost",
+  "/rdb-index/basics/why-index",
+  "/rdb-index/basics/data-structure",
+  "/rdb-index/btree",
+  "/rdb-index/hash",
+  "/rdb-index/clustered",
+  "/rdb-index/composite",
+  "/rdb-index/unique",
+  "/rdb-index/covering",
+  "/rdb-index/partial",
+  "/rdb-index/explain",
+  "/rdb-index/statistics",
+  "/rdb-index/cost",
   "/privacy",
   "/terms",
   "/contact",
@@ -59,7 +59,7 @@ test("B-tree page: changing maxKeys rebuilds tree without errors", async ({
   page,
 }) => {
   const { errors, warnings } = watchConsole(page);
-  await page.goto("/btree", { waitUntil: "networkidle" });
+  await page.goto("/rdb-index/btree", { waitUntil: "networkidle" });
 
   const select = page.locator("select").first();
   for (const value of ["5", "7", "2", "3"]) {
@@ -75,7 +75,7 @@ test("B-tree page: interactive search + insert produce no console errors", async
   page,
 }) => {
   const { errors, warnings } = watchConsole(page);
-  await page.goto("/btree", { waitUntil: "networkidle" });
+  await page.goto("/rdb-index/btree", { waitUntil: "networkidle" });
 
   const searchInput = page.locator('input[type="number"]').first();
   await searchInput.fill("");
@@ -98,7 +98,7 @@ test("B-tree page: step-by-step search advances one step at a time", async ({
   page,
 }) => {
   const { errors, warnings } = watchConsole(page);
-  await page.goto("/btree", { waitUntil: "networkidle" });
+  await page.goto("/rdb-index/btree", { waitUntil: "networkidle" });
 
   const searchInput = page.locator('input[type="number"]').first();
   await searchInput.fill("");
@@ -119,7 +119,7 @@ test("B-tree page: autoplay pause + resume without errors", async ({
   page,
 }) => {
   const { errors, warnings } = watchConsole(page);
-  await page.goto("/btree", { waitUntil: "networkidle" });
+  await page.goto("/rdb-index/btree", { waitUntil: "networkidle" });
 
   const searchInput = page.locator('input[type="number"]').first();
   await searchInput.fill("");
@@ -146,7 +146,7 @@ test("Clustered page: range inputs handle clearing without errors", async ({
   page,
 }) => {
   const { errors, warnings } = watchConsole(page);
-  await page.goto("/clustered", { waitUntil: "networkidle" });
+  await page.goto("/rdb-index/clustered", { waitUntil: "networkidle" });
 
   const inputs = page.locator('input[type="number"]');
   await inputs.nth(0).fill("");
@@ -162,7 +162,7 @@ test("Clustered page: range inputs handle clearing without errors", async ({
 
 test("PageStorage viz interaction", async ({ page }) => {
   const { errors, warnings } = watchConsole(page);
-  await page.goto("/basics/data-structure", { waitUntil: "networkidle" });
+  await page.goto("/rdb-index/basics/data-structure", { waitUntil: "networkidle" });
   const input = page.locator('input[type="text"]').first();
   await input.fill("");
   await input.fill("3:2");
@@ -177,7 +177,7 @@ test("PageStorage viz interaction", async ({ page }) => {
 
 test("FullScan viz on why-index runs without errors", async ({ page }) => {
   const { errors, warnings } = watchConsole(page);
-  await page.goto("/basics/why-index", { waitUntil: "networkidle" });
+  await page.goto("/rdb-index/basics/why-index", { waitUntil: "networkidle" });
 
   await page.getByRole("button", { name: /スキャン開始/ }).click();
   await page.waitForTimeout(2500);
@@ -190,7 +190,7 @@ test("Hash viz: step-by-step equal search and pipeline stages", async ({
   page,
 }) => {
   const { errors, warnings } = watchConsole(page);
-  await page.goto("/hash", { waitUntil: "networkidle" });
+  await page.goto("/rdb-index/hash", { waitUntil: "networkidle" });
 
   const searchInput = page.locator('input[type="text"]').first();
   await searchInput.fill("");
@@ -209,7 +209,7 @@ test("Hash viz: step-by-step equal search and pipeline stages", async ({
 
 test("Hash viz: bucket count change + range + insert", async ({ page }) => {
   const { errors, warnings } = watchConsole(page);
-  await page.goto("/hash", { waitUntil: "networkidle" });
+  await page.goto("/rdb-index/hash", { waitUntil: "networkidle" });
 
   // Change bucket count
   const bucketSelect = page.locator("select").first();
@@ -237,7 +237,7 @@ test("Hash viz: bucket count change + range + insert", async ({ page }) => {
 
 test("Composite viz mode toggles", async ({ page }) => {
   const { errors, warnings } = watchConsole(page);
-  await page.goto("/composite", { waitUntil: "networkidle" });
+  await page.goto("/rdb-index/composite", { waitUntil: "networkidle" });
   await page.getByRole("button", { name: /先頭 \+ 2番目/ }).click();
   await page.waitForTimeout(200);
   await page.getByRole("button", { name: /2番目だけ/ }).click();
@@ -250,7 +250,7 @@ test("Unique viz: duplicate + successful insert both work", async ({
   page,
 }) => {
   const { errors, warnings } = watchConsole(page);
-  await page.goto("/unique", { waitUntil: "networkidle" });
+  await page.goto("/rdb-index/unique", { waitUntil: "networkidle" });
 
   // Duplicate: default "a@example.com" already exists
   await page.getByRole("button", { name: /INSERT/ }).click();
@@ -268,7 +268,7 @@ test("Unique viz: duplicate + successful insert both work", async ({
 });
 
 test("Covering / Partial mode toggles", async ({ page }) => {
-  for (const path of ["/covering", "/partial"]) {
+  for (const path of ["/rdb-index/covering", "/rdb-index/partial"]) {
     const { errors, warnings } = watchConsole(page);
     await page.goto(path, { waitUntil: "networkidle" });
     const buttons = page.locator("button");
@@ -285,7 +285,7 @@ test("Covering / Partial mode toggles", async ({ page }) => {
 
 test("Statistics viz: status buttons + fresh toggle", async ({ page }) => {
   const { errors, warnings } = watchConsole(page);
-  await page.goto("/statistics", { waitUntil: "networkidle" });
+  await page.goto("/rdb-index/statistics", { waitUntil: "networkidle" });
   await page.getByRole("button", { name: /^shipped$/ }).click();
   await page.waitForTimeout(120);
   await page.getByRole("button", { name: /^cancelled$/ }).click();

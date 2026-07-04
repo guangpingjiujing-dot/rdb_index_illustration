@@ -1,4 +1,4 @@
-import { site } from "@/lib/site";
+import { site } from "@/lib/site";
 import { findTopic } from "@/content/topics";
 
 export function AuthorJsonLd({
@@ -132,6 +132,12 @@ export function TopicJsonLd({
         {
           "@type": "ListItem",
           position: 2,
+          name: "RDBインデックス図解",
+          item: `${site.url}/rdb-index`,
+        },
+        {
+          "@type": "ListItem",
+          position: 3,
           name: topic.shortTitle,
           item: `${site.url}${topic.path}`,
         },

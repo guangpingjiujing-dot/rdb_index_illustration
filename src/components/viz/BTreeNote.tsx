@@ -12,7 +12,7 @@ export function BTreeNote() {
       実際はB-treeで保持されるので探索は <code>O(log N)</code>。
       詳しくは{" "}
       <Link
-        href="/btree"
+        href="/rdb-index/btree"
         className="underline underline-offset-2 hover:no-underline"
       >
         B-treeの仕組み
