@@ -9,6 +9,11 @@ const nextConfig: NextConfig = {
         destination: "https://taitech.dev/:path*",
         permanent: true,
       },
+      {
+        source: "/rdb-index",
+        destination: "/",
+        permanent: true,
+      },
     ];
   },
 };
