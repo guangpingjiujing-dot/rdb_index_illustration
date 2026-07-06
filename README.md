@@ -1,11 +1,12 @@
-# RDBインデックス図解サイト
+# たいてっく — RDBインデックス図解サイト
 
-RDBのインデックス（B-tree, ハッシュ, クラスタ化, 複合, カバリング, 部分, EXPLAIN, 統計情報 …）の仕組みをインタラクティブな図解＋アニメーションで解説するサイト。
+**サイト: https://taitech.dev**
 
-- 全体設計: [`docs/DESIGN.md`](docs/DESIGN.md)
+RDBのインデックス（B-tree、ハッシュ、クラスタ化、複合、カバリング、部分、EXPLAIN、統計情報 …）の仕組みをインタラクティブな図解＋アニメーションで解説するサイト。
+
 - 技術構成: Next.js 16 (App Router) + TypeScript + Tailwind CSS v4 + Framer Motion + SVG
 - DB: 不要（全ページ静的生成 + クライアント計算）
-- デプロイ: Vercel（無料枠）
+- デプロイ: Vercel（`main` push で自動デプロイ）
 
 ## ローカル開発
 
@@ -16,57 +17,42 @@ npm run dev
 
 http://localhost:3000 で確認できます。
 
-## ビルド
+## コマンド
 
 ```bash
-npm run build
+npm run build        # 本番ビルド
+npm run test:e2e     # E2E テスト（Playwright、30件）
+npx tsc --noEmit    # 型チェック
 ```
 
 ## 環境変数
 
-`.env.local` にコピーして使ってください（`.env.example` 参照）:
+`.env.example` 参照。本番の値は Vercel Project Settings → Environment Variables で管理。
 
 | 変数 | 説明 |
 |---|---|
-| `NEXT_PUBLIC_GA_ID` | Google Analytics 4 の測定ID（未設定なら GA タグは挿入されない） |
-| `NEXT_PUBLIC_SITE_URL` | 本番URL（sitemap/OG生成用） |
+| `NEXT_PUBLIC_SITE_URL` | 本番 URL（sitemap / OG 生成用） |
+| `NEXT_PUBLIC_GA_ID` | Google Analytics 4 の測定 ID（未設定なら GA タグは挿入されない） |
 
 ## ページ構成
 
 | パス | 内容 | レベル |
 |---|---|---|
-| `/` | ランディング |  |
-| `/basics/why-index` | なぜインデックスが必要か | 基礎 |
-| `/btree` | B-treeインデックス | 基礎 |
-| `/hash` | ハッシュインデックス | 基礎 |
-| `/clustered` | クラスタ化インデックス | 基礎 |
-| `/composite` | 複合インデックス | 基礎 |
-| `/unique` | ユニークインデックス | 基礎 |
-| `/covering` | カバリングインデックス | 発展 |
-| `/partial` | 部分インデックス | 発展 |
-| `/explain` | 実行計画（EXPLAIN） | 発展 |
-| `/statistics` | 統計情報とオプティマイザ | 発展 |
-| `/cost` | インデックスのコスト | 発展 |
-| `/about` | 著者（たいてっく）紹介 | |
+| `/` | ハブランディング（たいてっくポータル） | |
+| `/rdb-index` | RDB インデックス図解トップ | |
+| `/rdb-index/basics/why-index` | なぜインデックスが必要か | 基礎 |
+| `/rdb-index/basics/data-structure` | データがディスク上でどう並んでいるか | 基礎 |
+| `/rdb-index/btree` | B-tree インデックス | 基礎 |
+| `/rdb-index/hash` | ハッシュインデックス | 基礎 |
+| `/rdb-index/clustered` | クラスタ化インデックス | 基礎 |
+| `/rdb-index/composite` | 複合インデックス | 基礎 |
+| `/rdb-index/unique` | ユニークインデックス | 基礎 |
+| `/rdb-index/covering` | カバリングインデックス | 発展 |
+| `/rdb-index/partial` | 部分インデックス | 発展 |
+| `/rdb-index/explain` | 実行計画（EXPLAIN） | 発展 |
+| `/rdb-index/statistics` | 統計情報とオプティマイザ | 発展 |
+| `/rdb-index/cost` | インデックスのコスト | 発展 |
+| `/about` | 著者（たいてっく）紹介 + menta CTA | |
 | `/privacy` `/terms` `/contact` | 法務・お問い合わせ | |
 
-自動生成される: `/sitemap.xml`, `/robots.txt`, `/llms.txt`, `/opengraph-image`
-
-## 収益化・SEOの導線
-
-- 各トピック末尾に「メンタ業への無料相談CTA」と「Amazonアソシエイト書籍紹介」
-- 各ページに JSON-LD (TechArticle / BreadcrumbList / FAQPage)
-- `llms.txt` でAI検索に対応
-- 動的OG画像 (`/opengraph-image`)
-- Google Analytics 4 タグ挿入（`NEXT_PUBLIC_GA_ID` 設定時）
-- Vercel Analytics + Speed Insights を有効化済み
-
-### アナリティクス
-
-- **Vercel Analytics** / **Speed Insights**: プロジェクト設定でオンにするだけで動作
-- **GA4**: [analytics.google.com](https://analytics.google.com/) で測定IDを取得 → Vercel Environment Variables に `NEXT_PUBLIC_GA_ID` として登録 → 再デプロイ
-- **Google Search Console**: [search.google.com/search-console](https://search.google.com/search-console/) でサイトを登録 → sitemap.xml (`https://<domain>/sitemap.xml`) を送信
-
-### Amazonアソシエイト
-
-`src/content/books.ts` の各書籍の `amazonUrl` を、[Amazonアソシエイト](https://affiliate.amazon.co.jp/) 承認後に発行される追跡ID付きURLに差し替えてください。
+自動生成: `/sitemap.xml`, `/robots.txt`, `/llms.txt`

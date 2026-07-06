@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { Container } from "@/components/ui/Container";
 import { MentorCTA } from "@/components/cta/MentorCTA";
@@ -116,11 +117,22 @@ export default function AboutPage() {
       <div className="text-[10px] font-bold uppercase tracking-widest text-[var(--muted-foreground)]">
         著者について
       </div>
-      <h1 className="mt-2 text-3xl md:text-4xl font-bold tracking-tight">
-        {site.author.name}
-      </h1>
-      <div className="mt-2 text-[var(--muted-foreground)]">
-        {site.author.role}
+      <div className="mt-4 flex items-center gap-5">
+        <Image
+          src="/taitech-icon.svg"
+          alt={site.author.name}
+          width={72}
+          height={72}
+          className="rounded-full shrink-0"
+        />
+        <div>
+          <h1 className="text-3xl md:text-4xl font-bold tracking-tight">
+            {site.author.name}
+          </h1>
+          <div className="mt-1 text-[var(--muted-foreground)]">
+            {site.author.role}
+          </div>
+        </div>
       </div>
 
       <p className="mt-8 leading-relaxed">{site.author.bio}</p>
