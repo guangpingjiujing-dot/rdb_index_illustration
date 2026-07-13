@@ -8,7 +8,7 @@ export default function RdbLayout({
 }) {
   return (
     <div className="min-h-screen flex flex-col bg-[var(--background)]">
-      <Header />
+      <Header section="rdb-index" />
       <main className="flex-1">{children}</main>
       <Footer />
     </div>

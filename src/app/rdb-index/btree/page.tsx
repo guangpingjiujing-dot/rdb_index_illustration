@@ -7,7 +7,7 @@ import { FAQ } from "@/components/layout/FAQ";
 import { findTopic } from "@/content/topics";
 
 const slug = "btree";
-const topic = findTopic(slug)!;
+const topic = findTopic("rdb-index", slug)!;
 
 export const metadata: Metadata = {
   title: topic.shortTitle,
@@ -32,8 +32,8 @@ const faq = [
 
 export default function Page() {
   return (
-    <TopicLayout slug={slug}>
-      <TopicJsonLd slug={slug} faq={faq} />
+    <TopicLayout section="rdb-index" slug={slug}>
+      <TopicJsonLd section="rdb-index" slug={slug} faq={faq} />
 
       <h2>B-treeは「ソートされた分岐する索引」</h2>
       <p>

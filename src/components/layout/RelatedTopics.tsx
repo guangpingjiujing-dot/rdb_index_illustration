@@ -1,12 +1,29 @@
 import Link from "next/link";
 import { topics, findTopic } from "@/content/topics";
+import type { SectionKey } from "@/content/sections";
 import { LevelBadge } from "@/components/ui/Badge";
 
-export function RelatedTopics({ currentSlug }: { currentSlug: string }) {
-  const current = findTopic(currentSlug);
+export function RelatedTopics({
+  section,
+  currentSlug,
+}: {
+  section: SectionKey;
+  currentSlug: string;
+}) {
+  const current = findTopic(section, currentSlug);
   if (!current) return null;
+
   const related = topics
-    .filter((t) => t.slug !== currentSlug && t.group === current.group)
+    .filter((t) => {
+      if (t.section !== current.section || t.slug === currentSlug) return false;
+      if (current.section === "rdb-index" && t.section === "rdb-index") {
+        return t.group === current.group;
+      }
+      if (current.section === "data-modeling" && t.section === "data-modeling") {
+        return t.category === current.category;
+      }
+      return false;
+    })
     .slice(0, 3);
   if (related.length === 0) return null;
 

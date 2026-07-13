@@ -2,20 +2,30 @@ import Link from "next/link";
 import { Container } from "@/components/ui/Container";
 import { TopicNavDrawer } from "@/components/layout/TopicNavDrawer";
 import { site } from "@/lib/site";
+import { sections, type SectionKey } from "@/content/sections";
 
-export function Header() {
+type HeaderSection = "hub" | SectionKey;
+
+const HEADER_META: Record<HeaderSection, { label: string; logoHref: string }> = {
+  hub: { label: site.name, logoHref: "/" },
+  "rdb-index": { label: sections["rdb-index"].label, logoHref: sections["rdb-index"].path },
+  "data-modeling": { label: sections["data-modeling"].label, logoHref: sections["data-modeling"].path },
+};
+
+export function Header({ section = "rdb-index" }: { section?: HeaderSection } = {}) {
+  const meta = HEADER_META[section];
   return (
     <header className="sticky top-0 z-40 border-b border-[var(--border)] bg-[var(--background)]">
       <Container size="wide">
         <div className="flex h-14 items-center justify-between gap-2">
           <div className="flex items-center gap-1">
-            <TopicNavDrawer />
+            {section !== "hub" && <TopicNavDrawer section={section} />}
             <Link
-              href="/rdb-index"
+              href={meta.logoHref}
               className="flex items-center gap-2.5 font-bold tracking-tight"
             >
               <LogoMark />
-              <span className="hidden sm:inline">{site.name}</span>
+              <span className="hidden sm:inline">{meta.label}</span>
             </Link>
           </div>
           <nav className="flex items-center gap-1 text-sm">

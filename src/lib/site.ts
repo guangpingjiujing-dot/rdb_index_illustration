@@ -1,8 +1,8 @@
 export const site = {
-  name: "RDBインデックス図解",
-  fullName: "RDBインデックスの仕組みを動く図解で理解する",
+  name: "たいてっく",
+  fullName: "たいてっく — RDBとデータモデリングを、動く図解と厳密な定義で。",
   description:
-    "B-tree、ハッシュ、クラスタ化インデックス、複合インデックス…RDBのインデックスの仕組みを図解とアニメーションで直感的に理解できるサイト。",
+    "RDBインデックスの仕組みと、正規化を中心としたデータモデリングの体系を、動く図解と厳密な定義で解説するサイト。新人エンジニアからIPAデータベーススペシャリスト対策まで。",
   url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://taitech.dev",
   ogImage: "/og-default.png",
   author: {

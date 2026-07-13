@@ -1,15 +1,26 @@
 import type { MetadataRoute } from "next";
 import { site } from "@/lib/site";
 import { topics } from "@/content/topics";
+import { sections, dataModelingCategories } from "@/content/sections";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const now = new Date();
   const staticPaths = ["/", "/about", "/privacy", "/terms", "/contact"];
+  const sectionHubs = Object.values(sections).map((s) => s.path);
+  const categoryHubs = Object.values(dataModelingCategories).map((c) => c.path);
   const topicPaths = topics.map((t) => t.path);
-  return [...staticPaths, ...topicPaths].map((p) => ({
+
+  const priorityFor = (p: string): number => {
+    if (p === "/") return 1.0;
+    if (sectionHubs.includes(p)) return 0.9;
+    if (categoryHubs.includes(p)) return 0.8;
+    return 0.7;
+  };
+
+  return [...staticPaths, ...sectionHubs, ...categoryHubs, ...topicPaths].map((p) => ({
     url: `${site.url}${p}`,
     lastModified: now,
     changeFrequency: "monthly",
-    priority: p === "/" ? 1 : 0.7,
+    priority: priorityFor(p),
   }));
 }

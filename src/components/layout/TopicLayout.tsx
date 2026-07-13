@@ -6,16 +6,31 @@ import { AffiliateBooks } from "@/components/cta/AffiliateBooks";
 import { BookSidebar } from "@/components/cta/BookSidebar";
 import { RelatedTopics } from "@/components/layout/RelatedTopics";
 import { findTopic } from "@/content/topics";
+import { sections, dataModelingCategories, type SectionKey } from "@/content/sections";
+
+const RDB_GROUP_LABEL = {
+  prereq: "前提知識",
+  "index-type": "インデックスの種類",
+  related: "関連トピック",
+} as const;
 
 export function TopicLayout({
+  section,
   slug,
   children,
 }: {
+  section: SectionKey;
   slug: string;
   children: React.ReactNode;
 }) {
-  const topic = findTopic(slug);
-  if (!topic) throw new Error(`Topic not found: ${slug}`);
+  const topic = findTopic(section, slug);
+  if (!topic) throw new Error(`Topic not found: ${section}/${slug}`);
+  const sectionMeta = sections[section];
+
+  const subLabel =
+    topic.section === "rdb-index"
+      ? RDB_GROUP_LABEL[topic.group]
+      : dataModelingCategories[topic.category].label;
 
   return (
     <Container size="wide" className="py-8 md:py-12">
@@ -25,8 +40,8 @@ export function TopicLayout({
             aria-label="パンくず"
             className="mb-6 text-xs text-[var(--muted-foreground)]"
           >
-            <Link href="/rdb-index" className="hover:text-[var(--foreground)]">
-              RDBインデックス図解
+            <Link href={sectionMeta.path} className="hover:text-[var(--foreground)]">
+              {sectionMeta.shortLabel}
             </Link>
             <span className="mx-2">/</span>
             <span>{topic.shortTitle}</span>
@@ -35,11 +50,7 @@ export function TopicLayout({
           <div className="mb-4 flex items-center gap-3">
             <LevelBadge level={topic.level} />
             <span className="text-xs text-[var(--muted-foreground)]">
-              {topic.group === "prereq"
-                ? "前提知識"
-                : topic.group === "index-type"
-                ? "インデックスの種類"
-                : "関連トピック"}
+              {subLabel}
             </span>
           </div>
 
@@ -51,14 +62,17 @@ export function TopicLayout({
             <div className="text-[10px] font-bold uppercase tracking-wider text-[var(--muted-foreground)]">
               定義
             </div>
-            <p className="mt-1 text-[var(--foreground)] leading-relaxed">
+            <p
+              data-speakable="definition"
+              className="mt-1 text-[var(--foreground)] leading-relaxed"
+            >
               {topic.definition}
             </p>
           </div>
 
           <div className="prose-jp mt-10 max-w-none">{children}</div>
 
-          <RelatedTopics currentSlug={slug} />
+          <RelatedTopics section={section} currentSlug={slug} />
 
           <AffiliateBooks topicSlug={slug} />
 

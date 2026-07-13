@@ -6,7 +6,7 @@ import { FAQ } from "@/components/layout/FAQ";
 import { findTopic } from "@/content/topics";
 
 const slug = "why-index";
-const topic = findTopic(slug)!;
+const topic = findTopic("rdb-index", slug)!;
 
 export const metadata: Metadata = {
   title: topic.shortTitle,
@@ -27,8 +27,8 @@ const faq = [
 
 export default function Page() {
   return (
-    <TopicLayout slug={slug}>
-      <TopicJsonLd slug={slug} faq={faq} />
+    <TopicLayout section="rdb-index" slug={slug}>
+      <TopicJsonLd section="rdb-index" slug={slug} faq={faq} />
       <h2>そもそも「探す」というのはコンピュータにとって重い処理</h2>
       <p>
         テーブルに1万件、100万件、1億件のデータがあるとき、条件に合う行を見つけるのに何が起きるのかを考えたことはありますか？

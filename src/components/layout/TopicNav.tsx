@@ -1,21 +1,43 @@
 import Link from "next/link";
-import { topics, type Topic } from "@/content/topics";
+import { rdbTopicsBy, dataModelingTopicsIn } from "@/content/topics";
+import { sections, dataModelingCategories, type SectionKey } from "@/content/sections";
 import { cn } from "@/lib/utils";
 
-const GROUP_LABEL: Record<Topic["group"], string> = {
-  prereq: "前提知識",
-  "index-type": "インデックスの種類",
-  related: "関連トピック",
+const RDB_GROUPS = [
+  { key: "prereq", label: "前提知識" },
+  { key: "index-type", label: "インデックスの種類" },
+  { key: "related", label: "関連トピック" },
+] as const;
+
+type Group = {
+  key: string;
+  label: string;
+  items: { slug: string; path: string; shortTitle: string }[];
 };
 
-export function TopicNav({ currentSlug }: { currentSlug?: string }) {
-  const groups = (
-    ["prereq", "index-type", "related"] as const
-  ).map((g) => ({
-    key: g,
-    label: GROUP_LABEL[g],
-    items: topics.filter((t) => t.group === g),
-  }));
+export function TopicNav({
+  section,
+  currentSlug,
+}: {
+  section: SectionKey;
+  currentSlug?: string;
+}) {
+  const groups: Group[] =
+    section === "rdb-index"
+      ? RDB_GROUPS.map((g) => ({
+          key: g.key,
+          label: g.label,
+          items: rdbTopicsBy(g.key),
+        }))
+      : Object.values(dataModelingCategories).map((c) => ({
+          key: c.key,
+          label: c.label,
+          items: dataModelingTopicsIn(c.key),
+        }));
+
+  const otherSection: SectionKey =
+    section === "rdb-index" ? "data-modeling" : "rdb-index";
+  const otherMeta = sections[otherSection];
 
   return (
     <nav aria-label="トピック一覧" className="text-sm">
@@ -47,6 +69,18 @@ export function TopicNav({ currentSlug }: { currentSlug?: string }) {
           </ul>
         </div>
       ))}
+
+      <div className="mt-8 border-t border-[var(--border)] pt-6">
+        <div className="mb-2 text-[10px] font-bold uppercase tracking-wider text-[var(--muted-foreground)]">
+          他のシリーズ
+        </div>
+        <Link
+          href={otherMeta.path}
+          className="block px-3 py-1.5 text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--muted)]/60"
+        >
+          {otherMeta.shortLabel} →
+        </Link>
+      </div>
     </nav>
   );
 }

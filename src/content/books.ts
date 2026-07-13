@@ -17,7 +17,20 @@ export const books: Book[] = [
     amazonUrl: "https://www.amazon.co.jp/dp/4798186627?tag=taitech-22",
     description:
       "テーブル設計と正規化、パフォーマンス考慮のインデックス設計まで実務レベルで学べる定番書。第2版ではクラウド対応も強化。",
-    topics: ["btree", "clustered", "composite", "cost", "covering"],
+    topics: [
+      "btree",
+      "clustered",
+      "composite",
+      "cost",
+      "covering",
+      "why",
+      "functional-dependency",
+      "keys",
+      "1nf",
+      "2nf",
+      "3nf",
+      "denormalization",
+    ],
   },
   {
     id: "tatsujin-sql",
@@ -35,7 +48,7 @@ export const books: Book[] = [
     amazonUrl: "https://www.amazon.co.jp/dp/4814400748?tag=taitech-22",
     description:
       "実務でやりがちなSQL・DB設計のアンチパターンとその回避策を体系的に学べる。",
-    topics: ["btree", "composite", "unique", "cost"],
+    topics: ["btree", "composite", "unique", "cost", "denormalization"],
   },
   {
     id: "postgres-internals",
@@ -53,7 +66,18 @@ export const books: Book[] = [
     amazonUrl: "https://www.amazon.co.jp/dp/4798190934?tag=taitech-22",
     description:
       "IPAデータベーススペシャリスト試験の総合対策書。インデックス関連は本サイトと合わせて学ぶと理解が深まる。",
-    topics: ["explain", "statistics", "cost", "covering", "partial"],
+    topics: [
+      "explain",
+      "statistics",
+      "cost",
+      "covering",
+      "partial",
+      "functional-dependency",
+      "keys",
+      "1nf",
+      "2nf",
+      "3nf",
+    ],
   },
   {
     id: "db-jissen-nyumon",
@@ -62,7 +86,16 @@ export const books: Book[] = [
     amazonUrl: "https://www.amazon.co.jp/dp/4774171972?tag=taitech-22",
     description:
       "リレーショナルモデルの理論から、インデックス設計を含む実務で使えるSQLまで解説。",
-    topics: ["clustered", "composite", "unique"],
+    topics: [
+      "clustered",
+      "composite",
+      "unique",
+      "why",
+      "functional-dependency",
+      "1nf",
+      "2nf",
+      "3nf",
+    ],
   },
 ];
 

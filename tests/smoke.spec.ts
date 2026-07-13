@@ -3,6 +3,7 @@ import { test, expect, type Page } from "@playwright/test";
 const PAGES = [
   "/",
   "/about",
+  "/rdb-index",
   "/rdb-index/basics/why-index",
   "/rdb-index/basics/data-structure",
   "/rdb-index/btree",
@@ -15,43 +16,92 @@ const PAGES = [
   "/rdb-index/explain",
   "/rdb-index/statistics",
   "/rdb-index/cost",
+  "/data-modeling",
+  "/data-modeling/normalization",
+  "/data-modeling/normalization/why",
+  "/data-modeling/normalization/functional-dependency",
+  "/data-modeling/normalization/keys",
+  "/data-modeling/normalization/1nf",
+  "/data-modeling/normalization/2nf",
+  "/data-modeling/normalization/3nf",
+  "/data-modeling/normalization/denormalization",
   "/privacy",
   "/terms",
   "/contact",
 ];
 
 // Only errors we actually care about. Ignore known noisy ones.
-const IGNORE_PATTERNS: RegExp[] = [
+const IGNORE_MESSAGE_PATTERNS: RegExp[] = [
   /Failed to load resource.*favicon/i,
   /_next\/static.*\.hot-update\.json/i,
   /websocket connection/i,
+  // Vercel Analytics / Speed Insights scripts 404 on local production runs
+  // because they are only served on the Vercel platform. The console message
+  // is a generic "Failed to load resource" without URL — we correlate with
+  // network 404s via IGNORE_404_URL_PATTERNS below.
+  /Failed to load resource: the server responded with a status of 404/i,
+];
+
+// If a 404 network response matches one of these URLs, do NOT treat the
+// accompanying "Failed to load resource" console message as an error.
+const IGNORE_404_URL_PATTERNS: RegExp[] = [
+  /favicon/i,
+  /\/_vercel\/(insights|speed-insights)/i,
 ];
 
 function watchConsole(page: Page) {
   const errors: string[] = [];
   const warnings: string[] = [];
+  const unexpected404s: string[] = [];
+
+  page.on("response", (res) => {
+    if (res.status() === 404) {
+      const url = res.url();
+      if (!IGNORE_404_URL_PATTERNS.some((p) => p.test(url))) {
+        unexpected404s.push(url);
+      }
+    }
+  });
   page.on("console", (msg) => {
     const type = msg.type();
     const text = msg.text();
-    if (IGNORE_PATTERNS.some((p) => p.test(text))) return;
+    if (IGNORE_MESSAGE_PATTERNS.some((p) => p.test(text))) return;
     if (type === "error") errors.push(text);
     if (type === "warning") warnings.push(text);
   });
   page.on("pageerror", (err) => {
     errors.push(`PageError: ${err.message}`);
   });
-  return { errors, warnings };
+  return { errors, warnings, unexpected404s };
 }
 
 for (const path of PAGES) {
   test(`${path} loads without console errors`, async ({ page }) => {
-    const { errors, warnings } = watchConsole(page);
+    const { errors, warnings, unexpected404s } = watchConsole(page);
     const response = await page.goto(path, { waitUntil: "networkidle" });
     expect(response?.status()).toBe(200);
     // Give React hydration + any effect-time warnings a moment
     await page.waitForTimeout(300);
+    expect(
+      unexpected404s,
+      `Unexpected 404s:\n${unexpected404s.join("\n")}`,
+    ).toEqual([]);
     expect(errors, `Console errors:\n${errors.join("\n")}`).toEqual([]);
     expect(warnings, `Console warnings:\n${warnings.join("\n")}`).toEqual([]);
+  });
+
+  test(`${path} has exactly one h1 and a canonical link`, async ({ page }) => {
+    await page.goto(path, { waitUntil: "domcontentloaded" });
+    const h1Count = await page.locator("h1").count();
+    expect(h1Count, `Expected exactly 1 h1 on ${path}, got ${h1Count}`).toBe(1);
+    const canonical = await page
+      .locator('link[rel="canonical"]')
+      .getAttribute("href");
+    expect(canonical, `Missing canonical on ${path}`).toBeTruthy();
+    expect(
+      canonical,
+      `Canonical on ${path} must be self-referential, got ${canonical}`,
+    ).toContain(path === "/" ? "//" : path);
   });
 }
 
