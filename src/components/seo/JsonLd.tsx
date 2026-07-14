@@ -218,6 +218,8 @@ export function TopicJsonLd({
 }) {
   const topic = findTopic(section, slug);
   if (!topic) return null;
+  const sectionMeta = sections[topic.section];
+  const ogImageUrl = `${site.url}${sectionMeta.path}/opengraph-image`;
   const data: object[] = [
     {
       "@context": "https://schema.org",
@@ -225,7 +227,12 @@ export function TopicJsonLd({
       headline: topic.title,
       description: topic.summary,
       inLanguage: "ja-JP",
-      author: { "@type": "Person", name: site.author.name },
+      image: ogImageUrl,
+      author: {
+        "@type": "Person",
+        name: site.author.name,
+        url: `${site.url}/about`,
+      },
       publisher: { "@type": "Organization", name: site.name },
       mainEntityOfPage: `${site.url}${topic.path}`,
       keywords: topic.keywords.join(", "),
