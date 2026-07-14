@@ -18,8 +18,15 @@ export function AffiliateBooks({ topicSlug }: { topicSlug: string }) {
             rel="sponsored nofollow noopener"
             className="group flex flex-col rounded-lg border border-[var(--border)] bg-[var(--card)] p-4 transition-colors hover:border-[var(--border-strong)] hover:bg-[var(--muted)]/40"
           >
-            <div className="font-semibold leading-snug group-hover:underline underline-offset-4">
-              {b.title}
+            <div className="flex items-start gap-2">
+              {b.recommended && (
+                <span className="mt-0.5 shrink-0 rounded-sm bg-[var(--foreground)] px-1.5 py-0.5 text-[10px] font-semibold tracking-wide text-[var(--background)]">
+                  おすすめ
+                </span>
+              )}
+              <div className="font-semibold leading-snug group-hover:underline underline-offset-4">
+                {b.title}
+              </div>
             </div>
             <div className="mt-1 text-xs text-[var(--muted-foreground)]">
               {b.author}

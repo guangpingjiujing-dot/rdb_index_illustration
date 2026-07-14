@@ -7,6 +7,7 @@ export type Book = {
   cover?: string;
   description: string;
   topics: string[];
+  recommended?: boolean;
 };
 
 export const books: Book[] = [
@@ -17,6 +18,7 @@ export const books: Book[] = [
     amazonUrl: "https://www.amazon.co.jp/dp/4798186627?tag=taitech-22",
     description:
       "テーブル設計と正規化、パフォーマンス考慮のインデックス設計まで実務レベルで学べる定番書。第2版ではクラウド対応も強化。",
+    recommended: true,
     topics: [
       "btree",
       "clustered",
@@ -100,7 +102,9 @@ export const books: Book[] = [
 ];
 
 export function booksForTopic(slug: string): Book[] {
-  const matching = books.filter((b) => b.topics.includes(slug));
-  const rest = books.filter((b) => !b.topics.includes(slug));
+  const byRecommended = (a: Book, b: Book) =>
+    Number(Boolean(b.recommended)) - Number(Boolean(a.recommended));
+  const matching = books.filter((b) => b.topics.includes(slug)).sort(byRecommended);
+  const rest = books.filter((b) => !b.topics.includes(slug)).sort(byRecommended);
   return [...matching, ...rest];
 }
