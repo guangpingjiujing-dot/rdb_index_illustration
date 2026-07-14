@@ -20,8 +20,15 @@ export function BookSidebar({ topicSlug }: { topicSlug: string }) {
                   rel="sponsored nofollow noopener"
                   className="group block"
                 >
-                  <div className="text-sm font-semibold leading-snug group-hover:underline underline-offset-4">
-                    {b.title}
+                  <div className="flex items-start gap-1.5">
+                    {b.recommended && (
+                      <span className="mt-0.5 shrink-0 rounded-sm bg-[var(--foreground)] px-1 py-0.5 text-[9px] font-semibold tracking-wide text-[var(--background)]">
+                        おすすめ
+                      </span>
+                    )}
+                    <div className="text-sm font-semibold leading-snug group-hover:underline underline-offset-4">
+                      {b.title}
+                    </div>
                   </div>
                   <div className="mt-1 text-xs text-[var(--muted-foreground)]">
                     {b.author}
