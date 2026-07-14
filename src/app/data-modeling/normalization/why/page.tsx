@@ -102,6 +102,42 @@ export default function Page() {
         従業員テーブルには「どの部署か」を示す <code>部署ID</code> だけを持たせて、
         部署の詳細を知りたい時は部署テーブルを見に行けばいい。
       </p>
+
+      <div className="not-prose my-6 flex flex-col gap-4 md:flex-row">
+        <div className="min-w-0 flex-1">
+          <NormalizedTableView
+            data={{
+              name: "従業員",
+              columns: ["社員ID", "氏名", "部署ID"],
+              rows: [
+                ["E001", "山田", "D01"],
+                ["E002", "田中", "D01"],
+                ["E003", "佐藤", "D02"],
+                ["E004", "鈴木", "D02"],
+              ],
+              primaryKey: ["社員ID"],
+            }}
+          />
+        </div>
+        <div className="min-w-0 flex-1">
+          <NormalizedTableView
+            data={{
+              name: "部署",
+              columns: ["部署ID", "部署名", "部署所在地"],
+              rows: [
+                ["D01", "営業部", "東京"],
+                ["D02", "開発部", "大阪"],
+              ],
+              primaryKey: ["部署ID"],
+            }}
+          />
+        </div>
+      </div>
+      <p className="text-sm text-[var(--muted-foreground)]">
+        部署の名前も所在地も「D01 は営業部で東京」「D02 は開発部で大阪」と、
+        <strong>それぞれ 1 か所にしか書かれていない</strong>。
+        従業員テーブルには <code>部署ID</code> という参照だけが残る。
+      </p>
       <p>
         こうすると:
       </p>

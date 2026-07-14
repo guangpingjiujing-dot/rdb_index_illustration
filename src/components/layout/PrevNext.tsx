@@ -53,7 +53,7 @@ export function PrevNext({
         {prev ? (
           <Link
             href={prev.path}
-            className="group flex flex-col justify-center border border-[var(--border-strong)] bg-[var(--card)] px-5 py-4 hover:bg-[var(--muted)]/60 transition-colors"
+            className="group flex flex-col justify-center items-center text-center border border-[var(--border-strong)] bg-[var(--card)] px-5 py-4 hover:bg-[var(--muted)]/60 transition-colors"
           >
             <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--muted-foreground)]">
               ← 前へ
@@ -68,7 +68,7 @@ export function PrevNext({
         {next ? (
           <Link
             href={next.path}
-            className="group flex flex-col justify-center border border-[var(--border-strong)] bg-[var(--card)] px-5 py-4 hover:bg-[var(--muted)]/60 transition-colors md:text-right"
+            className="group flex flex-col justify-center items-center text-center border border-[var(--border-strong)] bg-[var(--card)] px-5 py-4 hover:bg-[var(--muted)]/60 transition-colors"
           >
             <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--muted-foreground)]">
               次へ →
