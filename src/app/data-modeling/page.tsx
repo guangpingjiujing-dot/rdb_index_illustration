@@ -39,11 +39,12 @@ function Hero() {
         <div className="grid gap-12 lg:grid-cols-[1.2fr_1fr] lg:items-center">
           <div>
             <h1 className="text-3xl md:text-5xl font-bold tracking-tight leading-tight">
-              関数従属と正規化を、体系で理解する。
+              図解と実践によって、正規化をわかりやすく理解する。
             </h1>
             <p className="mt-6 max-w-xl text-base md:text-lg text-[var(--muted-foreground)] leading-relaxed">
-              「なぜ正規化するのか」から、関数従属性・キーの階層・1NF/2NF/3NF、そして非正規化の実務判断まで。
-              辞書レベルの厳密な定義と、Before/After のテーブル並置で体系的に整理します。
+              「なぜ正規化するのか」から始めて、キーの整理・1NF/2NF/3NF・非正規化まで。
+              同じ受注データを段階的に整えていく Before/After の流れで、正規化の 3 ステップを実感として掴めます。
+              練習問題つき。
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <Link
@@ -199,16 +200,16 @@ function MentorSection() {
 function WhyThisSection() {
   const features = [
     {
-      title: "定義から入る",
-      body: "各トピックの冒頭に、辞書レベルの厳密な定義を1文で置いています。曖昧な用語のまま議論しません。",
+      title: "同じデータを段階的に",
+      body: "1NF から 3NF まで、同じ受注データを 1 つずつ整えていきます。各ステップで「何が変わったか」がひと目で見えます。",
     },
     {
-      title: "Before / After で見る",
-      body: "抽象論だけでなく、正規化前と正規化後のテーブルを並べて示すことで、構造の変化を目で追えます。",
+      title: "抽象と実データを両方",
+      body: "関数従属の分析 (グループ箱) と実データ (色分けテーブル) を並べて示すので、理屈と手触りの両方から理解できます。",
     },
     {
-      title: "RDBインデックスと相互リンク",
-      body: "非正規化とカバリングインデックス、キーとクラスタ化など、隣のセクションと自然に繋がる導線があります。",
+      title: "練習問題つき",
+      body: "各ページの最後に別データでの練習問題があります。答え合わせは折りたたみで隠しているので、自分で考えてから確認できます。",
     },
   ];
   return (
