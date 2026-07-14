@@ -80,7 +80,7 @@ export default function Page() {
         <li>
           <strong>完全関数従属</strong>: 「A と B が両方揃って初めて C が決まる」タイプ。
           例: <code>(注文ID, 商品ID) → 数量</code>。注文ID だけ、商品ID だけでは数量は決まらない。
-          これは <em>正常な</em> 関数従属で、排除の対象ではない。
+          これは正常な関数従属で、排除の対象ではない。
         </li>
         <li>
           <strong>部分関数従属</strong>: 「(A, B) の一部分 (例えば B だけ) で決まってしまう」タイプ。

@@ -54,10 +54,10 @@ function Hero() {
                 最初から学ぶ →
               </Link>
               <Link
-                href="/data-modeling/normalization/functional-dependency"
+                href="/data-modeling/normalization/1nf"
                 className="inline-flex items-center gap-2 border border-[var(--foreground)] px-6 py-3 text-sm font-bold hover:bg-[var(--muted)]"
               >
-                関数従属を見てみる
+                第一正規化から見てみる
               </Link>
             </div>
           </div>
@@ -122,7 +122,6 @@ function TopicIndex() {
             <CategoryGroup
               key={c.key}
               label={c.label}
-              description={c.description}
               hubPath={c.path}
               items={items}
             />
@@ -135,12 +134,10 @@ function TopicIndex() {
 
 function CategoryGroup({
   label,
-  description,
   hubPath,
   items,
 }: {
   label: string;
-  description: string;
   hubPath: string;
   items: DataModelingTopic[];
 }) {
@@ -157,9 +154,6 @@ function CategoryGroup({
           カテゴリトップ →
         </Link>
       </div>
-      <p className="mt-3 text-sm text-[var(--muted-foreground)] leading-relaxed">
-        {description}
-      </p>
       <ul className="mt-4 divide-y divide-[var(--border)] border-b border-[var(--border)]">
         {items.map((t) => (
           <li key={t.slug}>

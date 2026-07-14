@@ -17,7 +17,7 @@ export const dataModelingTopics: DataModelingTopic[] = [
     category: "normalization",
     slug: "why",
     path: "/data-modeling/normalization/why",
-    title: "なぜ正規化が必要か (更新時異常を排除する)",
+    title: "なぜ正規化が必要か",
     shortTitle: "なぜ正規化が必要か",
     level: "basic",
     summary:
@@ -69,7 +69,7 @@ export const dataModelingTopics: DataModelingTopic[] = [
     summary:
       "正規化の議論に入る前に、スーパーキー・候補キー・主キーの3階層と、外部キー・代替キー・複合キーとの関係を整理する。2NF/3NF の「非キー属性」「部分従属」を語るための語彙を揃える。",
     definition:
-      "候補キーとは、リレーションの全属性を関数的に決定できる属性集合のうち、真部分集合ではその性質を失う極小のものをいい、その中から実装上一つを選んだものを主キーと呼ぶ。",
+      "候補キーとは、テーブルの 1 行を一意に見分けられる列の組み合わせのうち「これ以上どれか 1 つでも削ったら見分けられなくなる」最小のものをいい、その中から実装上 1 つを選んで主キーとする。",
     keywords: [
       "候補キー",
       "主キー",

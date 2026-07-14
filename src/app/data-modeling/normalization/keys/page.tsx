@@ -4,6 +4,7 @@ import { TopicLayout } from "@/components/layout/TopicLayout";
 import { TopicJsonLd } from "@/components/seo/JsonLd";
 import { FAQ } from "@/components/layout/FAQ";
 import { KeyHierarchyDiagram } from "@/components/viz/datamodel/KeyHierarchyDiagram";
+import { NormalizedTableView } from "@/components/viz/datamodel/TableBeforeAfter";
 import { findTopic } from "@/content/topics";
 
 const slug = "keys";
@@ -48,6 +49,22 @@ export default function Page() {
 
       <KeyHierarchyDiagram />
 
+      <h3>用語補足: 「真部分集合」ってどういうこと?</h3>
+      <p>
+        候補キーの説明で「これ以上どれか 1 つでも削ったら見分けられなくなる」と書いたが、
+        正式な用語では「<strong>真部分集合</strong> ではその一意性が失われる」と言う。
+        あまり見慣れない言葉なので少し補足しておく。
+      </p>
+      <ul>
+        <li>ある集合の <strong>部分集合</strong>: その集合の要素を一部 (または全部) 抜き出した集合。集合そのもの全体も部分集合に含まれる。</li>
+        <li>その集合の <strong>真部分集合</strong>: 部分集合のうち、集合そのもの全体を除いたもの。つまり「本物より小さいバージョン」。</li>
+      </ul>
+      <p>
+        例えば <code>{"{"}A, B{"}"}</code> の真部分集合は <code>{"{"}A{"}"}</code>・<code>{"{"}B{"}"}</code>・<code>{"{}"}</code>{" "}
+        の 3 つ。「候補キーは <em>真部分集合</em> にすると一意性が失われる」というのは、
+        「(A, B) が候補キーなら、A 単独 / B 単独では行を一意に見分けられない」という意味になる。
+      </p>
+
       <h2>複数の列を組み合わせるキー (複合キー) と、他テーブルを参照するキー (外部キー)</h2>
       <p>
         キーは 1 つの列とは限らない。
@@ -57,8 +74,58 @@ export default function Page() {
       </p>
       <p>
         <strong>外部キー</strong> (foreign key): 別テーブルの主キーを指し示すために持つ列。
-        たとえば「従業員」テーブルに置いた <code>部署ID</code> は、「部署」テーブルの主キーを指している。
-        テーブルを分割すると自然に生まれる「あっちのテーブルのこの行を指してる」という参照関係を保つのが役割。
+        たとえば「受注明細」テーブルに置いた <code>注文ID</code> は「受注」テーブルの主キーを指し、
+        <code>商品ID</code> は「商品」テーブルの主キーを指している。
+        テーブルを分割した時に生まれる「あっちのテーブルのこの行を指してる」という参照関係を保つのが役割。
+      </p>
+
+      <p>実際にはこんな形になる。</p>
+
+      <div className="not-prose my-6 flex flex-col gap-4 md:flex-row md:flex-wrap">
+        <div className="min-w-0 flex-1">
+          <NormalizedTableView
+            data={{
+              name: "受注",
+              columns: ["注文ID", "注文日"],
+              rows: [
+                ["O001", "2026-06-01"],
+                ["O002", "2026-06-02"],
+              ],
+              primaryKey: ["注文ID"],
+            }}
+          />
+        </div>
+        <div className="min-w-0 flex-1">
+          <NormalizedTableView
+            data={{
+              name: "商品",
+              columns: ["商品ID", "商品名"],
+              rows: [
+                ["P01", "ノート"],
+                ["P02", "ペン"],
+              ],
+              primaryKey: ["商品ID"],
+            }}
+          />
+        </div>
+        <div className="min-w-0 flex-1">
+          <NormalizedTableView
+            data={{
+              name: "受注明細 (複合キー + 外部キー)",
+              columns: ["注文ID", "商品ID", "数量"],
+              rows: [
+                ["O001", "P01", "2"],
+                ["O001", "P02", "1"],
+                ["O002", "P01", "5"],
+              ],
+              primaryKey: ["注文ID", "商品ID"],
+            }}
+          />
+        </div>
+      </div>
+      <p className="text-sm text-[var(--muted-foreground)]">
+        受注明細テーブルの <code>(注文ID, 商品ID)</code> は 複合キー (2 列セットで主キー)。
+        同時に、注文ID は 受注 テーブルへの外部キー・商品ID は 商品 テーブルへの外部キーになっている。
       </p>
 
       <h2>覚えておく用語: 非キー属性</h2>

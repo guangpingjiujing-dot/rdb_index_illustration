@@ -201,23 +201,26 @@ function WhyCallout({
 }
 
 /**
- * セル。step に応じて (a) 背景色で異常箇所を強調, (b) 太字で更新後の値を強調。
- * パレットがモノクロなので、色ではなく背景コントラストで区別する。
+ * セル。step に応じて意味的な色分けで異常箇所を強調する。
  */
 function Cell({
   children,
   danger = false,
   strong = false,
+  highlightGroup,
 }: {
   children: React.ReactNode;
-  /** 更新漏れ / 誤った値など「問題のあるセル」— 背景に警告色を敷く */
+  /** 「間違っている / 更新漏れ」のセル — アンバー背景 */
   danger?: boolean;
-  /** 更新されて変わった値 — 太字だけで表現 */
+  /** 「更新後の新しい値」のセル — ブルー背景 */
   strong?: boolean;
+  /** 「同じグループに属する」ことを示す共通ハイライト (D01 が共通なことを示すなど) */
+  highlightGroup?: boolean;
 }) {
-  const cellBg = danger
-    ? "bg-[#ebebe8] outline outline-1 outline-[var(--foreground)] -outline-offset-1"
-    : "";
+  let cellBg = "";
+  if (danger) cellBg = "bg-[#fef1c7] outline outline-1 outline-[var(--foreground)] -outline-offset-1";
+  else if (strong) cellBg = "bg-[#dbeafe] outline outline-1 outline-[var(--foreground)] -outline-offset-1";
+  else if (highlightGroup) cellBg = "bg-[var(--muted)]/60";
   const weight = danger || strong ? "font-bold" : "";
   return (
     <td
@@ -395,16 +398,24 @@ export function UpdateAnomalyViz() {
             >
               {HEADERS.map((_, j) => {
                 const value = rowValueFor(r.key, j);
+                const isDeptID = j === 2;
                 const isDeptName = j === 3;
-                const mismatchOnE001 =
-                  step >= 2 && isDeptName && r.key === "E001";
-                const mismatchOnE002 =
+                const isD01Row = r.key === "E001" || r.key === "E002";
+                // D01 の 部署ID 列 (共通性を視覚化)
+                const showGroupHighlight =
+                  step >= 1 && isDeptID && isD01Row;
+                // step 1 で E001 だけ更新された「新しい値」(セールス部)
+                const isNewValueE001 =
+                  step >= 1 && isDeptName && r.key === "E001";
+                // step 2 で「本来は更新されるべきだったのに残っている」E002 の値 (営業部)
+                const isStaleE002 =
                   step >= 2 && isDeptName && r.key === "E002";
                 return (
                   <Cell
                     key={j}
-                    danger={mismatchOnE002}
-                    strong={mismatchOnE001}
+                    strong={isNewValueE001}
+                    danger={isStaleE002}
+                    highlightGroup={showGroupHighlight}
                   >
                     {value}
                   </Cell>
@@ -439,7 +450,7 @@ export function UpdateAnomalyViz() {
 
 const DELETE_STEPS = [
   "初期状態: D02 (開発部/大阪) には 佐藤 (E003)・鈴木 (E004) の 2 名",
-  "佐藤 (E003) が退職 → 行を削除 (取り消し線で表現)",
+  "佐藤 (E003) が退職 → 行を削除",
   "鈴木 (E004) も退職 → D02 = 開発部 (大阪) という部署そのものの情報がテーブルから消失",
 ] as const;
 

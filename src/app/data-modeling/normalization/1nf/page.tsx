@@ -60,7 +60,7 @@ export default function Page() {
         次の 2NF・3NF はこの形になっていることを前提にする。
       </p>
 
-      <h2>題材: 受注シートを 1NF にしてみる</h2>
+      <h2>実践例: 受注シートを 1NF にしてみる</h2>
       <p>
         このページから <Link href="/data-modeling/normalization/2nf">2NF</Link>・
         <Link href="/data-modeling/normalization/3nf">3NF</Link> まで、
@@ -136,7 +136,7 @@ export default function Page() {
         }
       />
 
-      <h2>1NF にする手順 (2 パターン)</h2>
+      <h2>1NF にする手順</h2>
       <ol>
         <li>1 セルに複数値が入っている列、または「電話1・電話2・…」のように同じ意味の列が並んでいる箇所を探す</li>
         <li>

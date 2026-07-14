@@ -159,26 +159,23 @@ export function KeyHierarchyDiagram({
         </div>
 
         {/* 右: 説明パネル */}
-        <ul className="flex flex-col gap-3">
+        <div className="not-prose flex flex-col gap-4">
           {keys.map((k) => (
-            <li
-              key={k.code}
-              className="border-l-2 border-[var(--border-strong)] pl-3"
-            >
+            <div key={k.code}>
               <div className="flex items-baseline gap-2 flex-wrap">
                 <span className="font-mono text-[10px] font-bold uppercase tracking-wider text-[var(--muted-foreground)]">
                   {k.code}
                 </span>
-                <span className="text-sm font-bold text-[var(--foreground)]">
+                <span className="text-base font-bold text-[var(--foreground)]">
                   {k.label}
                 </span>
               </div>
-              <p className="mt-1 text-xs leading-relaxed text-[var(--foreground)]">
+              <p className="mt-1 text-sm leading-relaxed text-[var(--foreground)]">
                 {k.description}
               </p>
-            </li>
+            </div>
           ))}
-        </ul>
+        </div>
       </div>
 
       <p className="mt-6 text-xs text-[var(--muted-foreground)] leading-relaxed">

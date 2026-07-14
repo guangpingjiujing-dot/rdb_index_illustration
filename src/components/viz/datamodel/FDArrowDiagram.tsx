@@ -36,30 +36,45 @@ export function FDArrowDiagram({
       <div className="flex flex-col gap-5">
         <div>
           <div className="text-[10px] font-bold uppercase tracking-widest text-[var(--muted-foreground)]">
-            属性
+            対象テーブル (データは省略)
           </div>
-          <div className="mt-2 flex flex-wrap gap-2">
-            {attributes.map((a) => {
-              const isPk = pk.has(a);
-              return (
-                <span
-                  key={a}
-                  className={
-                    "inline-flex items-baseline gap-1.5 border px-3 py-1.5 font-mono text-xs " +
-                    (isPk
-                      ? "border-[var(--foreground)] bg-[var(--foreground)] text-[var(--primary-foreground)] font-bold"
-                      : "border-[var(--border-strong)] bg-[var(--card)] text-[var(--foreground)]")
-                  }
-                >
-                  <span>{a}</span>
-                  {isPk && (
-                    <span className="text-[9px] font-bold uppercase tracking-wider opacity-80">
-                      PK
-                    </span>
-                  )}
-                </span>
-              );
-            })}
+          <div className="mt-2 overflow-x-auto border border-[var(--border-strong)] bg-[var(--card)]">
+            <table className="min-w-full font-mono text-xs">
+              <thead>
+                <tr className="border-b border-[var(--border)] bg-[var(--muted)]/60">
+                  {attributes.map((a) => {
+                    const isPk = pk.has(a);
+                    return (
+                      <th
+                        key={a}
+                        className="px-3 py-1.5 text-left font-bold text-[var(--foreground)]"
+                      >
+                        <span className="flex items-baseline gap-1.5">
+                          <span>{a}</span>
+                          {isPk && (
+                            <span className="text-[9px] font-bold uppercase tracking-wider text-[var(--muted-foreground)]">
+                              PK
+                            </span>
+                          )}
+                        </span>
+                      </th>
+                    );
+                  })}
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  {attributes.map((a) => (
+                    <td
+                      key={a}
+                      className="px-3 py-2 text-[var(--muted-foreground)] text-center"
+                    >
+                      …
+                    </td>
+                  ))}
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
 

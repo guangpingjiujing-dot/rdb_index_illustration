@@ -84,7 +84,7 @@ export default function Page() {
         <Link href="/data-modeling/normalization/why">更新時異常</Link> の原因になる。
       </p>
 
-      <h2>題材: 2NF まで進めた受注テーブル</h2>
+      <h2>実践例: 2NF まで進めた受注テーブル</h2>
       <p>
         <Link href="/data-modeling/normalization/2nf">前ページ</Link> で 2NF に進めた結果、
         受注データは <strong>受注 / 商品 / 受注明細</strong> の 3 テーブルに分かれた。

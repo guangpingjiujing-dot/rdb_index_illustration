@@ -8,6 +8,7 @@ import {
   UpdateAnomalyViz,
   DeleteAnomalyViz,
 } from "@/components/viz/datamodel/AnomalyViz";
+import { NormalizedTableView } from "@/components/viz/datamodel/TableBeforeAfter";
 import { findTopic } from "@/content/topics";
 
 const slug = "why";
@@ -48,6 +49,21 @@ export default function Page() {
         こんな表を想像してほしい。従業員 1 人につき 1 行、「氏名 / 部署ID / 部署名 / 部署所在地」を書くタイプの表。
         同じ部署に何人か所属していると、その <strong>部署の名前や所在地が人数分だけ何度も書かれる</strong> ことになる。
       </p>
+
+      <div className="not-prose my-6">
+        <NormalizedTableView
+          data={{
+            name: "従業員_部署",
+            columns: ["社員ID", "氏名", "部署ID", "部署名", "部署所在地"],
+            rows: [
+              ["E001", "山田", "D01", "営業部", "東京"],
+              ["E002", "田中", "D01", "営業部", "東京"],
+              ["E003", "佐藤", "D02", "開発部", "大阪"],
+              ["E004", "鈴木", "D02", "開発部", "大阪"],
+            ],
+          }}
+        />
+      </div>
       <p>
         この「同じことを何度も書いている」状態は、ぱっと見は問題なさそうでも、
         いざデータを追加 / 変更 / 削除しようとすると 3 種類の困りごとを引き起こす。

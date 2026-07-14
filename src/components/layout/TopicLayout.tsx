@@ -5,6 +5,7 @@ import { MentorCTA } from "@/components/cta/MentorCTA";
 import { AffiliateBooks } from "@/components/cta/AffiliateBooks";
 import { BookSidebar } from "@/components/cta/BookSidebar";
 import { RelatedTopics } from "@/components/layout/RelatedTopics";
+import { PrevNext } from "@/components/layout/PrevNext";
 import { findTopic } from "@/content/topics";
 import { sections, dataModelingCategories, type SectionKey } from "@/content/sections";
 
@@ -71,6 +72,8 @@ export function TopicLayout({
           </div>
 
           <div className="prose-jp mt-10 max-w-none">{children}</div>
+
+          <PrevNext section={section} currentSlug={slug} />
 
           <RelatedTopics section={section} currentSlug={slug} />
 

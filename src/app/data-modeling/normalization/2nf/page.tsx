@@ -84,7 +84,7 @@ export default function Page() {
         素朴に「これ重複してるよね」と感じる状態のこと。
       </p>
 
-      <h2>題材: 1NF まで進めた受注テーブル</h2>
+      <h2>実践例: 1NF まで進めた受注テーブル</h2>
       <p>
         <Link href="/data-modeling/normalization/1nf">前ページ</Link> で 1NF 化した受注テーブルをそのまま引き継ぐ。
         1 行が「1 注文の 1 商品」を表すフラットな表になっている。
