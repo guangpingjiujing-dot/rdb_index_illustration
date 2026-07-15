@@ -38,6 +38,9 @@ export const dataModelingTopics: DataModelingTopic[] = [
       "データ冗長性",
       "一事実一箇所",
     ],
+    metaTitle: "なぜ正規化が必要か｜更新時異常 (挿入・更新・削除) を図解",
+    metaDescription:
+      "正規化されていないテーブルで発生する挿入異常・更新異常・削除異常の 3 種類を図解で解説。同じ事実を複数行に持つことで起きる矛盾と情報損失、なぜ「一事実一箇所」が原則なのか。",
   },
   {
     section: "data-modeling",
@@ -61,6 +64,9 @@ export const dataModelingTopics: DataModelingTopic[] = [
       "決定関数",
       "FD",
     ],
+    metaTitle: "関数従属性 (Functional Dependency) とは｜図解で理解",
+    metaDescription:
+      "関数従属性の定義と例を図解で解説。X → Y の記法、完全関数従属・部分関数従属・推移関数従属の違いまで、1NF〜3NF・BCNF の判定基準になる概念を整理。",
   },
   {
     section: "data-modeling",
@@ -84,6 +90,9 @@ export const dataModelingTopics: DataModelingTopic[] = [
       "極小性",
       "一意性",
     ],
+    metaTitle: "候補キー・主キー・スーパーキーの違い｜キーの階層を図解",
+    metaDescription:
+      "候補キー・主キー・スーパーキー・外部キー・代替キー・複合キーの関係を図解で整理。極小性と一意性の観点から、2NF/3NF で語られる「非キー属性」「部分従属」を理解するための語彙。",
   },
   {
     section: "data-modeling",
@@ -106,6 +115,9 @@ export const dataModelingTopics: DataModelingTopic[] = [
       "非1NF",
       "正規化手順",
     ],
+    metaTitle: "第1正規形 (1NF) とは｜非 1NF から変換する手順を図解",
+    metaDescription:
+      "第 1 正規形の定義と、非 1NF から 1NF に変換する具体的手続きを図解で解説。アトミック値・繰り返しグループ・非 1NF の代表例を並置し、以降の 2NF・3NF の前提を整理。",
   },
   {
     section: "data-modeling",
@@ -128,6 +140,9 @@ export const dataModelingTopics: DataModelingTopic[] = [
       "候補キー",
       "非キー属性",
     ],
+    metaTitle: "第2正規形 (2NF) とは｜部分関数従属の排除を図解",
+    metaDescription:
+      "第 2 正規形の定義と、複合主キーの一部にだけ関数従属する非キー属性（部分関数従属）を切り出す手続きを図解で解説。単一主キーのテーブルが自動的に 2NF を満たす理由まで。",
   },
   {
     section: "data-modeling",
@@ -149,6 +164,9 @@ export const dataModelingTopics: DataModelingTopic[] = [
       "非キー属性",
       "候補キー",
     ],
+    metaTitle: "第3正規形 (3NF) とは｜推移関数従属の排除を図解",
+    metaDescription:
+      "第 3 正規形の定義と、非キー属性が別の非キー属性を経由して主キーに従属する「推移関数従属」を排除する手続きを図解で解説。実務では 3NF で十分と言われる理由まで。",
   },
   {
     section: "data-modeling",
@@ -171,5 +189,8 @@ export const dataModelingTopics: DataModelingTopic[] = [
       "カバリングインデックス",
       "マテリアライズドビュー",
     ],
+    metaTitle: "非正規化 (Denormalization) とは｜実務判断を図解",
+    metaDescription:
+      "非正規化の実務判断を図解で解説。読み取り性能や運用の都合であえて正規化を崩す設計、何を守り何を捨てるか、カバリングインデックスやマテリアライズドビューとの棲み分けまで。",
   },
 ];
