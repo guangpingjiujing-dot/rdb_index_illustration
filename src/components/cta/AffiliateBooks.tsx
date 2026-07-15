@@ -1,4 +1,5 @@
 import { booksForTopic } from "@/content/books";
+import { AmazonLink } from "@/components/cta/AmazonLink";
 
 export function AffiliateBooks({ topicSlug }: { topicSlug: string }) {
   const items = booksForTopic(topicSlug);
@@ -11,11 +12,12 @@ export function AffiliateBooks({ topicSlug }: { topicSlug: string }) {
       </h2>
       <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
         {items.map((b) => (
-          <a
+          <AmazonLink
             key={b.id}
             href={b.amazonUrl}
-            target="_blank"
-            rel="sponsored nofollow noopener"
+            bookId={b.id}
+            location="card"
+            topic={topicSlug}
             className="group flex flex-col rounded-lg border border-[var(--border)] bg-[var(--card)] p-4 transition-colors hover:border-[var(--border-strong)] hover:bg-[var(--muted)]/40"
           >
             <div className="flex items-start gap-2">
@@ -37,7 +39,7 @@ export function AffiliateBooks({ topicSlug }: { topicSlug: string }) {
             <div className="mt-auto pt-4 text-xs font-medium text-[var(--muted-foreground)] group-hover:text-[var(--foreground)]">
               Amazon で見る →
             </div>
-          </a>
+          </AmazonLink>
         ))}
       </div>
       <p className="mt-4 text-xs text-[var(--muted-foreground)]">

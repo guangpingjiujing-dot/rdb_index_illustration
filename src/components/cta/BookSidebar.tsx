@@ -1,5 +1,6 @@
 import { booksForTopic } from "@/content/books";
 import { MentorSidebarCTA } from "@/components/cta/MentorSidebarCTA";
+import { AmazonLink } from "@/components/cta/AmazonLink";
 
 export function BookSidebar({ topicSlug }: { topicSlug: string }) {
   const items = booksForTopic(topicSlug);
@@ -14,15 +15,16 @@ export function BookSidebar({ topicSlug }: { topicSlug: string }) {
           <ul className="mt-3 divide-y divide-[var(--border)]">
             {items.map((b) => (
               <li key={b.id} className="py-3 first:pt-0 last:pb-0">
-                <a
+                <AmazonLink
                   href={b.amazonUrl}
-                  target="_blank"
-                  rel="sponsored nofollow noopener"
+                  bookId={b.id}
+                  location="sidebar"
+                  topic={topicSlug}
                   className="group block"
                 >
-                  <div className="flex items-start gap-1.5">
+                  <div className="flex flex-col items-start gap-1.5">
                     {b.recommended && (
-                      <span className="mt-0.5 shrink-0 rounded-sm bg-[var(--foreground)] px-1 py-0.5 text-[9px] font-semibold tracking-wide text-[var(--background)]">
+                      <span className="rounded-sm bg-[var(--foreground)] px-1 py-0.5 text-[9px] font-semibold tracking-wide text-[var(--background)]">
                         おすすめ
                       </span>
                     )}
@@ -36,7 +38,7 @@ export function BookSidebar({ topicSlug }: { topicSlug: string }) {
                   <div className="mt-1.5 text-[10px] font-medium text-[var(--muted-foreground)] group-hover:text-[var(--foreground)]">
                     Amazon で見る →
                   </div>
-                </a>
+                </AmazonLink>
               </li>
             ))}
           </ul>

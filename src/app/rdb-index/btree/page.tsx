@@ -4,6 +4,7 @@ import { TopicJsonLd } from "@/components/seo/JsonLd";
 import { BTreeViz } from "@/components/viz/btree/BTreeViz";
 import { IndexToRowFlow } from "@/components/viz/IndexToRowFlow";
 import { FAQ } from "@/components/layout/FAQ";
+import { AmazonLink } from "@/components/cta/AmazonLink";
 import { findTopic } from "@/content/topics";
 
 const slug = "btree";
@@ -31,6 +32,10 @@ export default function Page() {
     <TopicLayout section="rdb-index" slug={slug}>
       <TopicJsonLd section="rdb-index" slug={slug} faq={faq} />
 
+      <p className="!mt-0 !mb-6 text-xs text-[var(--muted-foreground)]">
+        本記事はAmazonアソシエイトのリンクを含みます。
+      </p>
+
       <h2>B-treeは「ソートされた分岐する索引」</h2>
       <p>
         B-treeは、キーをソート順に保持しながら1つのノードから複数の子に分岐する木構造です。
@@ -52,6 +57,18 @@ export default function Page() {
       <p>
         本記事の図解はデフォルトでノードあたり最大3キーに設定していますが（上のコントロールで変更可能）、実際のRDBMSではノードあたり数百〜数千キーが入ります。
         そのため、10億件のデータでも木の高さはわずか3〜4段程度で済み、ディスクI/Oが極めて少ない探索が可能です。
+      </p>
+      <p>
+        実務で B-tree インデックスをどう設計するか（カラム順・カーディナリティ・更新コストなど）は、
+        <AmazonLink
+          href="https://www.amazon.co.jp/dp/4798186627?tag=taitech-22"
+          bookId="tatsujin-db-design"
+          location="inline"
+          topic={slug}
+        >
+          『達人に学ぶDB設計徹底指南書 第2版』
+        </AmazonLink>
+        第6章 6-3「B-treeインデックスの設計方針」に体系的にまとまっています。
       </p>
 
       <h2>挿入とノード分割</h2>
@@ -84,6 +101,18 @@ export default function Page() {
         <li>暗黙の型変換を伴う比較</li>
       </ul>
       <p>いずれも「ソート順が使えなくなる」ため、B-treeを辿ることができずフルスキャンに落ちます。</p>
+      <p>
+        「効かないケースを知らずに闇雲にインデックスを追加して、逆に更新が遅くなる」失敗例は、
+        <AmazonLink
+          href="https://www.amazon.co.jp/dp/4814400748?tag=taitech-22"
+          bookId="sql-antipatterns"
+          location="inline"
+          topic={slug}
+        >
+          『SQLアンチパターン 第2版』
+        </AmazonLink>
+        第13章「インデックスショットガン（闇雲インデックス）」で詳しく扱われています。
+      </p>
 
       <FAQ items={faq} />
     </TopicLayout>
