@@ -2,7 +2,7 @@
 
 **サイト: https://taitech.dev**
 
-RDBのインデックス（B-tree、ハッシュ、クラスタ化、複合、カバリング、部分、EXPLAIN、統計情報 …）の仕組みをインタラクティブな図解＋アニメーションで解説するサイト。
+RDBのインデックス（B-tree、ハッシュ、クラスタ化、複合、カバリング、部分、EXPLAIN、統計情報 …）と、正規化を中心とするデータモデリング体系（関数従属性、1NF〜3NF、非正規化 …）を、インタラクティブな図解＋アニメーションと厳密な定義で解説するサイト。
 
 - 技術構成: Next.js 16 (App Router) + TypeScript + Tailwind CSS v4 + Framer Motion + SVG
 - DB: 不要（全ページ静的生成 + クライアント計算）
@@ -21,7 +21,7 @@ http://localhost:3000 で確認できます。
 
 ```bash
 npm run build        # 本番ビルド
-npm run test:e2e     # E2E テスト（Playwright、30件）
+npm run test:e2e     # E2E テスト（Playwright、全ページの console error/warning 検知含む）
 npx tsc --noEmit    # 型チェック
 ```
 
@@ -52,6 +52,15 @@ npx tsc --noEmit    # 型チェック
 | `/rdb-index/explain` | 実行計画（EXPLAIN） | 発展 |
 | `/rdb-index/statistics` | 統計情報とオプティマイザ | 発展 |
 | `/rdb-index/cost` | インデックスのコスト | 発展 |
+| `/data-modeling` | データモデリング体系トップ | |
+| `/data-modeling/normalization` | 正規化カテゴリトップ | |
+| `/data-modeling/normalization/why` | なぜ正規化が必要か | 基礎 |
+| `/data-modeling/normalization/functional-dependency` | 関数従属性 | 基礎 |
+| `/data-modeling/normalization/keys` | キーの階層（候補キー・主キー・スーパーキー） | 基礎 |
+| `/data-modeling/normalization/1nf` | 第1正規形 (1NF) | 基礎 |
+| `/data-modeling/normalization/2nf` | 第2正規形 (2NF) | 基礎 |
+| `/data-modeling/normalization/3nf` | 第3正規形 (3NF) | 基礎 |
+| `/data-modeling/normalization/denormalization` | 非正規化 | 発展 |
 | `/about` | 著者（たいてっく）紹介 + menta CTA | |
 | `/privacy` `/terms` `/contact` | 法務・お問い合わせ | |
 

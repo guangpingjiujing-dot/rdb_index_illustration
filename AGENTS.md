@@ -64,7 +64,7 @@ npm run dev
 # 本番ビルド
 npm run build
 
-# E2E テスト（Playwright、全ページのコンソールエラー/警告検知含む30件）
+# E2E テスト（Playwright、全ページのコンソールエラー/警告検知 + インタラクティブ viz テスト）
 npm run test:e2e
 
 # E2E UI モード
@@ -76,8 +76,15 @@ npm run test:e2e:ui
 ## Monorepo 情報 (docs/)
 
 `docs/` は `.gitignore` 済み。ローカル専用の運用メモを置く場所。GitHub には公開しない。
-- `docs/OPERATIONS.md`: アカウント・DNS・支払い等の非公開ディテール
-- `docs/MONETIZATION_ROADMAP.md`: 収益化ロードマップと進捗
+
+新規セッションでの推奨読み順:
+1. `docs/MONETIZATION_ROADMAP.md`: 現状ステータス・優先タスク・完了履歴（一次情報源）
+2. `docs/SEO_AUDIT.md`: SEO 現状と実装ステータス（§0 に最新の実装状況）
+3. `docs/DESIGN.md`: サイト設計・アーキテクチャ・SEO/LLMO 戦略
+4. `docs/OPERATIONS.md`: アカウント・DNS・支払い・GA4 IP フィルタ等の非公開ディテール
+5. `docs/MONETIZATION_IDEAS.md`: 収益化アイデア集（ロードマップの補足）
+6. `docs/qiita/`, `docs/x-posts/`, `docs/data-modeling/`: 記事下書き・データモデリング作業メモ
+7. `analytics/reports/*.md`: GA4/GSC の月次データレビュー
 
 # Amazon Associates ガードレール
 
