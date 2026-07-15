@@ -43,6 +43,15 @@ yarn-error.log*
 # local-only design/roadmap docs
 /docs
 
+# analytics: raw MCP snapshots / SQLite DB / 生成レポート は GitHub に上げない
+# schema.sql / queries / SKILL.md は commit する
+/analytics/data
+/analytics/snapshots
+/analytics/reports
+
+# MCP: 絶対パス + サービスアカウント参照を含むためローカル専用
+/.mcp.json
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts
