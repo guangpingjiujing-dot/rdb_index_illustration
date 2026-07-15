@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import { buildTopicMetadata } from "@/lib/metadata";
 import Link from "next/link";
 import { TopicLayout } from "@/components/layout/TopicLayout";
 import { TopicJsonLd } from "@/components/seo/JsonLd";
@@ -9,11 +9,7 @@ import { findTopic } from "@/content/topics";
 const slug = "denormalization";
 const topic = findTopic("data-modeling", slug)!;
 
-export const metadata: Metadata = {
-  title: topic.shortTitle,
-  description: topic.summary,
-  alternates: { canonical: topic.path },
-};
+export const metadata = buildTopicMetadata(topic);
 
 const faq = [
   {

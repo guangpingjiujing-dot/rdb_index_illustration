@@ -9,6 +9,10 @@ export type DataModelingTopic = {
   summary: string;
   definition: string;
   keywords: string[];
+  /** SEO 用: 指定時は <title> と OG title に使用（未指定なら shortTitle にフォールバック） */
+  metaTitle?: string;
+  /** SEO 用: 指定時は <meta description> と OG description に使用（未指定なら summary にフォールバック） */
+  metaDescription?: string;
 };
 
 export const dataModelingTopics: DataModelingTopic[] = [
