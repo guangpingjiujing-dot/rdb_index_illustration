@@ -12,6 +12,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   const priorityFor = (p: string): number => {
     if (p === "/") return 1.0;
+    // 「変なER図」旗艦ページはカテゴリハブ扱いだが、バイラル+evergreen 両狙いの
+    // 主戦場ページなのでセクションハブと同格に上げる
+    if (p === "/data-modeling/er-diagram") return 0.9;
     if (sectionHubs.includes(p)) return 0.9;
     if (categoryHubs.includes(p)) return 0.8;
     return 0.7;

@@ -46,6 +46,14 @@ function Hero() {
             <p className="mt-6 max-w-xl text-base md:text-lg text-[var(--muted-foreground)] leading-relaxed">
               教科書で挫折しがちな概念を、実際に触れる図解と辞書的な厳密な定義で解説します。
               新人エンジニアの独学から、IPAデータベーススペシャリスト対策まで、必要な深さで読める2本柱の学習サイト。
+              新企画{" "}
+              <Link
+                href="/data-modeling/er-diagram"
+                className="underline underline-offset-4 hover:text-[var(--foreground)]"
+              >
+                「変なER図」
+              </Link>{" "}
+              で ER 図の読み方の謎解きから入る学習動線もあります。
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <Link
@@ -132,15 +140,15 @@ function TwoPillars() {
       key: "data-modeling" as const,
       href: sections["data-modeling"].path,
       title: sections["data-modeling"].label,
-      lead: "関数従属性と正規化を、辞書的な定義と静的な図解で体系的に整理する。",
+      lead: "「変なER図」の間違い探しから ER 図の基本、そのまま正規化の 3 ステップへ。",
       bullets: [
-        "関数従属で正規化を判定",
-        "1NF → 2NF → 3NF の手続き",
-        "非正規化の実務判断",
+        "「変なER図」で 9 つの違和感を数える",
+        "エンティティ・関連・カーディナリティを図解",
+        "関数従属と 1NF〜3NF の手続き",
       ],
       links: [
+        { href: "/data-modeling/er-diagram", label: "変なER図" },
         { href: "/data-modeling/normalization/why", label: "なぜ正規化が必要か" },
-        { href: "/data-modeling/normalization/functional-dependency", label: "関数従属性" },
       ],
       ready: DATA_MODELING_READY,
     },

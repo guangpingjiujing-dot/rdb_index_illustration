@@ -1,0 +1,234 @@
+import Link from "next/link";
+import type { Metadata } from "next";
+import { Container } from "@/components/ui/Container";
+import { LevelBadge } from "@/components/ui/Badge";
+import { MentorCTA } from "@/components/cta/MentorCTA";
+import { AffiliateBooks } from "@/components/cta/AffiliateBooks";
+import { FAQ } from "@/components/layout/FAQ";
+import { CategoryHubJsonLd } from "@/components/seo/JsonLd";
+import { sections, dataModelingCategories } from "@/content/sections";
+import { dataModelingTopicsIn } from "@/content/topics";
+import { WeirdERDiagram } from "@/components/viz/er/WeirdERDiagram";
+import { AnomalyList } from "@/components/viz/er/AnomalyList";
+
+const category = dataModelingCategories["er-diagram"];
+const sectionMeta = sections["data-modeling"];
+
+const PAGE_TITLE = "変なER図｜あなたには、この間取りの異常さがわかりますか？";
+const PAGE_DESCRIPTION =
+  "明らかにおかしい ER 図の間違い探しから、エンティティ・関連・カーディナリティ・弱エンティティ・記法まで、ER 図の読み方を身近な例え (会社・学校・家) で体系的に学べる図解サイト。";
+
+export const metadata: Metadata = {
+  title: PAGE_TITLE,
+  description: PAGE_DESCRIPTION,
+  alternates: { canonical: category.path },
+  openGraph: {
+    title: PAGE_TITLE,
+    description:
+      "9 つの明らかにおかしい箇所を数えながら、ER 図の基礎を身近な例で理解する。",
+    url: category.path,
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: PAGE_TITLE,
+    description:
+      "9 つの明らかにおかしい箇所を数えながら、ER 図の基礎を身近な例で理解する。",
+  },
+};
+
+const LEARNING_ORDER = [
+  "entity",
+  "relationship",
+  "cardinality",
+  "optionality",
+  "many-to-many",
+  "weak-entity",
+  "identifying",
+  "notation",
+  "reading",
+] as const;
+
+const faq = [
+  {
+    q: "変なER図とは何ですか？",
+    a: "実世界に落とし込むと明らかに機能不全になる架空の ER 図を教材化したものです。ER 図の読み方を「間違い探し」で学ぶための構成で、9 つの意図的な違和感を仕込んでいます。",
+  },
+  {
+    q: "ER 図の書き方の基本は？",
+    a: "実世界を「エンティティ (箱)」と「関連 (線)」の 2 種類だけで表現します。線の端にカーディナリティ (多重度) と参加制約 (必須/任意) の記号を付けて、その関係が「何個の何と結び付くか」を規定します。",
+  },
+  {
+    q: "弱エンティティと強エンティティの違いは？",
+    a: "強エンティティは自前の主キーだけで一意に識別できるエンティティ (例: 注文)。弱エンティティは親エンティティのキーを借りて初めて識別できるエンティティ (例: 注文明細)。親を消したら子が意味を持たなくなる関係が目印です。",
+  },
+  {
+    q: "変な家との関係は？",
+    a: "雨穴『変な家』のフォーマット (一見普通に見える間取りに読者が違和感を数える) を、ER 図の読み方訓練に翻訳したオマージュです。原著の内容は引用していません。",
+  },
+  {
+    q: "ER 図の記法にはどんな種類がありますか？",
+    a: "現代の作図ツールの既定は IE 記法 (crow's foot)、防衛・官公庁系で IDEF1X、学術文献で Chen 記法が使われます。同じ ER 図を 3 記法で描き分けた対応表は 記法比較ページ を参照してください。",
+  },
+];
+
+export default function ErDiagramHub() {
+  const topics = dataModelingTopicsIn("er-diagram");
+  const ordered = LEARNING_ORDER.map(
+    (slug) => topics.find((t) => t.slug === slug)!,
+  );
+
+  return (
+    <>
+      <CategoryHubJsonLd category="er-diagram" faq={faq} />
+
+      <section className="border-b border-[var(--border)]">
+        <Container size="wide" className="py-10 md:py-14">
+          <nav
+            aria-label="パンくず"
+            className="text-xs text-[var(--muted-foreground)]"
+          >
+            <Link href={sectionMeta.path} className="hover:text-[var(--foreground)]">
+              {sectionMeta.shortLabel}
+            </Link>
+            <span className="mx-2">/</span>
+            <span>{category.label}</span>
+          </nav>
+
+          <div className="mt-6 max-w-3xl">
+            <div className="text-[10px] font-bold uppercase tracking-widest text-[var(--muted-foreground)]">
+              変な家 オマージュ企画
+            </div>
+            <h1 className="mt-3 text-3xl md:text-5xl font-bold tracking-tight leading-tight">
+              変なER図
+              <span className="mt-2 block text-xl md:text-2xl text-[var(--muted-foreground)] font-bold">
+                あなたには、この間取りの異常さがわかりますか？
+              </span>
+            </h1>
+            <p className="mt-6 text-base md:text-lg text-[var(--muted-foreground)] leading-relaxed">
+              明らかにおかしい ER 図が 1 枚あります。
+              9 つの違和感、全て指摘できますか？
+            </p>
+          </div>
+
+          <div className="mt-10 not-prose">
+            <WeirdERDiagram />
+          </div>
+
+          <div className="mt-8 border-l-2 border-[var(--foreground)] pl-4 py-1">
+            <div className="text-[10px] font-bold uppercase tracking-wider text-[var(--muted-foreground)]">
+              定義
+            </div>
+            <p
+              data-speakable="definition"
+              className="mt-1 text-[var(--foreground)] leading-relaxed"
+            >
+              ER 図 (Entity-Relationship Diagram) とは、実世界を「エンティティ (実体)」と「関連 (リレーションシップ)」の 2 種類の抽象単位で表現する図式手法であり、リレーショナルデータベース設計における概念モデルの標準的記法である。
+            </p>
+          </div>
+
+          <div className="mt-6 border border-[var(--border-strong)] bg-[var(--card)] px-4 py-3 text-sm leading-relaxed">
+            <span className="mr-2 font-bold">記法について:</span>
+            このサイトの ER 図はすべて{" "}
+            <strong>IE 記法 (crow&apos;s foot / 情報工学記法)</strong>{" "}
+            で描いています。IDEF1X や Chen 記法との対応は{" "}
+            <Link
+              href="/data-modeling/er-diagram/notation"
+              className="text-[var(--foreground)] underline underline-offset-4 hover:text-[var(--muted-foreground)]"
+            >
+              記法比較ページ
+            </Link>{" "}
+            を参照してください。
+          </div>
+
+          <div className="mt-8 border border-[var(--border-strong)] bg-[var(--muted)]/40 px-5 py-5 leading-relaxed">
+            <p className="text-base md:text-lg">
+              上の ER 図には{" "}
+              <strong className="font-bold">
+                9 つの明らかにおかしい箇所
+              </strong>{" "}
+              があります。全て指摘できますか？
+            </p>
+            <p className="mt-3 text-sm text-[var(--muted-foreground)]">
+              「なんとなく変」で止まっていた感覚を、9 つの ER 概念で言語化していきましょう。
+              下のリストは 3 モード (謎かけ / ヒント表示 / 全て答え合わせ) を切り替えられます。
+            </p>
+          </div>
+        </Container>
+      </section>
+
+      <section className="border-b border-[var(--border)]">
+        <Container size="wide" className="py-12 md:py-16">
+          <AnomalyList />
+        </Container>
+      </section>
+
+      <section className="border-b border-[var(--border)]">
+        <Container size="wide" className="py-12 md:py-16">
+          <h2 className="mb-2 text-xl md:text-2xl font-bold tracking-tight">
+            ER 図の基本を体系的に学ぶ
+          </h2>
+          <p className="mb-8 text-sm text-[var(--muted-foreground)] leading-relaxed">
+            推奨する学習順序で並べています。各違和感の解説から辿ってきた場合は、
+            該当ページだけ拾い読みしても構いません。
+          </p>
+          <ul className="divide-y divide-[var(--border)] border-y border-[var(--border)]">
+            {ordered.map((t, i) => (
+              <li key={t.slug}>
+                <Link
+                  href={t.path}
+                  className="group flex items-start justify-between gap-4 py-5 px-2 -mx-2 hover:bg-[var(--muted)]/60 transition-colors"
+                >
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-baseline gap-3 flex-wrap">
+                      <span className="text-[10px] font-bold text-[var(--muted-foreground)] font-mono">
+                        {String(i + 1).padStart(2, "0")}
+                      </span>
+                      <span className="text-lg font-bold group-hover:underline underline-offset-4">
+                        {t.shortTitle}
+                      </span>
+                      <span className="text-sm text-[var(--muted-foreground)]">
+                        {t.title}
+                      </span>
+                    </div>
+                    <p className="mt-2 text-sm text-[var(--muted-foreground)] leading-relaxed line-clamp-2">
+                      {t.summary}
+                    </p>
+                  </div>
+                  <LevelBadge level={t.level} />
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </Container>
+      </section>
+
+      <section className="border-b border-[var(--border)]">
+        <Container size="wide" className="py-10 md:py-12">
+          <div className="max-w-3xl">
+            <h2 className="text-lg md:text-xl font-bold tracking-tight">
+              「変な家」オマージュ表記
+            </h2>
+            <p className="mt-3 text-sm text-[var(--muted-foreground)] leading-relaxed">
+              本ページは 雨穴『変な家』(飛鳥新社, 2021) のフォーマット
+              (一見普通に見える構造の中に読者が違和感を数える) へのオマージュとして企画したものです。
+              原著の登場人物・ストーリー・図面は一切引用しておらず、
+              フォーマットのみを ER 図の読み方訓練に翻訳しています。
+            </p>
+          </div>
+        </Container>
+      </section>
+
+      <Container size="wide" className="py-12">
+        <FAQ items={faq} />
+      </Container>
+
+      <Container size="wide" className="pt-4 pb-16">
+        <AffiliateBooks topicSlug="entity" />
+      </Container>
+
+      <Container size="wide" className="pt-4 pb-16">
+        <MentorCTA />
+      </Container>
+    </>
+  );
+}

@@ -1,6 +1,6 @@
 export type DataModelingTopic = {
   section: "data-modeling";
-  category: "normalization";
+  category: "normalization" | "er-diagram";
   slug: string;
   path: string;
   title: string;
@@ -192,5 +192,221 @@ export const dataModelingTopics: DataModelingTopic[] = [
     metaTitle: "非正規化 (Denormalization) とは｜実務判断を図解",
     metaDescription:
       "非正規化の実務判断を図解で解説。読み取り性能や運用の都合であえて正規化を崩す設計、何を守り何を捨てるか、カバリングインデックスやマテリアライズドビューとの棲み分けまで。",
+  },
+  {
+    section: "data-modeling",
+    category: "er-diagram",
+    slug: "entity",
+    path: "/data-modeling/er-diagram/entity",
+    title: "エンティティ (実体) とは",
+    shortTitle: "エンティティ",
+    level: "basic",
+    summary:
+      "ER 図の四角い箱の中身。何をエンティティにするか、何を属性に落とすかの判断基準を、身近な例で整理する。",
+    definition:
+      "エンティティとは、実世界における区別可能な対象または概念であって、ER モデルにおいて属性の集合として表現される抽象単位である。",
+    keywords: [
+      "エンティティ",
+      "実体",
+      "ER図",
+      "属性",
+      "強エンティティ",
+      "弱エンティティ",
+    ],
+    metaTitle: "エンティティとは｜ER 図の「箱」の中身を身近な例で図解",
+    metaDescription:
+      "ER 図におけるエンティティ (実体) の定義と、何を箱にして何を属性に落とすかの判断基準を、会社・学校・家族などの身近な例で図解。強エンティティと弱エンティティの導入まで。",
+  },
+  {
+    section: "data-modeling",
+    category: "er-diagram",
+    slug: "relationship",
+    path: "/data-modeling/er-diagram/relationship",
+    title: "関連 (リレーションシップ) とは",
+    shortTitle: "関連",
+    level: "basic",
+    summary:
+      "ER 図の線が表す「エンティティ同士がどう繋がっているか」の意味。役割名と方向、自己参照 (再帰関連) までを身近な例で整理する。",
+    definition:
+      "関連とは、2 つ以上のエンティティ集合の間に存在する意味的な繋がりを表す ER モデルの構成要素であり、その両端のカーディナリティと参加制約によって関係の性質が規定される。",
+    keywords: [
+      "関連",
+      "リレーションシップ",
+      "ER図",
+      "役割名",
+      "再帰関連",
+      "自己参照",
+    ],
+    metaTitle: "関連 (リレーションシップ) とは｜ER 図の「線」の意味を図解",
+    metaDescription:
+      "ER 図の関連 (リレーションシップ) の定義と、役割名の付け方、自己参照 (再帰関連) の書き方までを身近な例で図解。同じエンティティ間に複数の関連があるときの区別方法まで。",
+  },
+  {
+    section: "data-modeling",
+    category: "er-diagram",
+    slug: "cardinality",
+    path: "/data-modeling/er-diagram/cardinality",
+    title: "カーディナリティ (多重度) とは",
+    shortTitle: "カーディナリティ",
+    level: "basic",
+    summary:
+      "「1 人の部長は何人の部下を持つか」を規定する多重度制約。1:1、1:N、多対多 を身近な例で整理する。",
+    definition:
+      "カーディナリティとは、ER モデルにおいて 2 つのエンティティ集合の間の関連が、片方のインスタンス 1 個に対してもう片方のインスタンス何個と結び付くかを規定する多重度制約である。",
+    keywords: [
+      "カーディナリティ",
+      "多重度",
+      "1対1",
+      "1対多",
+      "多対多",
+      "ER図",
+      "IE記法",
+      "鳥足",
+    ],
+    metaTitle: "カーディナリティとは｜1対1・1対多・多対多を身近な例で図解",
+    metaDescription:
+      "ER 図のカーディナリティ (多重度) の定義と、1:1・1:N・N:M の 3 種類を「1 人の部長と部下」「1 人の学生と履修科目」など身近な例で図解。IE 記法 (crow's foot) の記号の読み方まで。",
+  },
+  {
+    section: "data-modeling",
+    category: "er-diagram",
+    slug: "optionality",
+    path: "/data-modeling/er-diagram/optionality",
+    title: "参加制約 (必須参加 / 任意参加) とは",
+    shortTitle: "参加制約",
+    level: "basic",
+    summary:
+      "「所属する社員が 0 人の部署を認めるか」「どの部署にも所属していない社員を認めるか」を規定する最小基数の制約。IE 記法の記号の読み方まで。",
+    definition:
+      "参加制約 (optionality) とは、ER モデルにおいて関連の各エンティティ側が関連に必ず参加するか (必須参加) 参加しないことも許されるか (任意参加) を規定する、最小基数についての制約である。",
+    keywords: [
+      "参加制約",
+      "optionality",
+      "必須参加",
+      "任意参加",
+      "最小基数",
+      "IE記法",
+    ],
+    metaTitle: "参加制約とは｜必須参加と任意参加を「0 人の部署」を例に図解",
+    metaDescription:
+      "ER 図の参加制約 (optionality) の定義と、必須参加・任意参加を「所属 0 人の部署を認めるか」「配属前の内定者を登録できるか」など具体的な設計判断に落として図解。IE 記法の記号 (縦棒 / 円) の読み方まで。",
+  },
+  {
+    section: "data-modeling",
+    category: "er-diagram",
+    slug: "many-to-many",
+    path: "/data-modeling/er-diagram/many-to-many",
+    title: "多対多 (N:M) と連関実体",
+    shortTitle: "多対多",
+    level: "basic",
+    summary:
+      "「1 学生は複数科目を取り、1 科目に複数学生が集まる」の多対多関係を、連関実体 (履修登録) で分解する手続き。",
+    definition:
+      "多対多 (N:M) 関連とは、両側のエンティティが互いに複数個と結び付く関連であり、実装時には両者を参照する連関実体 (関連実体・中間テーブル) に分解される。",
+    keywords: [
+      "多対多",
+      "N:M",
+      "連関実体",
+      "関連実体",
+      "中間テーブル",
+      "履修登録",
+      "ER図",
+    ],
+    metaTitle: "多対多 (N:M) と連関実体とは｜中間テーブルへの分解を図解",
+    metaDescription:
+      "ER 図の多対多 (N:M) 関連と連関実体 (中間テーブル) の定義を、「学生と履修科目」「入居者と共用設備」の例で図解。中間テーブルを作らないと何が起きるか、いつ属性を持たせるかまで。",
+  },
+  {
+    section: "data-modeling",
+    category: "er-diagram",
+    slug: "weak-entity",
+    path: "/data-modeling/er-diagram/weak-entity",
+    title: "弱エンティティとは",
+    shortTitle: "弱エンティティ",
+    level: "basic",
+    summary:
+      "「注文書の 3 行目」のように、親がいなければ意味を持たないエンティティ。二重四角の記法と、複合主キーで識別する手続きを図解する。",
+    definition:
+      "弱エンティティ (weak entity) とは、自身の属性だけでは行を一意に識別できず、親エンティティの主キーを借りて初めて一意になるエンティティであり、ER 図では二重四角で表記される。",
+    keywords: [
+      "弱エンティティ",
+      "weak entity",
+      "強エンティティ",
+      "識別関係",
+      "複合主キー",
+    ],
+    metaTitle: "弱エンティティとは｜「注文明細」を例に強エンティティとの違いを図解",
+    metaDescription:
+      "弱エンティティの定義を「注文と注文明細」「建物と部屋」の例で図解。強エンティティとの違い、二重四角の記法、親を消したら子が意味を持たなくなる判定基準、複合主キーでの識別まで。",
+  },
+  {
+    section: "data-modeling",
+    category: "er-diagram",
+    slug: "identifying",
+    path: "/data-modeling/er-diagram/identifying",
+    title: "識別関係と非識別関係の違い",
+    shortTitle: "識別関係",
+    level: "basic",
+    summary:
+      "弱エンティティを親と繋ぐ「識別関係」と、独立エンティティ同士を繋ぐ「非識別関係」の違い。IDEF1X 記法での実線 vs 破線の使い分けまで。",
+    definition:
+      "識別関係 (identifying relationship) とは、親エンティティの主キーが子エンティティの主キーの一部として継承される関連であり、対義の非識別関係では親の主キーは子の外部キーになるだけで子の主キーには含まれない。",
+    keywords: [
+      "識別関係",
+      "非識別関係",
+      "identifying relationship",
+      "IDEF1X",
+      "実線",
+      "破線",
+    ],
+    metaTitle: "識別関係と非識別関係の違い｜出席名簿の例で図解",
+    metaDescription:
+      "識別関係と非識別関係の違いを「田中クラスの山田くん」(識別関係) vs「山田太郎 (学籍番号 20250001)」(非識別関係) の例で図解。IDEF1X 記法の実線 vs 破線の対応関係まで。",
+  },
+  {
+    section: "data-modeling",
+    category: "er-diagram",
+    slug: "notation",
+    path: "/data-modeling/er-diagram/notation",
+    title: "ER 図の記法比較 (IE / IDEF1X / Chen)",
+    shortTitle: "記法",
+    level: "basic",
+    summary:
+      "同じ ER 図を 3 記法で描き分けた 1:1 対応表。実務ではどれを選ぶかの判断基準まで。",
+    definition:
+      "ER 図の記法とは、エンティティ・関連・カーディナリティ・参加制約などの ER モデル構成要素を図式化する視覚言語であり、IE 記法 (crow's foot)、IDEF1X、Chen 記法などが実務・学術の場面ごとに使われる。",
+    keywords: [
+      "ER図 記法",
+      "IE記法",
+      "IDEF1X",
+      "Chen記法",
+      "crow's foot",
+      "情報工学記法",
+    ],
+    metaTitle: "ER 図の記法比較 (IE / IDEF1X / Chen)｜同じ図を 3 記法で描き分け",
+    metaDescription:
+      "ER 図の主要 3 記法 (IE / IDEF1X / Chen) を同じ ER 図で描き分け、記号の 1:1 対応表と、実務ではどの記法を選ぶかの判断基準まで解説。",
+  },
+  {
+    section: "data-modeling",
+    category: "er-diagram",
+    slug: "reading",
+    path: "/data-modeling/er-diagram/reading",
+    title: "ER 図を読むチェックリスト",
+    shortTitle: "読み方",
+    level: "basic",
+    summary:
+      "「変なER図」を読み解く 9 段階のチェックリスト。実業務でレビューされた ER 図を読むときにも使える。",
+    definition:
+      "ER 図の読解とは、エンティティ・関連・カーディナリティ・参加制約・キー・記法の各要素を順に検証し、実世界の業務ルールと矛盾がないかを判定する手続きである。",
+    keywords: [
+      "ER図 読み方",
+      "ER図 チェックリスト",
+      "ER図 レビュー",
+      "変なER図",
+    ],
+    metaTitle: "ER 図を読むチェックリスト｜「変なER図」で身につく 9 段階の読解法",
+    metaDescription:
+      "ER 図をレビューするときの 9 段階チェックリスト。エンティティの粒度、関連の役割名、カーディナリティ、参加制約、弱エンティティ、識別関係、記法の一貫性まで、実業務で使える読解手順。",
   },
 ];

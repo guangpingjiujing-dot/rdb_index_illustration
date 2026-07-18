@@ -39,25 +39,25 @@ function Hero() {
         <div className="grid gap-12 lg:grid-cols-[1.2fr_1fr] lg:items-center">
           <div>
             <h1 className="text-3xl md:text-5xl font-bold tracking-tight leading-tight">
-              図解と実践によって、正規化をわかりやすく理解する。
+              ER 図と正規化を、身近な例と厳密な定義で。
             </h1>
             <p className="mt-6 max-w-xl text-base md:text-lg text-[var(--muted-foreground)] leading-relaxed">
-              「なぜ正規化するのか」から始めて、キーの整理・1NF/2NF/3NF・非正規化まで。
-              同じ受注データを段階的に整えていく Before/After の流れで、正規化の 3 ステップを実感として掴めます。
-              練習問題つき。
+              「変な ER 図」の間違い探しから ER 図の基本を体感し、そのまま正規化の 3 ステップへ。
+              「所属 0 人の部署を認めるか」など身近な問いで概念を掴み、
+              受注データを段階的に整えていく Before/After で正規化の手続きを実感できます。
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <Link
-                href="/data-modeling/normalization/why"
+                href="/data-modeling/er-diagram"
                 className="inline-flex items-center gap-2 bg-[var(--foreground)] text-white px-6 py-3 text-sm font-bold hover:bg-[#262626]"
               >
-                最初から学ぶ →
+                変な ER 図を見る →
               </Link>
               <Link
-                href="/data-modeling/normalization/1nf"
+                href="/data-modeling/normalization/why"
                 className="inline-flex items-center gap-2 border border-[var(--foreground)] px-6 py-3 text-sm font-bold hover:bg-[var(--muted)]"
               >
-                第一正規化から見てみる
+                正規化から学ぶ
               </Link>
             </div>
           </div>

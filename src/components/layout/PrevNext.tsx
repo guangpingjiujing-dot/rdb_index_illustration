@@ -1,8 +1,14 @@
 import Link from "next/link";
 import type { SectionKey } from "@/content/sections";
-import { rdbTopics, dataModelingTopicsIn, type Topic } from "@/content/topics";
+import {
+  rdbTopics,
+  dataModelingTopicsIn,
+  findTopic,
+  type DataModelingTopic,
+  type Topic,
+} from "@/content/topics";
 
-const DATA_MODELING_ORDER = [
+const NORMALIZATION_ORDER = [
   "why",
   "functional-dependency",
   "keys",
@@ -12,17 +18,35 @@ const DATA_MODELING_ORDER = [
   "denormalization",
 ] as const;
 
-function getOrderedTopics(section: SectionKey): Topic[] {
+const ER_DIAGRAM_ORDER = [
+  "entity",
+  "relationship",
+  "cardinality",
+  "optionality",
+  "many-to-many",
+  "weak-entity",
+  "identifying",
+  "notation",
+  "reading",
+] as const;
+
+function getOrderedTopics(
+  section: SectionKey,
+  category?: DataModelingTopic["category"],
+): Topic[] {
   if (section === "rdb-index") {
     return rdbTopics;
   }
-  const normalization = dataModelingTopicsIn("normalization");
-  const ordered: Topic[] = [];
-  for (const slug of DATA_MODELING_ORDER) {
-    const t = normalization.find((n) => n.slug === slug);
-    if (t) ordered.push(t);
+  if (category === "er-diagram") {
+    const items = dataModelingTopicsIn("er-diagram");
+    return ER_DIAGRAM_ORDER
+      .map((slug) => items.find((t) => t.slug === slug))
+      .filter((t): t is DataModelingTopic => Boolean(t));
   }
-  return ordered;
+  const items = dataModelingTopicsIn("normalization");
+  return NORMALIZATION_ORDER
+    .map((slug) => items.find((t) => t.slug === slug))
+    .filter((t): t is DataModelingTopic => Boolean(t));
 }
 
 /**
@@ -36,7 +60,10 @@ export function PrevNext({
   section: SectionKey;
   currentSlug: string;
 }) {
-  const ordered = getOrderedTopics(section);
+  const current = findTopic(section, currentSlug);
+  const category =
+    current && current.section === "data-modeling" ? current.category : undefined;
+  const ordered = getOrderedTopics(section, category);
   const idx = ordered.findIndex((t) => t.slug === currentSlug);
   if (idx === -1) return null;
   const prev = idx > 0 ? ordered[idx - 1] : null;

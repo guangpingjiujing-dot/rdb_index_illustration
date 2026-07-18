@@ -1,9 +1,14 @@
 import { site } from "@/lib/site";
-import { findTopic, topicsInSection } from "@/content/topics";
+import {
+  findTopic,
+  topicsInSection,
+  dataModelingTopicsIn,
+} from "@/content/topics";
 import {
   sections,
   dataModelingCategories,
   type SectionKey,
+  type DataModelingCategoryKey,
 } from "@/content/sections";
 
 export function AuthorJsonLd({
@@ -166,6 +171,80 @@ export function SectionHubJsonLd({ section }: { section: SectionKey }) {
       ],
     },
   ];
+  return (
+    <>
+      {data.map((d, i) => (
+        <script
+          key={i}
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(d) }}
+        />
+      ))}
+    </>
+  );
+}
+
+export function CategoryHubJsonLd({
+  category,
+  faq,
+}: {
+  category: DataModelingCategoryKey;
+  faq?: { q: string; a: string }[];
+}) {
+  const sectionMeta = sections["data-modeling"];
+  const categoryMeta = dataModelingCategories[category];
+  const items = dataModelingTopicsIn(category);
+  const data: object[] = [
+    {
+      "@context": "https://schema.org",
+      "@type": "CollectionPage",
+      name: categoryMeta.label,
+      url: `${site.url}${categoryMeta.path}`,
+      description: categoryMeta.description,
+      inLanguage: "ja-JP",
+      isPartOf: {
+        "@type": "CollectionPage",
+        name: sectionMeta.label,
+        url: `${site.url}${sectionMeta.path}`,
+      },
+      hasPart: items.map((t) => ({
+        "@type": "TechArticle",
+        headline: t.title,
+        url: `${site.url}${t.path}`,
+        abstract: t.definition,
+      })),
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        { "@type": "ListItem", position: 1, name: "トップ", item: site.url },
+        {
+          "@type": "ListItem",
+          position: 2,
+          name: sectionMeta.shortLabel,
+          item: `${site.url}${sectionMeta.path}`,
+        },
+        {
+          "@type": "ListItem",
+          position: 3,
+          name: categoryMeta.label,
+          item: `${site.url}${categoryMeta.path}`,
+        },
+      ],
+    },
+  ];
+  if (faq && faq.length > 0) {
+    data.push({
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      mainEntity: faq.map((f) => ({
+        "@type": "Question",
+        name: f.q,
+        acceptedAnswer: { "@type": "Answer", text: f.a },
+      })),
+    });
+  }
   return (
     <>
       {data.map((d, i) => (

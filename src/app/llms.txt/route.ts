@@ -59,6 +59,12 @@ export function GET() {
     lines.push(``);
     lines.push(`カテゴリハブ: ${site.url}${category.path}`);
     lines.push(``);
+    if (category.key === "er-diagram") {
+      lines.push(
+        `**旗艦ページ「変なER図｜あなたには、この間取りの異常さがわかりますか？」**: 明らかにおかしい ER 図の間違い探しから、エンティティ・関連・カーディナリティ・弱エンティティ・記法まで、ER 図の読み方を身近な例え (会社・学校・家) で体系的に学べる企画ページ。9 つの意図的な違和感を仕込んだ ER 図と、それを言語化するサブページ 9 枚で構成。`,
+      );
+      lines.push(``);
+    }
     lines.push(`#### トピック一覧`);
     lines.push(``);
     for (const t of inCategory) {
