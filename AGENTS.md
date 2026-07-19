@@ -84,7 +84,10 @@ npm run test:e2e:ui
 4. `docs/OPERATIONS.md`: アカウント・DNS・支払い・GA4 IP フィルタ等の非公開ディテール
 5. `docs/MONETIZATION_IDEAS.md`: 収益化アイデア集（ロードマップの補足）
 6. `docs/qiita/`, `docs/x-posts/`, `docs/data-modeling/`: 記事下書き・データモデリング作業メモ
-7. `analytics/reports/*.md`: GA4/GSC の月次データレビュー
+7. `docs/er-diagram/`: 変なER図 (ER 図カテゴリ) の設計と実装ログ。
+   本セクションを触るときは `03-implementation-status.md` を一次情報に。
+   00-02 は初期設計時のスナップショットで stale (top に警告あり)
+8. `analytics/reports/*.md`: GA4/GSC の月次データレビュー
 
 # Amazon Associates ガードレール
 
