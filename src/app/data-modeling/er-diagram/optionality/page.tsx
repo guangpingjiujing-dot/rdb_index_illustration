@@ -15,7 +15,7 @@ export const metadata = buildTopicMetadata(topic);
 const faq = [
   {
     q: "参加制約と外部参照制約 (FK 制約) は同じですか？",
-    a: "違います。参加制約は ER モデル層の設計仕様、FK 制約は DB 実装層の整合性チェック。ただし FK NOT NULL ≒ 必須参加、FK NULL 許可 ≒ 任意参加という対応関係はあります。",
+    a: "同じではなく、FK 制約は参加制約を DB 上で表現する主な手段です。参加制約は ER モデル層の設計仕様で、FK 列を NOT NULL にすれば必須参加、NULL 許可にすれば任意参加が実装できます。「設計 → 実装への翻訳」の関係です。",
   },
   {
     q: "必須参加を強制するには実装上どうすればいい？",
@@ -49,10 +49,10 @@ export default function Page() {
         </li>
       </ul>
       <p>
-        この Yes/No が、そのまま参加制約の設計判断になる。Yes = <strong>任意参加</strong>、
-        No = <strong>必須参加</strong>。
-        <Link href="/data-modeling/er-diagram/cardinality">カーディナリティ</Link> が「最大基数」なら、
-        参加制約は <strong>「最小基数」</strong>。両方セットで初めて関連の意味が完成する。
+        「0 個も許容する」= <strong>任意参加</strong>、「必ず 1 個以上」= <strong>必須参加</strong>。
+        つまり参加制約は「相手が最低 <strong>何個</strong> 必要か」の指定で、
+        <Link href="/data-modeling/er-diagram/cardinality">カーディナリティ</Link> が「最大基数」なら
+        参加制約は <strong>最小基数</strong>。両方セットで初めて関連の意味が完成する。
       </p>
 
       <h2>ER 図での参加制約の記号</h2>
@@ -136,24 +136,25 @@ export default function Page() {
         caption="両端に円 (○) が付く。部署なしの内定者、社員 0 人の新設部署、どちらも許容する構造。"
       />
 
-      <h2>FK 制約との関係 (混同しやすい)</h2>
+      <h2>参加制約を DB 上で表現する: FK 制約</h2>
       <p>
-        参加制約は <strong>ER モデル層</strong> の設計仕様。
-        FK 制約 (外部参照制約) は <strong>DB 実装層</strong> の整合性チェック。
-        別物だが、参加制約を実装する手段として FK 制約が使われる:
+        参加制約は <strong>ER モデル層</strong> の設計仕様であって、そのままでは DB は何も強制してくれない。
+        これを実装層で担保する主な手段が <strong>FK 制約 (外部参照制約)</strong>。
+        FK 列の NOT NULL / NULL 許可 の使い分けで、参加制約を DB のスキーマに落とし込む:
       </p>
       <ul>
         <li>
-          <strong>FK NOT NULL</strong> ≒ 必須参加 (相手を必ず持つ)
+          <strong>必須参加</strong> → FK 列を <strong>NOT NULL</strong> にする (相手を必ず持たせる)
         </li>
         <li>
-          <strong>FK NULL 許可</strong> ≒ 任意参加 (相手を持たないこともある)
+          <strong>任意参加</strong> → FK 列を <strong>NULL 許可</strong> にする (相手を持たない状態を許す)
         </li>
       </ul>
       <p>
-        FK 制約は「参照するときは参照先が存在すること」を保証するだけで、
-        「必ず参照すること」までは強制しない。任意参加を実装するときは FK NULL 許可 で十分だが、
-        必須参加を強制するなら追加の仕組み (NOT NULL + トリガ or アプリケーション層のバリデーション) が要る。
+        ただし FK 制約が保証するのは「参照した先が存在すること」だけで、「必ず参照すること」まで踏み込まない。
+        任意参加は NULL 許可 だけで足りるが、必須参加を厳密に強制したければ
+        NOT NULL + 挿入時トリガや業務ルールのバリデーションを追加する必要がある。
+        「参加制約 = 設計」「FK 制約 = 実装」と考え、後者は前者を DB に翻訳する道具、と押さえておくと混乱しない。
       </p>
 
       <h2>変なER図 との対応: 違和感 #9 参加制約の矛盾</h2>
