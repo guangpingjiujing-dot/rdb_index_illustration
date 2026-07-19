@@ -133,10 +133,10 @@ export default function Page() {
         </li>
       </ul>
 
-      <h2>変なER図 との対応: 違和感 #3「配送先」が独立主キーで単独存在</h2>
+      <h2>変なER図 との対応: 違和感 #7「配送先」が独立主キーで単独存在</h2>
 
       <div className="not-prose my-6">
-        <WeirdERDiagram highlightAnomalies={new Set([3])} />
+        <WeirdERDiagram highlightAnomalies={new Set([7])} />
       </div>
 
       <p>

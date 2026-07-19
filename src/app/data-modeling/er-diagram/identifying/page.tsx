@@ -153,10 +153,10 @@ export default function Page() {
         </li>
       </ul>
 
-      <h2>変なER図 との対応: 違和感 #4 識別関係の PK 非継承</h2>
+      <h2>変なER図 との対応: 違和感 #8 識別関係の PK 非継承</h2>
 
       <div className="not-prose my-6">
-        <WeirdERDiagram highlightAnomalies={new Set([4])} />
+        <WeirdERDiagram highlightAnomalies={new Set([8])} />
       </div>
 
       <p>

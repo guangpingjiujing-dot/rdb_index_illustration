@@ -5,6 +5,7 @@ import { TopicJsonLd } from "@/components/seo/JsonLd";
 import { FAQ } from "@/components/layout/FAQ";
 import { ERDiagram } from "@/components/viz/er/ERDiagram";
 import { WeirdERDiagram } from "@/components/viz/er/WeirdERDiagram";
+import { CardinalityQuiz } from "@/components/viz/er/CardinalityQuiz";
 import { findTopic } from "@/content/topics";
 
 const slug = "cardinality";
@@ -35,23 +36,27 @@ export default function Page() {
       <h2>まず身近な例で: 部長は何人の部下を持てるか</h2>
       <p>
         「1 人の部長は複数の部下を持つ」「1 人の部下は 1 人の部長にしか報告しない」。
-        これがカーディナリティの直感。片方から見て、もう片方は <strong>何個と結び付いているか</strong> を規定する数の制約。
+        これがカーディナリティの直感。線の両端から見て、相手を <strong>何個と結び付けているか</strong> を規定する制約。
       </p>
       <p>
-        カーディナリティは <strong>2 種類の情報</strong> を同時に表す:
+        よく見ると、上の一文には実は 2 つの情報が混ざっている:
       </p>
       <ul>
         <li>
-          <strong>最大基数</strong> — 「最大で何個と結び付くか」(1 or N)。1 なら「多くて 1 個」、N なら「上限なし」
+          <strong>上限</strong>: 相手を「多くて何個持てるか」(1 個までか、何個でも OK か)
         </li>
         <li>
-          <strong>最小基数 = 参加制約</strong> — 「最低何個必要か」(0 or 1)。0 なら「無くてもよい」、1 なら「必ず 1 個以上」
+          <strong>下限</strong>: 相手を「最低何個持たないといけないか」(0 個で OK か、必ず 1 個以上か)
         </li>
       </ul>
       <p>
-        本ページでは主に <strong>最大基数</strong> (1:1、1:N、N:M の話) を扱う。
-        最小基数の話は {" "}
-        <Link href="/data-modeling/er-diagram/optionality">参加制約 ページ</Link> を参照。
+        用語としては上限を <strong>最大基数</strong>、下限を <strong>最小基数 (= 参加制約)</strong> と呼ぶ。
+        ER 図の記号はこの 2 つを 1 本の線に同居させて描く仕組みになっている。
+      </p>
+      <p>
+        本ページでは主に <strong>上限 (最大基数)</strong> の話 — 1:1、1:N、N:M の使い分け — を扱う。
+        下限側の話は {" "}
+        <Link href="/data-modeling/er-diagram/optionality">参加制約 ページ</Link> で詳しく解説する。
       </p>
 
       <h2>3 種類のカーディナリティ</h2>
@@ -60,6 +65,15 @@ export default function Page() {
       <p>
         両側ともに「多くて 1 個」。「社員」と「社員証」など、物理的な 1:1 対応があるときに使う。
       </p>
+      <p>
+        <strong>この図が現実世界で語っているルール</strong>:
+      </p>
+      <ul>
+        <li>1 人の社員は必ず 1 つの社員証を持つ (社員証を持たない社員は存在しない)</li>
+        <li>1 枚の社員証は必ず 1 人の社員に紐付く (誰にも配られていない社員証は存在しない)</li>
+        <li>1 人の社員に社員証を 2 枚以上配布することはない</li>
+        <li>1 枚の社員証を複数人で使い回すことはない</li>
+      </ul>
 
       <ERDiagram
         title="1:1 の例 — 社員と社員証"
@@ -100,6 +114,15 @@ export default function Page() {
       <p>
         片側は「多くて 1 個」、もう片側は「複数個」。もっとも頻出のパターン。
       </p>
+      <p>
+        <strong>この図が現実世界で語っているルール</strong>:
+      </p>
+      <ul>
+        <li>1 人の部下は必ず 1 人の部長に報告する (どの部長にも属さない部下はいない)</li>
+        <li>1 人の部長は必ず 1 人以上の部下を持つ (部下 0 人の部長は存在しない)</li>
+        <li>1 人の部下が同時に 2 人以上の部長に報告することはない</li>
+        <li>1 人の部長が持てる部下の人数に上限はない</li>
+      </ul>
 
       <ERDiagram
         title="1:N の例 — 部長と部下"
@@ -143,6 +166,15 @@ export default function Page() {
         詳細は {" "}
         <Link href="/data-modeling/er-diagram/many-to-many">多対多と連関実体 ページ</Link>。
       </p>
+      <p>
+        <strong>この図が現実世界で語っているルール</strong>:
+      </p>
+      <ul>
+        <li>1 人の学生は 0 個以上の科目を履修する (履修 0 科目の学生も存在してよい)</li>
+        <li>1 つの科目は 0 人以上の学生に履修される (履修者ゼロの科目も存在してよい)</li>
+        <li>1 人の学生が複数の科目を同時に履修できる</li>
+        <li>1 つの科目を複数の学生が同時に履修できる</li>
+      </ul>
 
       <ERDiagram
         title="N:M の例 — 学生と履修科目"
@@ -196,10 +228,19 @@ export default function Page() {
         「入口から見て近い側」の記号が「相手からの最大基数」を表すという読み方の慣習になっている。
       </p>
 
-      <h2>変なER図 との対応: 違和感 #1「EC サイトなのに 1:1」</h2>
+      <h2>試してみる: 記号を変えると現実世界のルールがどう変わるか</h2>
+      <p>
+        3 つの ER 図を用意した。両端のボタンでカーディナリティの記号を切り替えると、
+        その図が表す業務ルール (O = 成立 / X = 成立しない) が動的に変わる。
+        「記号 1 つの差」が現実世界のどのルールに直結しているかを、実際に手を動かして確かめてほしい。
+      </p>
+
+      <CardinalityQuiz />
+
+      <h2>変なER図 との対応: 違和感 #4「EC サイトなのに 1:1」</h2>
 
       <div className="not-prose my-6">
-        <WeirdERDiagram highlightAnomalies={new Set([1])} />
+        <WeirdERDiagram highlightAnomalies={new Set([4])} />
       </div>
 
       <p>

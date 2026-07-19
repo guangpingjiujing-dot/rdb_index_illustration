@@ -135,10 +135,10 @@ export default function Page() {
         現代の作図ツールの既定であり、実務で目にする機会がもっとも多いから。
       </p>
 
-      <h2>変なER図 との対応: 違和感 #9 記法混在</h2>
+      <h2>変なER図 との対応: 違和感 #6 記法混在</h2>
 
       <div className="not-prose my-6">
-        <WeirdERDiagram highlightAnomalies={new Set([9])} />
+        <WeirdERDiagram highlightAnomalies={new Set([6])} />
       </div>
 
       <p>

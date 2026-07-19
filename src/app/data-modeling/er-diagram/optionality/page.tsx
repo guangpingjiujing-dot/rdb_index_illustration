@@ -156,10 +156,10 @@ export default function Page() {
         必須参加を強制するなら追加の仕組み (NOT NULL + トリガ or アプリケーション層のバリデーション) が要る。
       </p>
 
-      <h2>変なER図 との対応: 違和感 #8 参加制約の矛盾</h2>
+      <h2>変なER図 との対応: 違和感 #9 参加制約の矛盾</h2>
 
       <div className="not-prose my-6">
-        <WeirdERDiagram highlightAnomalies={new Set([8])} />
+        <WeirdERDiagram highlightAnomalies={new Set([9])} />
       </div>
 
       <p>

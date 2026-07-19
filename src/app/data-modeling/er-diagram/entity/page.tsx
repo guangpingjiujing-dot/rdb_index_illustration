@@ -104,10 +104,10 @@ export default function Page() {
         余計な箱を作らないほうが図はシンプルになる。
       </p>
 
-      <h2>変なER図 との対応: 違和感 #5「顧客」の属性欄破綻</h2>
+      <h2>変なER図 との対応: 違和感 #2「顧客」の属性欄破綻</h2>
 
       <div className="not-prose my-6">
-        <WeirdERDiagram highlightAnomalies={new Set([5])} />
+        <WeirdERDiagram highlightAnomalies={new Set([2])} />
       </div>
 
       <p>

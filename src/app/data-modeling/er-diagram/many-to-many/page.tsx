@@ -154,10 +154,10 @@ export default function Page() {
         </li>
       </ul>
 
-      <h2>変なER図 との対応: 違和感 #2「顧客×商品」に中間実体なし</h2>
+      <h2>変なER図 との対応: 違和感 #5「顧客×商品」に中間実体なし</h2>
 
       <div className="not-prose my-6">
-        <WeirdERDiagram highlightAnomalies={new Set([2])} />
+        <WeirdERDiagram highlightAnomalies={new Set([5])} />
       </div>
 
       <p>

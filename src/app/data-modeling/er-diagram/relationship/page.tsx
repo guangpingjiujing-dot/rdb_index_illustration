@@ -230,23 +230,10 @@ export default function Page() {
         caption="社員から社員へループ。両端のカーディナリティ (上司側は 1 人 or 0 人 = 社長は上司なし、部下側は複数) と役割名を必ず明示する。"
       />
 
-      <h2>変なER図 との対応: 違和感 #6「発注」と「確定」が並行して引かれている</h2>
+      <h2>変なER図 との対応: 違和感 #1 循環参照</h2>
 
       <div className="not-prose my-6">
-        <WeirdERDiagram highlightAnomalies={new Set([6])} />
-      </div>
-
-      <p>
-        <Link href="/data-modeling/er-diagram">変なER図</Link> では、
-        「顧客」と「注文」の間に <strong>「発注」</strong> と <strong>「確定」</strong> の 2 本の線が引かれている。
-        どちらも役割名は付いているように見えるが、日本語としてほぼ同じ意味に読めてしまい、
-        実際何の違いがあるのか図から読み取れない。この 2 本を厳密に語り分けられるのが、ER 図が読める人の第一歩。
-      </p>
-
-      <h2>変なER図 との対応: 違和感 #7 循環参照</h2>
-
-      <div className="not-prose my-6">
-        <WeirdERDiagram highlightAnomalies={new Set([7])} />
+        <WeirdERDiagram highlightAnomalies={new Set([1])} />
       </div>
 
       <p>
@@ -258,6 +245,19 @@ export default function Page() {
       <p>
         自己参照で書き直せば、「カテゴリ → 親カテゴリ (別の 1 件)」という有向・任意参加の再帰関連として明示できる。
         トップ層のカテゴリ (親を持たないルート) の存在も参加制約で表現できる。
+      </p>
+
+      <h2>変なER図 との対応: 違和感 #3「発注」と「確定」が並行して引かれている</h2>
+
+      <div className="not-prose my-6">
+        <WeirdERDiagram highlightAnomalies={new Set([3])} />
+      </div>
+
+      <p>
+        <Link href="/data-modeling/er-diagram">変なER図</Link> では、
+        「顧客」と「注文」の間に <strong>「発注」</strong> と <strong>「確定」</strong> の 2 本の線が引かれている。
+        どちらも役割名は付いているように見えるが、日本語としてほぼ同じ意味に読めてしまい、
+        実際何の違いがあるのか図から読み取れない。この 2 本を厳密に語り分けられるのが、ER 図が読める人の第一歩。
       </p>
 
       <FAQ items={faq} />
