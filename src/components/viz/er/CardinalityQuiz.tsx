@@ -291,14 +291,14 @@ function ProblemCard({ problem }: { problem: Problem }) {
           ]}
           notation="ie"
         />
-        {/* md+ のみ: エンティティ辺の外側にフローティング。
+        {/* md+ のみ: エンティティ辺の外側 + 線より上にフローティング。
             viewBox 座標 (1000x260, entity 右辺 x=280 / 左辺 x=720、線 y≈120) を
-            親コンテナの %/固定値に換算して配置。VizFrame の header+padding があるので
-            縦は少し下 (top: 55%) にオフセットしている。 */}
+            親コンテナの % に換算して配置。VizFrame の header+padding + SVG 上マージンを
+            合算して top: 35% にすると、線 (~viewBox y=120) より十分上でマーカーを潰さない。 */}
         <div className="pointer-events-none absolute inset-0 hidden md:block">
           <div
             className="pointer-events-auto absolute"
-            style={{ left: "30%", top: "55%", transform: "translateY(-50%)" }}
+            style={{ left: "30%", top: "35%", transform: "translateY(-50%)" }}
           >
             <FloatingToggle
               entityLabel={problem.from.label}
@@ -308,7 +308,7 @@ function ProblemCard({ problem }: { problem: Problem }) {
           </div>
           <div
             className="pointer-events-auto absolute"
-            style={{ right: "30%", top: "55%", transform: "translateY(-50%)" }}
+            style={{ right: "30%", top: "35%", transform: "translateY(-50%)" }}
           >
             <FloatingToggle
               entityLabel={problem.to.label}
