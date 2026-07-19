@@ -365,26 +365,4 @@ export const dataModelingTopics: DataModelingTopic[] = [
     metaDescription:
       "ER 図の主要 3 記法 (IE / IDEF1X / Chen) を同じ ER 図で描き分け、記号の 1:1 対応表と、実務ではどの記法を選ぶかの判断基準まで解説。",
   },
-  {
-    section: "data-modeling",
-    category: "er-diagram",
-    slug: "reading",
-    path: "/data-modeling/er-diagram/reading",
-    title: "ER 図を読むチェックリスト",
-    shortTitle: "読み方",
-    level: "basic",
-    summary:
-      "「変なER図」を読み解く 9 段階のチェックリスト。実業務でレビューされた ER 図を読むときにも使える。",
-    definition:
-      "ER 図の読解とは、エンティティ・関連・カーディナリティ・参加制約・キー・記法の各要素を順に検証し、実世界の業務ルールと矛盾がないかを判定する手続きである。",
-    keywords: [
-      "ER図 読み方",
-      "ER図 チェックリスト",
-      "ER図 レビュー",
-      "変なER図",
-    ],
-    metaTitle: "ER 図を読むチェックリスト｜「変なER図」で身につく 9 段階の読解法",
-    metaDescription:
-      "ER 図をレビューするときの 9 段階チェックリスト。エンティティの粒度、関連の役割名、カーディナリティ、参加制約、弱エンティティ、識別関係、記法の一貫性まで、実業務で使える読解手順。",
-  },
 ];

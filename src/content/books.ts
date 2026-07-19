@@ -39,7 +39,6 @@ export const books: Book[] = [
       "many-to-many",
       "weak-entity",
       "notation",
-      "reading",
     ],
   },
   {
@@ -60,7 +59,6 @@ export const books: Book[] = [
       "many-to-many",
       "weak-entity",
       "notation",
-      "reading",
       "keys",
       "1nf",
     ],

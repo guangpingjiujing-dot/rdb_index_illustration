@@ -16,6 +16,13 @@ const nextConfig: NextConfig = {
         destination: "/data-modeling/er-diagram/weak-entity",
         permanent: true,
       },
+      // 2026-07-20: 「読み方チェックリスト」ページを削除し、旗艦ページの末尾に
+      // コピペテンプレートとして吸収。旧 URL は旗艦へ流す。
+      {
+        source: "/data-modeling/er-diagram/reading",
+        destination: "/data-modeling/er-diagram",
+        permanent: true,
+      },
     ];
   },
 };

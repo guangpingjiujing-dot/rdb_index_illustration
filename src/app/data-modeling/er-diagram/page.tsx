@@ -43,7 +43,6 @@ const LEARNING_ORDER = [
   "many-to-many",
   "weak-entity",
   "notation",
-  "reading",
 ] as const;
 
 const faq = [
@@ -158,6 +157,30 @@ export default function ErDiagramHub() {
               </li>
             ))}
           </ul>
+        </Container>
+      </section>
+
+      <section className="border-b border-[var(--border)]">
+        <Container size="wide" className="py-12 md:py-16">
+          <h2 className="mb-2 text-xl md:text-2xl font-bold tracking-tight">
+            レビュー時のコピペ用チェックリスト
+          </h2>
+          <p className="mb-6 text-sm text-[var(--muted-foreground)] leading-relaxed">
+            9 つの違和感を汎化した項目。Slack や PR の ER 図レビューで貼って、上から順に潰していく。
+          </p>
+          <div className="rounded border border-[var(--border-strong)] bg-[var(--card)] p-5">
+            <pre className="text-xs md:text-sm leading-relaxed whitespace-pre-wrap font-mono">{`### ER 図レビュー チェックリスト
+- [ ] エンティティの粒度は適切か (属性に複数値・JSON が入っていないか)
+- [ ] 主キーは適切か (全エンティティに 1 つ以上宣言、代理/自然キーの使い分けは統一されているか)
+- [ ] 関連に役割名が付いているか (特に同エンティティ間に複数の関連があるとき)
+- [ ] 自己参照 (再帰関連) の方向と役割名が明示されているか
+- [ ] カーディナリティが実世界の業務ルールと一致しているか
+- [ ] 参加制約 (必須/任意) が明示され矛盾がないか
+- [ ] 多対多は連関実体に分解されているか
+- [ ] 弱エンティティは親エンティティと識別関係で繋がっているか
+- [ ] 図全体で記法が統一されているか
+`}</pre>
+          </div>
         </Container>
       </section>
 

@@ -26,7 +26,6 @@ const ER_DIAGRAM_ORDER = [
   "many-to-many",
   "weak-entity",
   "notation",
-  "reading",
 ] as const;
 
 function getOrderedTopics(
