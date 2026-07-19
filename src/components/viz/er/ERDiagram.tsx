@@ -166,6 +166,10 @@ function CardinalityMarker({
   }
 
   if (notation === "idef1x") {
+    // 注: この実装は FIPS 184 (IDEF1X 原典) の厳密な記号体系ではなく、視覚差を強調するための
+    // 簡易表現。原典では子端に常に ● (solid dot) を置き、P (1..N) / Z (0..1) / 数字 (exact N) を
+    // 付記する非対称形。親端は default 無印。ここでは one/zero-one/one-many/zero-many の
+    // 4 種を ● / ○ / P / M で描き分けている (M は non-standard)。詳細は notation ページ末尾の注記参照。
     // 円は線に沿って エンティティ端から 18 単位、ラベル文字はさらに 14 単位先。
     // 文字は線とかぶらないよう線に対して垂直方向に 14 単位ずらす。
     const cx = x + dx * 18;

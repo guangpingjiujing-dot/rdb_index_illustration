@@ -169,9 +169,10 @@ export default function Page() {
       <p>
         <strong>この図が現実世界で語っているルール</strong>:
       </p>
+
       <ul>
-        <li>1 人の学生は 0 個以上の科目を履修する (履修 0 科目の学生も存在してよい)</li>
-        <li>1 つの科目は 0 人以上の学生に履修される (履修者ゼロの科目も存在してよい)</li>
+        <li>1 人の学生は 1 科目以上を履修する (履修必須)</li>
+        <li>1 つの科目は 1 人以上の学生に履修される (履修者必須)</li>
         <li>1 人の学生が複数の科目を同時に履修できる</li>
         <li>1 つの科目を複数の学生が同時に履修できる</li>
       </ul>
@@ -204,11 +205,11 @@ export default function Page() {
           {
             from: "stu",
             to: "cls",
-            fromCardinality: "zero-many",
-            toCardinality: "zero-many",
+            fromCardinality: "one-many",
+            toCardinality: "one-many",
           },
         ]}
-        caption="両端に円 + 鳥足 = 「0 or それ以上」。この形は必ず連関実体に分解する。"
+        caption="両端に縦棒 + 鳥足 = 「必ず 1 以上」。両側とも上限が N であることが N:M の本質 (下限側 = 参加制約は 参加制約 ページで扱う)。この形は必ず連関実体に分解する。"
       />
 
       <h2>IE 記法 (crow&apos;s foot) の記号早見</h2>

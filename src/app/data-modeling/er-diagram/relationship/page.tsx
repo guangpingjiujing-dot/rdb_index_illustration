@@ -222,12 +222,12 @@ export default function Page() {
           {
             from: "emp2",
             to: "emp2",
-            fromCardinality: "one-many",
+            fromCardinality: "zero-many",
             toCardinality: "zero-one",
             label: "上司",
           },
         ]}
-        caption="社員から社員へループ。両端のカーディナリティ (上司側は 1 人 or 0 人 = 社長は上司なし、部下側は複数) と役割名を必ず明示する。"
+        caption="社員から社員へループ。両端のカーディナリティ (上司側は 1 人 or 0 人 = 社長は上司なし、部下側は 0 or 複数 = 末端社員は部下なし) と役割名を必ず明示する。"
       />
 
       <h2>変なER図 との対応: 違和感 #1 循環参照</h2>

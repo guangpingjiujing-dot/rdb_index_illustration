@@ -74,22 +74,28 @@ export default function Page() {
               <td className="border-b border-[var(--border)] px-3 py-2">菱形</td>
             </tr>
             <tr>
-              <td className="border-b border-[var(--border)] px-3 py-2">1 (必須)</td>
+              <td className="border-b border-[var(--border)] px-3 py-2">1 (必須、max=min=1)</td>
               <td className="border-b border-[var(--border)] px-3 py-2">縦棒 |</td>
-              <td className="border-b border-[var(--border)] px-3 py-2">●</td>
+              <td className="border-b border-[var(--border)] px-3 py-2">親端: 無印 (default)</td>
               <td className="border-b border-[var(--border)] px-3 py-2">1</td>
             </tr>
             <tr>
-              <td className="border-b border-[var(--border)] px-3 py-2">0..1 (任意)</td>
+              <td className="border-b border-[var(--border)] px-3 py-2">0..1 (任意、max=1, min=0)</td>
               <td className="border-b border-[var(--border)] px-3 py-2">| ○</td>
-              <td className="border-b border-[var(--border)] px-3 py-2">◯ Z</td>
+              <td className="border-b border-[var(--border)] px-3 py-2">子端: ● + Z</td>
               <td className="border-b border-[var(--border)] px-3 py-2">0,1</td>
             </tr>
             <tr>
-              <td className="border-b border-[var(--border)] px-3 py-2">N (多)</td>
-              <td className="border-b border-[var(--border)] px-3 py-2">鳥足 &lt;</td>
-              <td className="border-b border-[var(--border)] px-3 py-2">P</td>
-              <td className="border-b border-[var(--border)] px-3 py-2">N</td>
+              <td className="border-b border-[var(--border)] px-3 py-2">0..N (任意 + 多、min=0)</td>
+              <td className="border-b border-[var(--border)] px-3 py-2">○ 鳥足</td>
+              <td className="border-b border-[var(--border)] px-3 py-2">子端: ● 単独 (子端の default)</td>
+              <td className="border-b border-[var(--border)] px-3 py-2">0,N</td>
+            </tr>
+            <tr>
+              <td className="border-b border-[var(--border)] px-3 py-2">1..N (必須 + 多、min=1)</td>
+              <td className="border-b border-[var(--border)] px-3 py-2">| 鳥足</td>
+              <td className="border-b border-[var(--border)] px-3 py-2">子端: ● + P</td>
+              <td className="border-b border-[var(--border)] px-3 py-2">1,N</td>
             </tr>
             <tr>
               <td className="border-b border-[var(--border)] px-3 py-2">識別関係</td>
@@ -112,6 +118,16 @@ export default function Page() {
           </tbody>
         </table>
       </div>
+
+      <p className="text-sm text-[var(--muted-foreground)]">
+        <strong>IDEF1X の記号は親端と子端で非対称</strong>。子端 (many 側) には
+        {" "}<strong>● (solid dot)</strong> が常に置かれ、必要に応じて
+        {" "}<strong>P (1..N)</strong> / <strong>Z (0..1)</strong> / 数字 (exactly N) の文字を付記する
+        (原典: FIPS PUB 184)。親端は既定で「必ず 1」を意味するため通常は無印。
+        本サイト内の変なER図の #6 対比図では、視覚差を強調する目的で ● / ○ / P / M を
+        混在させた簡易表現を採用しており、厳密な IDEF1X ではない (ツール Erwin / ER/Studio 等では
+        本節の表の記号が標準)。
+      </p>
 
       <h2>変なER図 との対応: 違和感 #6 記法混在</h2>
 
