@@ -23,6 +23,13 @@
   --warn: #6b6b68;
   --warn-soft: #f2f2f0;
 
+  /* インタラクティブな正誤フィードバック専用 (クイズ等)。
+     モノクロ基調に馴染む彩度低めの青/赤。詳細は docs/DESIGN.md の「カラーパレット」節を参照。 */
+  --correct: #3b6a95;
+  --correct-soft: #e6edf5;
+  --wrong: #a05252;
+  --wrong-soft: #f5e6e6;
+
   --accent: #0a0a0a;
 }
 
@@ -63,6 +70,10 @@
   --color-danger-soft: var(--danger-soft);
   --color-warn: var(--warn);
   --color-warn-soft: var(--warn-soft);
+  --color-correct: var(--correct);
+  --color-correct-soft: var(--correct-soft);
+  --color-wrong: var(--wrong);
+  --color-wrong-soft: var(--wrong-soft);
   --color-accent: var(--accent);
   --font-sans: var(--font-geist-sans), "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic", "Meiryo", sans-serif;
   --font-mono: var(--font-geist-mono), "SF Mono", "Menlo", monospace;

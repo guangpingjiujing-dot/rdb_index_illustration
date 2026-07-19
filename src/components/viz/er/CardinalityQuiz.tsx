@@ -343,14 +343,14 @@ function ProblemCard({ problem }: { problem: Problem }) {
             let resultColor = "text-transparent";
             if (revealAll) {
               resultText = `正解: ${truth}`;
-              resultColor = "text-blue-600";
+              resultColor = "text-[var(--correct)]";
             } else if (g !== undefined) {
               if (correct) {
                 resultText = "正解";
-                resultColor = "text-blue-600";
+                resultColor = "text-[var(--correct)]";
               } else {
                 resultText = "不正解";
-                resultColor = "text-red-600";
+                resultColor = "text-[var(--wrong)]";
               }
             }
             return (
@@ -407,9 +407,9 @@ function GuessButton({
 }) {
   const style =
     fill === "correct"
-      ? "border-blue-600 bg-blue-600 text-white"
+      ? "border-[var(--correct)] bg-[var(--correct-soft)] text-[var(--correct)]"
       : fill === "wrong"
-        ? "border-red-600 bg-red-600 text-white"
+        ? "border-[var(--wrong)] bg-[var(--wrong-soft)] text-[var(--wrong)]"
         : "border-[var(--border-strong)] text-[var(--foreground)] hover:bg-[var(--muted)]/60";
   return (
     <button
