@@ -25,7 +25,6 @@ const ER_DIAGRAM_ORDER = [
   "optionality",
   "many-to-many",
   "weak-entity",
-  "identifying",
   "notation",
   "reading",
 ] as const;

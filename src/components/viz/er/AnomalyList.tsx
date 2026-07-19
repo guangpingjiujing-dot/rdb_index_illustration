@@ -84,7 +84,7 @@ export const ANOMALIES: Anomaly[] = [
     answer:
       "注文明細は本来「注文の中の 1 行」なので、注文 なしには意味を持たない弱エンティティ。IE 記法では、弱エンティティは主キー欄に親の主キーを含めた複合キー ((注文ID, 明細番号)) で表現するべき。この図では 明細ID 単独の主キーになっていて、明細だけを見てもどの注文の何番目か分からず、識別関係の設計として破綻している。",
     concept: "弱エンティティの PK 設計不備",
-    href: "/data-modeling/er-diagram/identifying",
+    href: "/data-modeling/er-diagram/weak-entity",
   },
   {
     n: 9,

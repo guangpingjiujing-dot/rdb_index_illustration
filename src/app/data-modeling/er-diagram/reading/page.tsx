@@ -112,8 +112,7 @@ export default function Page() {
         子エンティティの主キーが親の主キーを含んでいるか。
       </p>
       <p>
-        → 詳細: <Link href="/data-modeling/er-diagram/weak-entity">弱エンティティ</Link>、
-        <Link href="/data-modeling/er-diagram/identifying">識別関係と非識別関係</Link>
+        → 詳細: <Link href="/data-modeling/er-diagram/weak-entity">弱エンティティと識別関係</Link>
       </p>
 
       <h3>9. 図全体で記法が統一されているか</h3>

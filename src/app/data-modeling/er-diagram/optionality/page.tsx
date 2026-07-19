@@ -191,8 +191,8 @@ export default function Page() {
         参加制約は片側だけで決まらず、両側の最小基数が整合していないと関連そのものが破綻する。
       </p>
       <p>
-        さらにこの線は <Link href="/data-modeling/er-diagram/identifying">識別関係</Link>
-        (弱エンティティを二重枠で描く実線) なので、
+        さらにこの線は <Link href="/data-modeling/er-diagram/weak-entity">識別関係</Link>
+        (弱エンティティを親に繋ぐ関連) なので、
         「弱エンティティは親なしでは存在できない」という定義と親側 min=0 が真っ向から衝突する。
         参加制約の矛盾は、関連の意味と組み合わさると設計そのものを崩壊させる。
       </p>

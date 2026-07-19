@@ -32,7 +32,6 @@ const PAGES = [
   "/data-modeling/er-diagram/optionality",
   "/data-modeling/er-diagram/many-to-many",
   "/data-modeling/er-diagram/weak-entity",
-  "/data-modeling/er-diagram/identifying",
   "/data-modeling/er-diagram/notation",
   "/data-modeling/er-diagram/reading",
   "/privacy",

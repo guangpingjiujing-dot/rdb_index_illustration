@@ -321,47 +321,25 @@ export const dataModelingTopics: DataModelingTopic[] = [
     category: "er-diagram",
     slug: "weak-entity",
     path: "/data-modeling/er-diagram/weak-entity",
-    title: "弱エンティティとは",
+    title: "弱エンティティと識別関係",
     shortTitle: "弱エンティティ",
     level: "basic",
     summary:
-      "「注文書の 3 行目」のように、親がいなければ意味を持たないエンティティ。二重四角の記法と、複合主キーで識別する手続きを図解する。",
+      "「注文書の 3 行目」のように、親がいなければ意味を持たないエンティティ。エンティティ側から見れば「弱」、関連側から見れば「識別関係」— 主キーの構造で判別する。",
     definition:
-      "弱エンティティ (weak entity) とは、自身の属性だけでは行を一意に識別できず、親エンティティの主キーを借りて初めて一意になるエンティティであり、ER 図では二重四角で表記される。",
+      "弱エンティティ (weak entity) とは、自身の属性だけでは行を一意に識別できず、親エンティティの主キーを借りて初めて一意になるエンティティであり、親との関連は識別関係 (identifying relationship)、対義の独立エンティティ同士を繋ぐ関連は非識別関係と呼ばれる。",
     keywords: [
       "弱エンティティ",
       "weak entity",
       "強エンティティ",
       "識別関係",
-      "複合主キー",
-    ],
-    metaTitle: "弱エンティティとは｜「注文明細」を例に強エンティティとの違いを図解",
-    metaDescription:
-      "弱エンティティの定義を「注文と注文明細」「建物と部屋」の例で図解。強エンティティとの違い、二重四角の記法、親を消したら子が意味を持たなくなる判定基準、複合主キーでの識別まで。",
-  },
-  {
-    section: "data-modeling",
-    category: "er-diagram",
-    slug: "identifying",
-    path: "/data-modeling/er-diagram/identifying",
-    title: "識別関係と非識別関係の違い",
-    shortTitle: "識別関係",
-    level: "basic",
-    summary:
-      "弱エンティティを親と繋ぐ「識別関係」と、独立エンティティ同士を繋ぐ「非識別関係」の違い。IDEF1X 記法での実線 vs 破線の使い分けまで。",
-    definition:
-      "識別関係 (identifying relationship) とは、親エンティティの主キーが子エンティティの主キーの一部として継承される関連であり、対義の非識別関係では親の主キーは子の外部キーになるだけで子の主キーには含まれない。",
-    keywords: [
-      "識別関係",
       "非識別関係",
       "identifying relationship",
-      "IDEF1X",
-      "実線",
-      "破線",
+      "複合主キー",
     ],
-    metaTitle: "識別関係と非識別関係の違い｜出席名簿の例で図解",
+    metaTitle: "弱エンティティと識別関係とは｜「注文明細」を例に図解",
     metaDescription:
-      "識別関係と非識別関係の違いを「田中クラスの山田くん」(識別関係) vs「山田太郎 (学籍番号 20250001)」(非識別関係) の例で図解。IDEF1X 記法の実線 vs 破線の対応関係まで。",
+      "弱エンティティと識別関係の定義を「注文と注文明細」「建物と部屋」の例で図解。強エンティティ / 非識別関係との違い、主キーが親のキーを含むかで判別する手続き、ON DELETE CASCADE などの実装帰結まで。",
   },
   {
     section: "data-modeling",
