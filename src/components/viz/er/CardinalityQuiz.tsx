@@ -185,15 +185,36 @@ export function CardinalityQuiz() {
   );
 }
 
+type Guess = "O" | "X";
+
 function ProblemCard({ problem }: { problem: Problem }) {
   const [fromCard, setFromCard] = useState<CardinalityMark>(
     problem.initial.from,
   );
   const [toCard, setToCard] = useState<CardinalityMark>(problem.initial.to);
+  const [guesses, setGuesses] = useState<Record<number, Guess>>({});
+  const [revealAll, setRevealAll] = useState(false);
+
+  const changeFrom = (v: CardinalityMark) => {
+    setFromCard(v);
+    setGuesses({});
+    setRevealAll(false);
+  };
+  const changeTo = (v: CardinalityMark) => {
+    setToCard(v);
+    setGuesses({});
+    setRevealAll(false);
+  };
 
   const reset = () => {
     setFromCard(problem.initial.from);
     setToCard(problem.initial.to);
+    setGuesses({});
+    setRevealAll(false);
+  };
+
+  const guess = (i: number, choice: Guess) => {
+    setGuesses((prev) => ({ ...prev, [i]: choice }));
   };
 
   return (
@@ -247,53 +268,82 @@ function ProblemCard({ problem }: { problem: Problem }) {
         <SideToggle
           entityLabel={problem.from.label}
           value={fromCard}
-          onChange={setFromCard}
+          onChange={changeFrom}
         />
         <SideToggle
           entityLabel={problem.to.label}
           value={toCard}
-          onChange={setToCard}
+          onChange={changeTo}
         />
       </div>
 
       <div className="mt-6">
-        <div className="mb-2 flex items-center justify-between">
+        <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
           <h4 className="text-sm font-bold">
-            この図が現実世界で語っているルール
+            この図が現実世界で語っているルール — 各行、成立する (O) か成立しない (X) か答えよう
           </h4>
-          <button
-            type="button"
-            onClick={reset}
-            className="text-xs text-[var(--muted-foreground)] underline underline-offset-2 hover:text-[var(--foreground)]"
-          >
-            初期状態に戻す
-          </button>
+          <div className="flex gap-3 text-xs">
+            <button
+              type="button"
+              onClick={() => setRevealAll((v) => !v)}
+              className="text-[var(--muted-foreground)] underline underline-offset-2 hover:text-[var(--foreground)]"
+            >
+              {revealAll ? "答え合わせを閉じる" : "全て答え合わせ"}
+            </button>
+            <button
+              type="button"
+              onClick={reset}
+              className="text-[var(--muted-foreground)] underline underline-offset-2 hover:text-[var(--foreground)]"
+            >
+              初期状態に戻す
+            </button>
+          </div>
         </div>
         <ul className="divide-y divide-[var(--border)] border-y border-[var(--border)]">
           {problem.rules.map((rule, i) => {
-            const ok = rule.isTrue(fromCard, toCard);
+            const truth: Guess = rule.isTrue(fromCard, toCard) ? "O" : "X";
+            const g = guesses[i];
+            const showResult = revealAll || g !== undefined;
+            const correct = g !== undefined && g === truth;
             return (
               <li
                 key={i}
-                className="flex items-start gap-3 py-3 text-sm leading-relaxed"
+                className="flex flex-wrap items-center gap-3 py-3 text-sm leading-relaxed"
               >
-                <span
-                  className={
-                    "mt-0.5 flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full border text-xs font-bold " +
-                    (ok
-                      ? "border-[var(--foreground)] bg-[var(--foreground)] text-[var(--background)]"
-                      : "border-[var(--muted-foreground)] text-[var(--muted-foreground)]")
-                  }
-                  aria-label={ok ? "成立する" : "成立しない"}
-                >
-                  {ok ? "O" : "X"}
-                </span>
-                <span
-                  className={
-                    ok ? undefined : "text-[var(--muted-foreground)] line-through"
-                  }
-                >
-                  {rule.text}
+                <span className="min-w-0 flex-1">{rule.text}</span>
+                <span className="flex flex-shrink-0 items-center gap-2">
+                  <GuessButton
+                    active={g === "O"}
+                    reveal={revealAll}
+                    isTruth={truth === "O"}
+                    onClick={() => guess(i, "O")}
+                    label="O"
+                  />
+                  <GuessButton
+                    active={g === "X"}
+                    reveal={revealAll}
+                    isTruth={truth === "X"}
+                    onClick={() => guess(i, "X")}
+                    label="X"
+                  />
+                  <span
+                    className={
+                      "min-w-[6em] text-xs font-bold " +
+                      (showResult
+                        ? correct || revealAll
+                          ? "text-[var(--foreground)]"
+                          : "text-[var(--muted-foreground)]"
+                        : "text-transparent")
+                    }
+                  >
+                    {revealAll
+                      ? `正解: ${truth}`
+                      : showResult
+                        ? correct
+                          ? "正解"
+                          : `不正解 (正解: ${truth})`
+                        : "未回答"}
+                  </span>
                 </span>
               </li>
             );
@@ -301,6 +351,37 @@ function ProblemCard({ problem }: { problem: Problem }) {
         </ul>
       </div>
     </div>
+  );
+}
+
+function GuessButton({
+  active,
+  reveal,
+  isTruth,
+  onClick,
+  label,
+}: {
+  active: boolean;
+  reveal: boolean;
+  isTruth: boolean;
+  onClick: () => void;
+  label: "O" | "X";
+}) {
+  const highlighted = active || (reveal && isTruth);
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-pressed={active}
+      className={
+        "flex h-8 w-8 items-center justify-center rounded-full border text-sm font-bold transition-colors " +
+        (highlighted
+          ? "border-[var(--foreground)] bg-[var(--foreground)] text-[var(--background)]"
+          : "border-[var(--border-strong)] text-[var(--foreground)] hover:bg-[var(--muted)]/60")
+      }
+    >
+      {label}
+    </button>
   );
 }
 
