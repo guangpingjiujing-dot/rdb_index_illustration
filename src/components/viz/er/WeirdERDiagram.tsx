@@ -23,11 +23,11 @@ export const WEIRD_ENTITY_IDS = {
 } as const;
 
 export const WEIRD_REL_IDS = {
-  PLACE: "rel-place", // #1 カーディナリティ矛盾, #6 役割名重複, #8 参加制約矛盾
+  PLACE: "rel-place", // #1 カーディナリティ矛盾, #6 役割名重複
   CONFIRM: "rel-confirm", // #6 役割名重複 (2 本目)
   FAVORITE: "rel-favorite", // #2 多対多 中間実体なし
   HIERARCHY: "rel-hierarchy", // #7 循環参照
-  LINE_OF: "rel-line-of", // #4 識別関係だが PK 非継承
+  LINE_OF: "rel-line-of", // #4 識別関係だが PK 非継承, #8 参加制約矛盾
   REVIEW_OF: "rel-review", // #9 記法混在 (IDEF1X)
   BELONG: "rel-belong", // 通常の関連 (商品→カテゴリ、違和感なし)
   // 配送先 (#3) は関連自体を張らないことが違和感なので rel は無し
@@ -45,7 +45,7 @@ export const ANOMALY_TARGETS: Record<number, { entityIds?: string[]; relIds?: st
     entityIds: [WEIRD_ENTITY_IDS.SUBCATEGORY],
     relIds: [WEIRD_REL_IDS.HIERARCHY],
   }, // 循環参照
-  8: { relIds: [WEIRD_REL_IDS.PLACE] }, // 参加制約矛盾
+  8: { relIds: [WEIRD_REL_IDS.LINE_OF] }, // 参加制約矛盾 (親側 min=0 vs 子側 min=1 で両立不能)
   9: { relIds: [WEIRD_REL_IDS.REVIEW_OF] }, // 記法混在 (IDEF1X)
 };
 
@@ -161,15 +161,14 @@ function buildEntities(highlightIds: Set<string>, badges: Map<string, number>): 
 
 function buildRelationships(highlightIds: Set<string>, badges: Map<string, number>): ERRelationship[] {
   return [
-    // #1 + #6 + #8: 顧客 —発注— 注文 の 1:0..1 (実質 1:1 固定) + 参加制約矛盾
-    // 注文側を "zero-one" にすることで縦棒+円 (|○) を実際に描画し、
-    // 「必須と任意の記号が同居している」という #8 の違和感を視覚化する。
+    // #1 + #6: 顧客 —発注— 注文 の 1:0..1 (実質 1:1 固定) + 役割名重複
+    // 注文側 "zero-one" (|○) は #1 の「最大 1 に固定」の材料 (最大基数が両側とも 1)。
     {
       id: WEIRD_REL_IDS.PLACE,
       from: WEIRD_ENTITY_IDS.CUSTOMER,
       to: WEIRD_ENTITY_IDS.ORDER,
       fromCardinality: "one", // 顧客側は | のみ (max=min=1)
-      toCardinality: "zero-one", // 注文側は |○ = max=1, min=0 → #8 の視覚的違和感の材料
+      toCardinality: "zero-one", // 注文側は |○ = max=1, min=0 → #1 のカーディナリティ材料
       label: "発注",
       highlighted: highlightIds.has(WEIRD_REL_IDS.PLACE),
       badge: badges.get(WEIRD_REL_IDS.PLACE),
@@ -221,12 +220,16 @@ function buildRelationships(highlightIds: Set<string>, badges: Map<string, numbe
       label: "所属",
       highlighted: false,
     },
-    // #4: 注文 —明細— 注文明細 (識別関係のはずが PK 継承なし)
+    // #4 + #8: 注文 —明細— 注文明細 (識別関係のはずが PK 継承なし) + 参加制約矛盾
+    // 注文側 "zero-one" (|○): 明細から見て親の注文は 0 or 1 = 親なしでも存在できる
+    // 注文明細側 "one-many": 注文から見て明細は必ず 1 件以上
+    // → 「明細が 1 件以上あるのにその明細は親を持たなくてよい」= min の食い違いで両立不能。
+    //    さらに識別関係 (弱エンティティ) の意味 (親なしでは存在できない) とも衝突する。
     {
       id: WEIRD_REL_IDS.LINE_OF,
       from: WEIRD_ENTITY_IDS.ORDER,
       to: WEIRD_ENTITY_IDS.ORDER_LINE,
-      fromCardinality: "one",
+      fromCardinality: "zero-one",
       toCardinality: "one-many",
       label: "明細",
       isIdentifying: true,
