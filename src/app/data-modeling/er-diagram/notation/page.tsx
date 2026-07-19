@@ -14,10 +14,6 @@ export const metadata = buildTopicMetadata(topic);
 
 const faq = [
   {
-    q: "実務ではどの記法を選ぶべきですか？",
-    a: "新規プロジェクトなら IE 記法 (crow's foot) が既定推奨。dbdiagram / DrawSQL / Draw.io / Miro / Lucidchart など主要ツールの既定。既存の官公庁ドキュメントを読む必要があれば IDEF1X、大学の講義資料や論文なら Chen も読めるようにしておく。",
-  },
-  {
     q: "3 記法を混ぜて使ってもよいですか？",
     a: "同じ図の中では混ぜない。読者が同じ記号を違う意味で誤読する原因になる。プロジェクトごとに 1 記法を選び、そのプロジェクトの ER 図はすべて統一する。プロジェクトを横断するときは記法を明示するのが望ましい。",
   },
@@ -116,24 +112,6 @@ export default function Page() {
           </tbody>
         </table>
       </div>
-
-      <h2>実務でどれを選ぶか</h2>
-      <ul>
-        <li>
-          <strong>新規プロジェクト / スタートアップ</strong> → <strong>IE 記法</strong>。
-          dbdiagram / DrawSQL / Draw.io / Miro / Lucidchart の既定
-        </li>
-        <li>
-          <strong>既存の官公庁 / 防衛 / 大規模基幹系ドキュメント</strong> → <strong>IDEF1X</strong>
-        </li>
-        <li>
-          <strong>大学の講義資料 / 論文</strong> → <strong>Chen 記法</strong>
-        </li>
-      </ul>
-      <p>
-        本サイトは <strong>IE 記法</strong> を採用している。
-        現代の作図ツールの既定であり、実務で目にする機会がもっとも多いから。
-      </p>
 
       <h2>変なER図 との対応: 違和感 #6 記法混在</h2>
 
