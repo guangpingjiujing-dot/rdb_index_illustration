@@ -2,7 +2,7 @@
 
 **サイト: https://taitech.dev**
 
-RDBのインデックス（B-tree、ハッシュ、クラスタ化、複合、カバリング、部分、EXPLAIN、統計情報 …）と、正規化を中心とするデータモデリング体系（関数従属性、1NF〜3NF、非正規化 …）を、インタラクティブな図解＋アニメーションと厳密な定義で解説するサイト。
+RDBのインデックス（B-tree、ハッシュ、クラスタ化、複合、カバリング、部分、EXPLAIN、統計情報 …）と、データモデリング体系（正規化・ER 図）を、インタラクティブな図解＋アニメーションと厳密な定義で解説するサイト。ER 図カテゴリは「変なER図」の間違い探しから 9 つの違和感を ER 概念で言語化する構成。
 
 - 技術構成: Next.js 16 (App Router) + TypeScript + Tailwind CSS v4 + Framer Motion + SVG
 - DB: 不要（全ページ静的生成 + クライアント計算）
@@ -61,6 +61,14 @@ npx tsc --noEmit    # 型チェック
 | `/data-modeling/normalization/2nf` | 第2正規形 (2NF) | 基礎 |
 | `/data-modeling/normalization/3nf` | 第3正規形 (3NF) | 基礎 |
 | `/data-modeling/normalization/denormalization` | 非正規化 | 発展 |
+| `/data-modeling/er-diagram` | 「変なER図」— 9 つの違和感を数える ER 図の学習ハブ | |
+| `/data-modeling/er-diagram/entity` | エンティティとは | 基礎 |
+| `/data-modeling/er-diagram/relationship` | 関連（リレーションシップ） | 基礎 |
+| `/data-modeling/er-diagram/cardinality` | カーディナリティ（多重度） | 基礎 |
+| `/data-modeling/er-diagram/optionality` | 参加制約（必須参加 / 任意参加） | 基礎 |
+| `/data-modeling/er-diagram/many-to-many` | 多対多（N:M）と連関実体 | 基礎 |
+| `/data-modeling/er-diagram/weak-entity` | 弱エンティティと識別関係 | 基礎 |
+| `/data-modeling/er-diagram/notation` | ER 図の記法比較（IE / IDEF1X / Chen） | 基礎 |
 | `/about` | 著者（たいてっく）紹介 + menta CTA | |
 | `/privacy` `/terms` `/contact` | 法務・お問い合わせ | |
 
