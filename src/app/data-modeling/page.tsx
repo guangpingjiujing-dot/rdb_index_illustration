@@ -123,7 +123,7 @@ function TopicIndex() {
               ? {
                   path: c.path,
                   label: "変なER図",
-                  sub: "9 つの違和感を数える旗艦ページ",
+                  sub: "9 つの違和感、全て指摘できますか？",
                 }
               : undefined;
           return (
@@ -173,15 +173,10 @@ function CategoryGroup({
               className="group flex items-start justify-between gap-4 py-5 px-2 -mx-2 bg-[var(--foreground)]/[0.03] hover:bg-[var(--foreground)]/[0.06] transition-colors"
             >
               <div className="min-w-0 flex-1">
-                <div className="flex items-baseline gap-3 flex-wrap">
-                  <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--foreground)]">
-                    旗艦
-                  </span>
-                  <span className="text-lg font-bold group-hover:underline underline-offset-4">
-                    {flagship.label}
-                  </span>
+                <div className="text-lg font-bold group-hover:underline underline-offset-4">
+                  {flagship.label}
                 </div>
-                <p className="mt-2 text-sm text-[var(--muted-foreground)] leading-relaxed">
+                <p className="mt-1 text-sm text-[var(--muted-foreground)] leading-relaxed">
                   {flagship.sub}
                 </p>
               </div>

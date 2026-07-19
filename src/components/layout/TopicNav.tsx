@@ -51,14 +51,14 @@ export function TopicNav({
               <li>
                 <Link
                   href="/data-modeling/er-diagram"
-                  className="group flex items-center gap-2 border-l-2 -ml-px border-transparent px-3 py-1.5 leading-snug text-[var(--foreground)] hover:border-[var(--border-strong)] hover:bg-[var(--muted)]/60 transition-colors"
+                  className="group block border-l-2 -ml-px border-transparent px-3 py-2 leading-snug text-[var(--foreground)] hover:border-[var(--border-strong)] hover:bg-[var(--muted)]/60 transition-colors"
                 >
-                  <span className="text-[9px] font-bold uppercase tracking-widest text-[var(--muted-foreground)] group-hover:text-[var(--foreground)]">
-                    旗艦
-                  </span>
-                  <span className="font-semibold group-hover:underline underline-offset-4">
+                  <div className="font-semibold group-hover:underline underline-offset-4">
                     変なER図
-                  </span>
+                  </div>
+                  <div className="mt-0.5 text-[11px] text-[var(--muted-foreground)] leading-tight">
+                    9 つの違和感、全て指摘できますか？
+                  </div>
                 </Link>
               </li>
             )}

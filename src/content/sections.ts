@@ -54,7 +54,7 @@ export const dataModelingCategories: Record<DataModelingCategoryKey, DataModelin
     label: "ER図",
     path: "/data-modeling/er-diagram",
     description:
-      "エンティティ・関連・カーディナリティ・弱エンティティなど ER 図の基礎を、身近な例と静的な図解で理解するカテゴリ。旗艦ページ「変なER図」で 9 つの違和感の謎解きから入る。",
+      "エンティティ・関連・カーディナリティ・弱エンティティなど ER 図の基礎を、身近な例と静的な図解で理解するカテゴリ。「変なER図」の間違い探しから入り、9 つの違和感を一つずつ ER 概念で言語化する。",
   },
 };
 
