@@ -4,6 +4,7 @@ import { TopicLayout } from "@/components/layout/TopicLayout";
 import { TopicJsonLd } from "@/components/seo/JsonLd";
 import { FAQ } from "@/components/layout/FAQ";
 import { NotationCompare } from "@/components/viz/er/NotationCompare";
+import { WeirdERDiagram } from "@/components/viz/er/WeirdERDiagram";
 import { findTopic } from "@/content/topics";
 
 const slug = "notation";
@@ -135,10 +136,15 @@ export default function Page() {
       </p>
 
       <h2>変なER図 との対応: 違和感 #9 記法混在</h2>
+
+      <div className="not-prose my-6">
+        <WeirdERDiagram highlightAnomalies={new Set([9])} />
+      </div>
+
       <p>
         <Link href="/data-modeling/er-diagram">変なER図</Link> では、
         ほとんどの関連が IE 記法 (鳥足と縦棒) で描かれているのに、
-        <strong>「家賃履歴 —紐付く— 契約書」の関連だけ IDEF1X 記法 (● / P)</strong> で描かれている。
+        <strong>「レビュー —対象— 商品」の関連だけ IDEF1X 記法 (● / P)</strong> で描かれている。
       </p>
       <p>
         図の中で記法を混在させると、読み手は同じ記号を違う意味で誤読する。

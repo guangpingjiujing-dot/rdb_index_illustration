@@ -4,6 +4,7 @@ import { TopicLayout } from "@/components/layout/TopicLayout";
 import { TopicJsonLd } from "@/components/seo/JsonLd";
 import { FAQ } from "@/components/layout/FAQ";
 import { ERDiagram } from "@/components/viz/er/ERDiagram";
+import { WeirdERDiagram } from "@/components/viz/er/WeirdERDiagram";
 import { findTopic } from "@/content/topics";
 
 const slug = "weak-entity";
@@ -132,17 +133,22 @@ export default function Page() {
         </li>
       </ul>
 
-      <h2>変なER図 との対応: 違和感 #3「配偶者」が独立主キーで単独存在</h2>
+      <h2>変なER図 との対応: 違和感 #3「配送先」が独立主キーで単独存在</h2>
+
+      <div className="not-prose my-6">
+        <WeirdERDiagram highlightAnomalies={new Set([3])} />
+      </div>
+
       <p>
-        <Link href="/data-modeling/er-diagram">変なER図</Link> の「配偶者」エンティティは、
-        意味的には <strong>入居者に従属する弱エンティティ</strong> であるはず (「田中さんの配偶者」という
-        文脈なしには成立しない) にもかかわらず、実装が <strong>「配偶者ID」という独立の主キー</strong> になっており、
-        入居者エンティティとの関連さえ引かれていない。
+        <Link href="/data-modeling/er-diagram">変なER図</Link> の「配送先」エンティティは、
+        意味的には <strong>顧客に従属する弱エンティティ</strong> であるはず (「田中さんの自宅」「田中さんの会社宛」という
+        文脈なしには成立しない) にもかかわらず、実装が <strong>「配送先ID」という独立の主キー</strong> になっており、
+        顧客エンティティとの関連さえ引かれていない。
       </p>
       <p>
-        正しくは「入居者 — 配偶者」を関連で繋ぎ、配偶者側の主キーを
-        <code>(入居者ID, 配偶者連番)</code> のような複合キーにする。
-        これで「田中さんの配偶者」「山田さんの配偶者」を配偶者ID なしで一意に区別できる。
+        正しくは「顧客 — 配送先」を関連で繋ぎ、配送先側の主キーを
+        <code>(顧客ID, 配送先連番)</code> のような複合キーにする。
+        これで「田中さんの自宅」「田中さんの会社宛」を配送先ID なしで一意に区別できる。
       </p>
 
       <FAQ items={faq} />

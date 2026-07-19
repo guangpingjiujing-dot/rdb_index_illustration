@@ -4,6 +4,7 @@ import { TopicLayout } from "@/components/layout/TopicLayout";
 import { TopicJsonLd } from "@/components/seo/JsonLd";
 import { FAQ } from "@/components/layout/FAQ";
 import { ERDiagram } from "@/components/viz/er/ERDiagram";
+import { WeirdERDiagram } from "@/components/viz/er/WeirdERDiagram";
 import { findTopic } from "@/content/topics";
 
 const slug = "identifying";
@@ -153,16 +154,21 @@ export default function Page() {
       </ul>
 
       <h2>変なER図 との対応: 違和感 #4 識別関係の PK 非継承</h2>
+
+      <div className="not-prose my-6">
+        <WeirdERDiagram highlightAnomalies={new Set([4])} />
+      </div>
+
       <p>
-        <Link href="/data-modeling/er-diagram">変なER図</Link> の「家賃履歴」は、
-        入居者との関連が <strong>二重線 (=識別関係)</strong> で描かれている。
-        にもかかわらず、家賃履歴の主キーは <strong>「履歴ID」単独</strong> になっている。
+        <Link href="/data-modeling/er-diagram">変なER図</Link> の「注文明細」は、
+        設計意図としては <strong>注文に従属する識別関係</strong> (親のPKを継承する関連) として描かれている。
+        にもかかわらず、注文明細の主キーは <strong>「明細ID」単独</strong> になっており、親の 注文ID が主キーに入っていない。
       </p>
       <p>
-        識別関係で親と繋がっている以上、家賃履歴の主キーは
-        <strong>(入居者ID, 支払日) の複合キー</strong>
-        あるいは <strong>(入居者ID, 履歴連番)</strong> になるべき。
-        記法 (二重線) と主キー構成が矛盾している状態は、読み手が「どっちが正しい？」と迷う原因になる。
+        識別関係で親と繋がっている以上、注文明細の主キーは
+        <strong>(注文ID, 明細番号) の複合キー</strong>
+        になるべき。
+        設計意図 (識別関係) と主キー構成 (独立キー) が矛盾している状態は、読み手が「どっちが正しい？」と迷う原因になる。
       </p>
 
       <FAQ items={faq} />

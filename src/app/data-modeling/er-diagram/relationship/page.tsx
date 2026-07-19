@@ -4,6 +4,7 @@ import { TopicLayout } from "@/components/layout/TopicLayout";
 import { TopicJsonLd } from "@/components/seo/JsonLd";
 import { FAQ } from "@/components/layout/FAQ";
 import { ERDiagram } from "@/components/viz/er/ERDiagram";
+import { WeirdERDiagram } from "@/components/viz/er/WeirdERDiagram";
 import { findTopic } from "@/content/topics";
 
 const slug = "relationship";
@@ -73,26 +74,37 @@ export default function Page() {
         caption="1 本の線が 1 つの関連 = 「社員は部署に所属する」を表す。カーディナリティは 社員側 (many) + 部署側 (one) で「1 部署に多数の社員が所属」を意味する。"
       />
 
-      <h2>関連の 3 要素: 線・カーディナリティ・(必要なら) 役割名</h2>
+      <h2>関連の 2 要素: 線とカーディナリティ</h2>
       <p>
         ER 図の関連は、エンティティ (箱) 同士を <strong>線</strong> で繋いで、両端に{" "}
         <Link href="/data-modeling/er-diagram/cardinality">カーディナリティ (多重度)</Link>
         と{" "}
         <Link href="/data-modeling/er-diagram/optionality">参加制約</Link>
-        の記号を置くだけでよい。役割名 (`所属` などの動詞) を書くかは場合による:
+        の記号を置くだけでよい。線の意味はエンティティ名の組み合わせから読み取れる (「社員」と「部署」を線で繋げば、意味は「所属」以外ありえない)。
+      </p>
+
+      <h3>カーディナリティの 3 種類 (要点)</h3>
+      <p>
+        カーディナリティは「片方から見て、もう片方は何個と結び付くか」を規定する数の制約。
+        3 種類だけ覚えれば ER 図はほぼ読める:
       </p>
       <ul>
         <li>
-          <strong>単純な 1 関連なら省略される</strong>ことが多い。エンティティ名だけで意味が読み取れるため
-          (現代の dbdiagram / DrawSQL / ChartDB 等の作図ツールの既定でも省略が普通)
+          <strong>1:1</strong> — 両側とも「多くて 1」。社員と社員証など、物理 1:1 対応
         </li>
         <li>
-          <strong>同じエンティティ間に複数の関連があるとき</strong> は、役割名で線を区別する必要がある (次節)
+          <strong>1:N</strong> — 片側「1」、もう片側「複数」。部長と部下、部署と社員など (最頻出パターン)
         </li>
         <li>
-          <strong>自己参照 (再帰関連) のとき</strong> も、方向と意味を明示するため役割名が必須 (後述)
+          <strong>N:M</strong> — 両側とも「複数」。学生と履修科目など。
+          必ず <Link href="/data-modeling/er-diagram/many-to-many">連関実体</Link> に分解する
         </li>
       </ul>
+      <p className="text-sm text-[var(--muted-foreground)]">
+        IE 記法の記号 (縦棒・鳥足・○) の対応や、5 種類 (1 / 0..1 / 1..N / 0..N / N..M) の記号早見表、
+        FK の置き場所まで詳しくは{" "}
+        <Link href="/data-modeling/er-diagram/cardinality">カーディナリティ ページ</Link> を参照。
+      </p>
 
       <h2>同じエンティティ間に複数の関連があるとき</h2>
       <p>
@@ -106,7 +118,9 @@ export default function Page() {
       </ul>
       <p>
         これらを 1 本の線にまとめると意味が混ざってしまうので、
-        <strong>それぞれ独立した関連として別々の線</strong> で描き、必ず <strong>役割名</strong> で区別する。
+        <strong>それぞれ独立した関連として別々の線</strong> で描く。
+        この <strong>複数線を区別するときに限って、線の上に「所属」「監査」などの役割名を付ける</strong>。
+        単純な 1 本線の場合は役割名は不要 (エンティティ名の組み合わせで意味が確定するため)。
       </p>
 
       <p>
@@ -216,24 +230,34 @@ export default function Page() {
         caption="社員から社員へループ。両端のカーディナリティ (上司側は 1 人 or 0 人 = 社長は上司なし、部下側は複数) と役割名を必ず明示する。"
       />
 
-      <h2>変なER図 との対応: 違和感 #6「所属」と「住む」が並行して引かれている</h2>
+      <h2>変なER図 との対応: 違和感 #6「発注」と「確定」が並行して引かれている</h2>
+
+      <div className="not-prose my-6">
+        <WeirdERDiagram highlightAnomalies={new Set([6])} />
+      </div>
+
       <p>
         <Link href="/data-modeling/er-diagram">変なER図</Link> では、
-        「入居者」と「部屋」の間に <strong>「住む」</strong> と <strong>「所属」</strong> の 2 本の線が引かれている。
-        どちらも役割名は付いているように見えるが、実際何の違いがあるのか
-        図から読み取れない。この 2 本を厳密に語り分けられるのが、ER 図が読める人の第一歩。
+        「顧客」と「注文」の間に <strong>「発注」</strong> と <strong>「確定」</strong> の 2 本の線が引かれている。
+        どちらも役割名は付いているように見えるが、日本語としてほぼ同じ意味に読めてしまい、
+        実際何の違いがあるのか図から読み取れない。この 2 本を厳密に語り分けられるのが、ER 図が読める人の第一歩。
       </p>
 
       <h2>変なER図 との対応: 違和感 #7 循環参照</h2>
+
+      <div className="not-prose my-6">
+        <WeirdERDiagram highlightAnomalies={new Set([7])} />
+      </div>
+
       <p>
-        変なER図 の「入居者 → 保証人」の関連は、実は保証人が入居者と同じ性質のエンティティで、
-        しかも保証対象入居者ID を保証人が持ち、入居者も保証人ID を持ち…と互いに参照している。
+        変なER図 の「カテゴリ ⇔ サブカテゴリ」の関連は、実はサブカテゴリがカテゴリと同じ性質のエンティティで、
+        しかも サブカテゴリID をカテゴリが持ち、親カテゴリID をサブカテゴリが持ち…と互いに参照している。
         これは <strong>自己参照 (再帰関連)</strong> で書くべきところを別エンティティに分解した結果、
         方向と参加制約が定義できず無限にたどれるようになってしまった状態。
       </p>
       <p>
-        自己参照で書き直せば、「入居者 → 保証する入居者 (別の 1 人)」という有向・任意参加の再帰関連として明示できる。
-        トップ層の入居者 (保証人を持たない人) の存在も参加制約で表現できる。
+        自己参照で書き直せば、「カテゴリ → 親カテゴリ (別の 1 件)」という有向・任意参加の再帰関連として明示できる。
+        トップ層のカテゴリ (親を持たないルート) の存在も参加制約で表現できる。
       </p>
 
       <FAQ items={faq} />

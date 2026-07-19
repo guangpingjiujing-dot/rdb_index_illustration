@@ -4,6 +4,7 @@ import { TopicLayout } from "@/components/layout/TopicLayout";
 import { TopicJsonLd } from "@/components/seo/JsonLd";
 import { FAQ } from "@/components/layout/FAQ";
 import { ERDiagram } from "@/components/viz/er/ERDiagram";
+import { WeirdERDiagram } from "@/components/viz/er/WeirdERDiagram";
 import { findTopic } from "@/content/topics";
 
 const slug = "entity";
@@ -31,12 +32,12 @@ export default function Page() {
     <TopicLayout section="data-modeling" slug={slug}>
       <TopicJsonLd section="data-modeling" slug={slug} faq={faq} />
 
-      <h2>まず身近な例で: 名簿の 1 行を「何」にするか</h2>
+      <h2>まず身近な例で: 表の 1 行を「何」にするか</h2>
       <p>
-        学校で生徒名簿を作るとき、いちばん最初に決めるのは
+        Excel か Google Sheets で生徒の表を作るとき、いちばん最初に決めるのは
         <strong>「1 行を何にするか」</strong>。生徒 1 人 = 1 行にするのか、
         生徒とクラス担任のセット = 1 行にするのか、あるいは日々の出欠 = 1 行にするのか、
-        で名簿の意味も列も全部変わる。この <strong>「1 行にしたい単位」</strong> こそが、
+        で表の意味も列も全部変わる。この <strong>「1 行にしたい単位」</strong> こそが、
         ER 図でいう <strong>エンティティ</strong>。
       </p>
       <p>
@@ -95,7 +96,7 @@ export default function Page() {
         </li>
         <li>
           <strong>複数の他のエンティティから参照されるか</strong> —
-          「住所」を生徒だけでなく保護者・請求先からも参照する → 別エンティティ「住所」に切り出す
+          「商品」を注文明細からも、カート項目からも、レビューからも参照する → 生徒とは別ドメインだが、独立エンティティ「商品」を用意して、複数のエンティティから FK で参照する構造にする
         </li>
       </ul>
       <p>
@@ -103,21 +104,26 @@ export default function Page() {
         余計な箱を作らないほうが図はシンプルになる。
       </p>
 
-      <h2>変なER図 との対応: 違和感 #5「入居者」の属性欄破綻</h2>
+      <h2>変なER図 との対応: 違和感 #5「顧客」の属性欄破綻</h2>
+
+      <div className="not-prose my-6">
+        <WeirdERDiagram highlightAnomalies={new Set([5])} />
+      </div>
+
       <p>
-        <Link href="/data-modeling/er-diagram">変なER図</Link> の「入居者」エンティティには、
-        <code>家賃履歴JSON</code>、<code>全部屋番号</code>、<code>血液型</code>、<code>保証人情報</code> …
+        <Link href="/data-modeling/er-diagram">変なER図</Link> の「顧客」エンティティには、
+        <code>注文履歴JSON</code>、<code>カート内商品ID配列</code>、<code>レビュー全て</code>、<code>血液型</code> …
         と粒度もライフサイクルも違うものが並んでいる。
       </p>
       <ul>
         <li>
-          <strong>家賃履歴</strong> は複数値を持ち、支払日ごとに独立して管理される → 別エンティティ「家賃履歴」に切り出すべき
+          <strong>注文履歴</strong> は複数値を持ち、注文ごとに独立して管理される → 別エンティティ「注文」「注文明細」に切り出すべき
         </li>
         <li>
-          <strong>保証人情報</strong> は複数属性の塊 (名前・連絡先・保証範囲…) → 別エンティティ「保証人」に切り出すべき
+          <strong>レビュー全て</strong> は複数属性の塊 (評価・本文・投稿日時…) → 別エンティティ「レビュー」に切り出すべき
         </li>
         <li>
-          <strong>全部屋番号</strong> は複数値そのもの → 別エンティティ「部屋」との関連に切り出すべき
+          <strong>カート内商品ID配列</strong> は複数値そのもの → 別エンティティ「カート項目」との関連に切り出すべき
         </li>
       </ul>
       <p>

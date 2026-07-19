@@ -4,6 +4,7 @@ import { TopicLayout } from "@/components/layout/TopicLayout";
 import { TopicJsonLd } from "@/components/seo/JsonLd";
 import { FAQ } from "@/components/layout/FAQ";
 import { ERDiagram } from "@/components/viz/er/ERDiagram";
+import { WeirdERDiagram } from "@/components/viz/er/WeirdERDiagram";
 import { findTopic } from "@/content/topics";
 
 const slug = "many-to-many";
@@ -140,7 +141,7 @@ export default function Page() {
       <h2>連関実体を作らないと失うもの</h2>
       <ul>
         <li>
-          <strong>履歴</strong>: 「田中さんは 8/1 に洗濯機を使った」を記録する場所がない
+          <strong>履歴</strong>: 「田中さんが 8/1 にこの商品を 2 個買った」を記録する場所がない
         </li>
         <li>
           <strong>状態遷移</strong>: 「登録済み → 履修中 → 完了」といったステータスを持たせる場所がない
@@ -153,15 +154,21 @@ export default function Page() {
         </li>
       </ul>
 
-      <h2>変なER図 との対応: 違和感 #2「入居者×共用設備」に中間実体なし</h2>
+      <h2>変なER図 との対応: 違和感 #2「顧客×商品」に中間実体なし</h2>
+
+      <div className="not-prose my-6">
+        <WeirdERDiagram highlightAnomalies={new Set([2])} />
+      </div>
+
       <p>
-        <Link href="/data-modeling/er-diagram">変なER図</Link> では、「入居者」と「共用設備」が直接 N:M の線で繋がっている。
-        シェアハウス運営では明らかに <strong>利用履歴 (誰が いつ 何を使ったか) を記録したい</strong> はずだが、
-        この構造だと「田中さんが 8/1 に洗濯機を使った」を格納する場所がない。
+        <Link href="/data-modeling/er-diagram">変なER図</Link> では、「顧客」と「商品」が直接 N:M の線で繋がっている。
+        EC サイトでは明らかに <strong>購入履歴 (誰が いつ 何をいくつ買ったか) を記録したい</strong> はずだが、
+        この構造だと「田中さんが 8/1 にこの商品を 2 個買った」を格納する場所がない。
+        しかも図の別の場所に「注文明細」エンティティが描かれているのに、この線は迂回していない。
       </p>
       <p>
-        正しくは「利用履歴」という連関実体を挟み、両側から FK を借りて (入居者ID, 設備ID, 利用日時) を複合主キーにする。
-        これで履歴も重複制御も属性も全部乗る。
+        正しくは 顧客 → 注文 → 注文明細 → 商品 と辿って、注文明細を連関実体として (注文ID, 明細番号) や (注文ID, 商品ID) の複合主キーで表現する。
+        これで購入履歴も数量も金額も全部乗る。
       </p>
 
       <FAQ items={faq} />

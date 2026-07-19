@@ -4,6 +4,7 @@ import { TopicLayout } from "@/components/layout/TopicLayout";
 import { TopicJsonLd } from "@/components/seo/JsonLd";
 import { FAQ } from "@/components/layout/FAQ";
 import { ERDiagram } from "@/components/viz/er/ERDiagram";
+import { WeirdERDiagram } from "@/components/viz/er/WeirdERDiagram";
 import { findTopic } from "@/content/topics";
 
 const slug = "optionality";
@@ -156,12 +157,20 @@ export default function Page() {
       </p>
 
       <h2>変なER図 との対応: 違和感 #8 参加制約の矛盾</h2>
+
+      <div className="not-prose my-6">
+        <WeirdERDiagram highlightAnomalies={new Set([8])} />
+      </div>
+
       <p>
-        <Link href="/data-modeling/er-diagram">変なER図</Link> の「入居者 —住む— 部屋」の線を注意深く見ると、
-        同じ端に <strong>必須 (縦棒) の記号と任意 (円) の記号が両方付いている</strong>。
-        これは「必ず 1 部屋に住む」なのか「0 部屋も許容する」なのか判断できず、
-        どちらの参加制約を採用しているかが図から読み取れない。
-        参加制約は必ず一方に確定させて描くこと。
+        <Link href="/data-modeling/er-diagram">変なER図</Link> の「顧客 —発注— 注文」の
+        <strong>注文側</strong>を注意深く見ると、縦棒 (最大 1) の外側に <strong>円 (最小 0)</strong> が並んでいる。
+        IE 記法として厳密に読めば「0..1」(顧客からすると発注する注文は 0 か 1 つ、= 任意参加) を意味する。
+      </p>
+      <p>
+        しかし EC サイトの業務ルール「顧客は少なくとも 1 回は注文する見込みで登録する」「注文には必ず発注顧客がいる」
+        と噛み合っていない。参加制約 (必須 vs 任意) は業務ルールに合わせて片方に確定させて描くべき。
+        「なんとなく両方書いておく」は最も避けたいパターン。
       </p>
 
       <FAQ items={faq} />

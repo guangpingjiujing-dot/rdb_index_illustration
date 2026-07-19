@@ -8,15 +8,14 @@ import { FAQ } from "@/components/layout/FAQ";
 import { CategoryHubJsonLd } from "@/components/seo/JsonLd";
 import { sections, dataModelingCategories } from "@/content/sections";
 import { dataModelingTopicsIn } from "@/content/topics";
-import { WeirdERDiagram } from "@/components/viz/er/WeirdERDiagram";
 import { AnomalyList } from "@/components/viz/er/AnomalyList";
 
 const category = dataModelingCategories["er-diagram"];
 const sectionMeta = sections["data-modeling"];
 
-const PAGE_TITLE = "変なER図｜あなたには、この間取りの異常さがわかりますか？";
+const PAGE_TITLE = "変なER図｜あなたには、この ER 図の異常さがわかりますか？";
 const PAGE_DESCRIPTION =
-  "明らかにおかしい ER 図の間違い探しから、エンティティ・関連・カーディナリティ・弱エンティティ・記法まで、ER 図の読み方を身近な例え (会社・学校・家) で体系的に学べる図解サイト。";
+  "明らかにおかしい架空 EC サイトの ER 図の間違い探しから、エンティティ・関連・カーディナリティ・弱エンティティ・記法まで、ER 図の読み方を身近な例え (EC サイト・学校・会社) で体系的に学べる図解サイト。";
 
 export const metadata: Metadata = {
   title: PAGE_TITLE,
@@ -63,7 +62,7 @@ const faq = [
   },
   {
     q: "変な家との関係は？",
-    a: "雨穴『変な家』のフォーマット (一見普通に見える間取りに読者が違和感を数える) を、ER 図の読み方訓練に翻訳したオマージュです。原著の内容は引用していません。",
+    a: "雨穴『変な家』のフォーマット (一見普通に見える設計に読者が違和感を数える) を、ER 図の読み方訓練に翻訳したオマージュです。原著の内容は引用していません。",
   },
   {
     q: "ER 図の記法にはどんな種類がありますか？",
@@ -78,7 +77,10 @@ export default function ErDiagramHub() {
   );
 
   return (
-    <>
+    <div
+      data-theme="weird-er"
+      className="bg-[var(--background)] text-[var(--foreground)] min-h-screen"
+    >
       <CategoryHubJsonLd category="er-diagram" faq={faq} />
 
       <section className="border-b border-[var(--border)]">
@@ -95,70 +97,29 @@ export default function ErDiagramHub() {
           </nav>
 
           <div className="mt-6 max-w-3xl">
-            <div className="text-[10px] font-bold uppercase tracking-widest text-[var(--muted-foreground)]">
-              変な家 オマージュ企画
-            </div>
-            <h1 className="mt-3 text-3xl md:text-5xl font-bold tracking-tight leading-tight">
+            <h1 className="font-serif text-4xl md:text-6xl font-bold tracking-tight leading-none">
               変なER図
-              <span className="mt-2 block text-xl md:text-2xl text-[var(--muted-foreground)] font-bold">
-                あなたには、この間取りの異常さがわかりますか？
+              <span className="mt-4 block font-sans text-base md:text-xl text-[var(--muted-foreground)] font-normal tracking-wide">
+                あなたには、この ER 図の異常さがわかりますか？
               </span>
             </h1>
-            <p className="mt-6 text-base md:text-lg text-[var(--muted-foreground)] leading-relaxed">
-              明らかにおかしい ER 図が 1 枚あります。
-              9 つの違和感、全て指摘できますか？
-            </p>
-          </div>
-
-          <div className="mt-10 not-prose">
-            <WeirdERDiagram />
-          </div>
-
-          <div className="mt-8 border-l-2 border-[var(--foreground)] pl-4 py-1">
-            <div className="text-[10px] font-bold uppercase tracking-wider text-[var(--muted-foreground)]">
-              定義
-            </div>
-            <p
-              data-speakable="definition"
-              className="mt-1 text-[var(--foreground)] leading-relaxed"
-            >
-              ER 図 (Entity-Relationship Diagram) とは、実世界を「エンティティ (実体)」と「関連 (リレーションシップ)」の 2 種類の抽象単位で表現する図式手法であり、リレーショナルデータベース設計における概念モデルの標準的記法である。
-            </p>
-          </div>
-
-          <div className="mt-6 border border-[var(--border-strong)] bg-[var(--card)] px-4 py-3 text-sm leading-relaxed">
-            <span className="mr-2 font-bold">記法について:</span>
-            このサイトの ER 図はすべて{" "}
-            <strong>IE 記法 (crow&apos;s foot / 情報工学記法)</strong>{" "}
-            で描いています。IDEF1X や Chen 記法との対応は{" "}
-            <Link
-              href="/data-modeling/er-diagram/notation"
-              className="text-[var(--foreground)] underline underline-offset-4 hover:text-[var(--muted-foreground)]"
-            >
-              記法比較ページ
-            </Link>{" "}
-            を参照してください。
-          </div>
-
-          <div className="mt-8 border border-[var(--border-strong)] bg-[var(--muted)]/40 px-5 py-5 leading-relaxed">
-            <p className="text-base md:text-lg">
-              上の ER 図には{" "}
-              <strong className="font-bold">
-                9 つの明らかにおかしい箇所
-              </strong>{" "}
-              があります。全て指摘できますか？
-            </p>
-            <p className="mt-3 text-sm text-[var(--muted-foreground)]">
+            <p className="mt-8 text-base md:text-lg text-[var(--foreground)]/90 leading-relaxed">
+              明らかにおかしい ER 図が 1 枚あります。9 つの違和感、全て指摘できますか？
               「なんとなく変」で止まっていた感覚を、9 つの ER 概念で言語化していきましょう。
               下のリストは 3 モード (謎かけ / ヒント表示 / 全て答え合わせ) を切り替えられます。
             </p>
           </div>
-        </Container>
-      </section>
 
-      <section className="border-b border-[var(--border)]">
-        <Container size="wide" className="py-12 md:py-16">
-          <AnomalyList />
+          <p
+            data-speakable="definition"
+            className="sr-only"
+          >
+            ER 図 (Entity-Relationship Diagram) とは、実世界を「エンティティ (実体)」と「関連 (リレーションシップ)」の 2 種類の抽象単位で表現する図式手法であり、リレーショナルデータベース設計における概念モデルの標準的記法である。
+          </p>
+
+          <div className="mt-10">
+            <AnomalyList />
+          </div>
         </Container>
       </section>
 
@@ -202,22 +163,6 @@ export default function ErDiagramHub() {
         </Container>
       </section>
 
-      <section className="border-b border-[var(--border)]">
-        <Container size="wide" className="py-10 md:py-12">
-          <div className="max-w-3xl">
-            <h2 className="text-lg md:text-xl font-bold tracking-tight">
-              「変な家」オマージュ表記
-            </h2>
-            <p className="mt-3 text-sm text-[var(--muted-foreground)] leading-relaxed">
-              本ページは 雨穴『変な家』(飛鳥新社, 2021) のフォーマット
-              (一見普通に見える構造の中に読者が違和感を数える) へのオマージュとして企画したものです。
-              原著の登場人物・ストーリー・図面は一切引用しておらず、
-              フォーマットのみを ER 図の読み方訓練に翻訳しています。
-            </p>
-          </div>
-        </Container>
-      </section>
-
       <Container size="wide" className="py-12">
         <FAQ items={faq} />
       </Container>
@@ -229,6 +174,6 @@ export default function ErDiagramHub() {
       <Container size="wide" className="pt-4 pb-16">
         <MentorCTA />
       </Container>
-    </>
+    </div>
   );
 }

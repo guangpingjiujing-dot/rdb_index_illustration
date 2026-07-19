@@ -4,6 +4,7 @@ import { TopicLayout } from "@/components/layout/TopicLayout";
 import { TopicJsonLd } from "@/components/seo/JsonLd";
 import { FAQ } from "@/components/layout/FAQ";
 import { ERDiagram } from "@/components/viz/er/ERDiagram";
+import { WeirdERDiagram } from "@/components/viz/er/WeirdERDiagram";
 import { findTopic } from "@/content/topics";
 
 const slug = "cardinality";
@@ -137,7 +138,7 @@ export default function Page() {
 
       <h3>N:M (多 対 多)</h3>
       <p>
-        両側とも「複数個」。学生と履修科目、入居者と共用設備 など。
+        両側とも「複数個」。学生と履修科目、顧客と商品 (直接繋いだ場合) など。
         <strong>実装時には必ず連関実体 (中間テーブル) に分解する</strong>。
         詳細は {" "}
         <Link href="/data-modeling/er-diagram/many-to-many">多対多と連関実体 ページ</Link>。
@@ -195,16 +196,22 @@ export default function Page() {
         「入口から見て近い側」の記号が「相手からの最大基数」を表すという読み方の慣習になっている。
       </p>
 
-      <h2>変なER図 との対応: 違和感 #1「シェアハウスなのに 1:1」</h2>
+      <h2>変なER図 との対応: 違和感 #1「EC サイトなのに 1:1」</h2>
+
+      <div className="not-prose my-6">
+        <WeirdERDiagram highlightAnomalies={new Set([1])} />
+      </div>
+
       <p>
-        <Link href="/data-modeling/er-diagram">変なER図</Link> の「入居者 —住む— 部屋」は、
-        両端に <strong>縦棒 1 本ずつ</strong> しか付いていない。これは 1:1 固定の意味で、
-        「1 人の入居者は 1 部屋にしか住めず、1 部屋には必ず 1 人だけ住んでいる」を強制する。
+        <Link href="/data-modeling/er-diagram">変なER図</Link> の「顧客 —発注— 注文」は、
+        顧客側が <strong>縦棒 1 本 (最大 1)</strong>、注文側が <strong>縦棒+円 (最大 1、最小 0)</strong>。
+        両端とも <strong>最大基数が 1 に固定</strong> されているので、「1 人の顧客は 最大 1 注文しか持てず、1 つの注文にも 最大 1 顧客しか紐付けられない」
+        という実質 1:0..1 (ほぼ 1:1 固定) の関係を強制している。
       </p>
       <p>
-        シェアハウスなら本来は <strong>1 部屋に複数人、1 人が別部屋に移動する履歴も保持したい</strong>。
+        EC サイトなら本来は <strong>1 顧客が複数回注文でき、購入履歴も保持したい</strong>。
         カーディナリティの選択は業務ルールを直接規定するので、最初にここで間違えると
-        その後のスキーマも実装も破綻する。「シェアハウス」と「1:1」は 1 秒でおかしいと気づけるようになりたい。
+        その後のスキーマも実装も破綻する。「EC サイト」と「顧客-注文 1:1」は 1 秒でおかしいと気づけるようになりたい。
       </p>
 
       <FAQ items={faq} />

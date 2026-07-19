@@ -2,7 +2,7 @@ import { ImageResponse } from "next/og";
 
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
-export const alt = "変なER図｜あなたには、この間取りの異常さがわかりますか？";
+export const alt = "変なER図｜あなたには、この ER 図の異常さがわかりますか？";
 
 /**
  * 旗艦ページ専用 OG 画像。
@@ -34,32 +34,32 @@ export default function OGImage() {
             borderRight: "1px solid #d9d9d5",
           }}
         >
-          {/* 配偶者 (弱、変) — 左上 */}
+          {/* 配送先 (弱、変) — 左上 */}
           <MiniEntity
             style={{ left: 40, top: 30 }}
-            label="配偶者"
-            attrs={["配偶者ID"]}
+            label="配送先"
+            attrs={["配送先ID"]}
             weak
             highlight
           />
-          {/* 共用設備 — 右上 */}
+          {/* 商品 — 右上 */}
           <MiniEntity
             style={{ left: 320, top: 30 }}
-            label="共用設備"
-            attrs={["設備ID"]}
+            label="商品"
+            attrs={["商品ID"]}
           />
-          {/* 入居者 (属性破綻、変) — 中央左 */}
+          {/* 顧客 (属性破綻、変) — 中央左 */}
           <MiniEntity
             style={{ left: 40, top: 200 }}
-            label="入居者"
-            attrs={["入居者ID", "家賃履歴JSON", "全部屋番号", "血液型"]}
+            label="顧客"
+            attrs={["顧客ID", "注文履歴JSON", "カート内商品ID配列", "血液型"]}
             highlight
           />
-          {/* 部屋 — 中央右 */}
+          {/* 注文 — 中央右 */}
           <MiniEntity
             style={{ left: 320, top: 220 }}
-            label="部屋"
-            attrs={["部屋ID", "家賃"]}
+            label="注文"
+            attrs={["注文ID", "注文日"]}
           />
           {/* オレンジバッジ (9) */}
           <div
@@ -81,7 +81,7 @@ export default function OGImage() {
           >
             9
           </div>
-          {/* オレンジの "住む" 変な線 */}
+          {/* オレンジの "発注" 変な線 */}
           <div
             style={{
               position: "absolute",
@@ -93,7 +93,7 @@ export default function OGImage() {
               display: "flex",
             }}
           />
-          {/* オレンジの "利用" 変な N:M 線 */}
+          {/* オレンジの "購入" 変な N:M 線 */}
           <div
             style={{
               position: "absolute",
@@ -119,7 +119,7 @@ export default function OGImage() {
               display: "flex",
             }}
           >
-            シェアハウス「たいてっく荘」運営システム
+            架空 EC サイト「たいてっくストア」運営システム
           </div>
         </div>
 
@@ -168,7 +168,7 @@ export default function OGImage() {
               marginTop: 32,
             }}
           >
-            あなたには、この間取りの
+            あなたには、この ER 図の
           </div>
           <div
             style={{

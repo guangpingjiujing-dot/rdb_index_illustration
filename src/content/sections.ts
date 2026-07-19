@@ -42,19 +42,19 @@ export type DataModelingCategory = {
 };
 
 export const dataModelingCategories: Record<DataModelingCategoryKey, DataModelingCategory> = {
-  "er-diagram": {
-    key: "er-diagram",
-    label: "ER図",
-    path: "/data-modeling/er-diagram",
-    description:
-      "エンティティ・関連・カーディナリティ・弱エンティティなど ER 図の基礎を、身近な例え (会社/学校/家) と静的な図解で理解するカテゴリ。旗艦ページ「変なER図」で 9 つの違和感の謎解きから入る。",
-  },
   normalization: {
     key: "normalization",
     label: "正規化",
     path: "/data-modeling/normalization",
     description:
       "更新時異常を排除するためにテーブルを関数従属性に基づいて分割する、正規化の基礎から実務判断まで。",
+  },
+  "er-diagram": {
+    key: "er-diagram",
+    label: "ER図",
+    path: "/data-modeling/er-diagram",
+    description:
+      "エンティティ・関連・カーディナリティ・弱エンティティなど ER 図の基礎を、身近な例と静的な図解で理解するカテゴリ。旗艦ページ「変なER図」で 9 つの違和感の謎解きから入る。",
   },
 };
 

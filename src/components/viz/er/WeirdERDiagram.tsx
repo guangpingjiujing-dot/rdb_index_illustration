@@ -7,208 +7,246 @@ import {
 /**
  * 「変なER図」旗艦ページの Hero に置く SVG。
  *
- * シェアハウス「たいてっく荘」運営システムをモチーフに、9 つの意図的な違和感を仕込む。
+ * 架空 EC サイト「たいてっくストア」運営システムをモチーフに、9 つの意図的な違和感を仕込む。
  * highlightIds でハイライトする違和感箇所を制御する (答え合わせモードで全 ON)。
  */
 
 export const WEIRD_ENTITY_IDS = {
-  TENANT: "tenant",
-  ROOM: "room",
-  SPOUSE: "spouse",
-  FACILITY: "facility",
-  GUARANTOR: "guarantor",
-  PAYMENT: "payment",
-  CONTRACT: "contract",
+  ADDRESS: "address", // 配送先 — #3 独立主キー、親なし
+  CATEGORY: "category", // カテゴリ — #7 循環一方
+  PRODUCT: "product", // 商品 — #2/#9 の相手側
+  CUSTOMER: "customer", // 顧客 — #5 属性欄破綻、#1/#6/#8 の主体
+  ORDER: "order", // 注文 — #1/#6/#8 の相手
+  REVIEW: "review", // レビュー — #9 記法混在
+  SUBCATEGORY: "subcategory", // サブカテゴリ — #7 循環もう一方
+  ORDER_LINE: "order_line", // 注文明細 — #4 識別関係だが PK 非継承
 } as const;
 
 export const WEIRD_REL_IDS = {
-  LIVE: "rel-live", // #1 カーディナリティ矛盾, #6 役割名重複, #8 参加制約矛盾
-  BELONG: "rel-belong", // #6 役割名重複
-  USE: "rel-use", // #2 多対多 中間実体なし
-  GUARANTEE: "rel-guarantee", // #7 循環参照 (自己参照)
-  PAYMENT_OF: "rel-payment", // #4 識別関係だが PK 非継承
-  CONTRACT_OF: "rel-contract", // #9 記法混在 (IDEF1X)
-  // 配偶者 (#3) は関連自体を張らないことが違和感なので rel は無し
+  PLACE: "rel-place", // #1 カーディナリティ矛盾, #6 役割名重複, #8 参加制約矛盾
+  CONFIRM: "rel-confirm", // #6 役割名重複 (2 本目)
+  FAVORITE: "rel-favorite", // #2 多対多 中間実体なし
+  HIERARCHY: "rel-hierarchy", // #7 循環参照
+  LINE_OF: "rel-line-of", // #4 識別関係だが PK 非継承
+  REVIEW_OF: "rel-review", // #9 記法混在 (IDEF1X)
+  BELONG: "rel-belong", // 通常の関連 (商品→カテゴリ、違和感なし)
+  // 配送先 (#3) は関連自体を張らないことが違和感なので rel は無し
 } as const;
 
 /** 番号バッジ用: 違和感番号 → 対象要素 id のマップ */
 export const ANOMALY_TARGETS: Record<number, { entityIds?: string[]; relIds?: string[] }> = {
-  1: { relIds: [WEIRD_REL_IDS.LIVE] }, // カーディナリティ 1:1 の誤用
-  2: { relIds: [WEIRD_REL_IDS.USE] }, // 多対多、中間実体なし
-  3: { entityIds: [WEIRD_ENTITY_IDS.SPOUSE] }, // 弱エンティティが親を持たない
-  4: { entityIds: [WEIRD_ENTITY_IDS.PAYMENT], relIds: [WEIRD_REL_IDS.PAYMENT_OF] }, // 識別関係だが PK 非継承
-  5: { entityIds: [WEIRD_ENTITY_IDS.TENANT] }, // 属性の粒度破綻 (1NF違反)
-  6: { relIds: [WEIRD_REL_IDS.BELONG, WEIRD_REL_IDS.LIVE] }, // 関連の役割名重複
-  7: { entityIds: [WEIRD_ENTITY_IDS.GUARANTOR], relIds: [WEIRD_REL_IDS.GUARANTEE] }, // 循環参照
-  8: { relIds: [WEIRD_REL_IDS.LIVE] }, // 参加制約矛盾
-  9: { relIds: [WEIRD_REL_IDS.CONTRACT_OF] }, // 記法混在 (IDEF1X)
+  1: { relIds: [WEIRD_REL_IDS.PLACE] }, // カーディナリティ 1:1 の誤用
+  2: { relIds: [WEIRD_REL_IDS.FAVORITE] }, // 多対多、中間実体なし
+  3: { entityIds: [WEIRD_ENTITY_IDS.ADDRESS] }, // 弱エンティティが親を持たない
+  4: { entityIds: [WEIRD_ENTITY_IDS.ORDER_LINE], relIds: [WEIRD_REL_IDS.LINE_OF] }, // 識別関係だが PK 非継承
+  5: { entityIds: [WEIRD_ENTITY_IDS.CUSTOMER] }, // 属性の粒度破綻 (1NF違反)
+  6: { relIds: [WEIRD_REL_IDS.PLACE, WEIRD_REL_IDS.CONFIRM] }, // 関連の役割名重複
+  7: {
+    entityIds: [WEIRD_ENTITY_IDS.SUBCATEGORY],
+    relIds: [WEIRD_REL_IDS.HIERARCHY],
+  }, // 循環参照
+  8: { relIds: [WEIRD_REL_IDS.PLACE] }, // 参加制約矛盾
+  9: { relIds: [WEIRD_REL_IDS.REVIEW_OF] }, // 記法混在 (IDEF1X)
 };
 
 function buildEntities(highlightIds: Set<string>, badges: Map<string, number>): EREntity[] {
   return [
-    // 配偶者 - #3 独立主キーで親なし (二重四角なのに親エンティティと繋がらない)
+    // 配送先 - #3 独立主キーで親なし。左下に配置して孤立感を出す
     {
-      id: WEIRD_ENTITY_IDS.SPOUSE,
-      label: "配偶者",
+      id: WEIRD_ENTITY_IDS.ADDRESS,
+      label: "配送先",
       x: 60,
+      y: 580,
+      width: 180,
+      attributes: ["配送先ID", "郵便番号", "住所"],
+      primaryKey: ["配送先ID"],
+      isWeak: true,
+      highlighted: highlightIds.has(WEIRD_ENTITY_IDS.ADDRESS),
+      badge: badges.get(WEIRD_ENTITY_IDS.ADDRESS),
+    },
+    // カテゴリ - #7 循環の一方
+    {
+      id: WEIRD_ENTITY_IDS.CATEGORY,
+      label: "カテゴリ",
+      x: 460,
       y: 40,
       width: 180,
-      attributes: ["配偶者ID", "名前"],
-      primaryKey: ["配偶者ID"],
-      isWeak: true,
-      highlighted: highlightIds.has(WEIRD_ENTITY_IDS.SPOUSE),
-      badge: badges.get(WEIRD_ENTITY_IDS.SPOUSE),
+      attributes: ["カテゴリID", "名称", "サブカテゴリID"],
+      primaryKey: ["カテゴリID"],
+      highlighted: false,
     },
-    // 共用設備
+    // 商品
     {
-      id: WEIRD_ENTITY_IDS.FACILITY,
-      label: "共用設備",
+      id: WEIRD_ENTITY_IDS.PRODUCT,
+      label: "商品",
       x: 960,
       y: 40,
       width: 180,
-      attributes: ["設備ID", "設備名"],
-      primaryKey: ["設備ID"],
+      attributes: ["商品ID", "商品名", "価格", "カテゴリID"],
+      primaryKey: ["商品ID"],
       highlighted: false,
     },
-    // 入居者 - #5 属性欄破綻
+    // 顧客 - #5 属性欄破綻
     {
-      id: WEIRD_ENTITY_IDS.TENANT,
-      label: "入居者",
+      id: WEIRD_ENTITY_IDS.CUSTOMER,
+      label: "顧客",
       x: 60,
-      y: 280,
+      y: 300,
       width: 220,
       attributes: [
-        "入居者ID",
-        "名前",
-        "家賃履歴JSON",
-        "全部屋番号",
+        "顧客ID",
+        "氏名",
+        "注文履歴JSON",
+        "カート内商品ID配列",
+        "レビュー全て",
         "血液型",
-        "保証人情報",
       ],
-      primaryKey: ["入居者ID"],
-      highlighted: highlightIds.has(WEIRD_ENTITY_IDS.TENANT),
-      badge: badges.get(WEIRD_ENTITY_IDS.TENANT),
+      primaryKey: ["顧客ID"],
+      highlighted: highlightIds.has(WEIRD_ENTITY_IDS.CUSTOMER),
+      badge: badges.get(WEIRD_ENTITY_IDS.CUSTOMER),
     },
-    // 部屋
+    // 注文 - 発注/確定 2 本の平行線用に属性 3 個 + 空白 2 行分の余裕を確保
     {
-      id: WEIRD_ENTITY_IDS.ROOM,
-      label: "部屋",
-      x: 620,
+      id: WEIRD_ENTITY_IDS.ORDER,
+      label: "注文",
+      x: 460,
       y: 300,
       width: 180,
-      attributes: ["部屋ID", "部屋名", "家賃"],
-      primaryKey: ["部屋ID"],
+      height: 142,
+      attributes: ["注文ID", "注文日", "顧客ID"],
+      primaryKey: ["注文ID"],
       highlighted: false,
     },
-    // 保証人 - #7 循環参照
+    // レビュー - #9 記法混在。商品 (右上) の右下にずらして配置。
+    // 商品と同一 x に置くと 対象線 (I 型 x=1050) と 購入線 (L の垂直区間 x=1050) が
+    // 完全に重なるので、x を 200 右にずらして 対象線を L 字化し重なりを回避する。
     {
-      id: WEIRD_ENTITY_IDS.GUARANTOR,
-      label: "保証人",
+      id: WEIRD_ENTITY_IDS.REVIEW,
+      label: "レビュー",
+      x: 1160,
+      y: 580,
+      width: 180,
+      attributes: ["レビューID", "評価", "本文"],
+      primaryKey: ["レビューID"],
+      highlighted: false,
+    },
+    // サブカテゴリ - #7 循環のもう一方 (実質カテゴリと同じ)。
+    // カテゴリの左隣 (y=40) に置いて 階層線を水平直線にする。
+    {
+      id: WEIRD_ENTITY_IDS.SUBCATEGORY,
+      label: "サブカテゴリ",
       x: 60,
-      y: 560,
+      y: 40,
       width: 180,
-      attributes: ["保証人ID", "名前", "保証対象入居者ID"],
-      primaryKey: ["保証人ID"],
-      highlighted: highlightIds.has(WEIRD_ENTITY_IDS.GUARANTOR),
-      badge: badges.get(WEIRD_ENTITY_IDS.GUARANTOR),
+      attributes: ["サブカテゴリID", "名称", "親カテゴリID"],
+      primaryKey: ["サブカテゴリID"],
+      highlighted: highlightIds.has(WEIRD_ENTITY_IDS.SUBCATEGORY),
+      badge: badges.get(WEIRD_ENTITY_IDS.SUBCATEGORY),
     },
-    // 家賃履歴 - #4 弱っぽく描いてるが PK 独立
+    // 注文明細 - #4 弱っぽく描いてるが PK 独立
     {
-      id: WEIRD_ENTITY_IDS.PAYMENT,
-      label: "家賃履歴",
-      x: 620,
-      y: 560,
+      id: WEIRD_ENTITY_IDS.ORDER_LINE,
+      label: "注文明細",
+      x: 460,
+      y: 580,
       width: 180,
-      attributes: ["履歴ID", "支払日", "金額"],
-      primaryKey: ["履歴ID"],
-      isWeak: true, // 弱として描画 → 二重四角
-      highlighted: highlightIds.has(WEIRD_ENTITY_IDS.PAYMENT),
-      badge: badges.get(WEIRD_ENTITY_IDS.PAYMENT),
-    },
-    // 契約書 - #9 記法混在
-    {
-      id: WEIRD_ENTITY_IDS.CONTRACT,
-      label: "契約書",
-      x: 960,
-      y: 560,
-      width: 180,
-      attributes: ["契約ID", "契約日"],
-      primaryKey: ["契約ID"],
-      highlighted: false,
+      attributes: ["明細ID", "商品名", "数量"],
+      primaryKey: ["明細ID"],
+      isWeak: true, // 弱として描画 → PK 独立との矛盾
+      highlighted: highlightIds.has(WEIRD_ENTITY_IDS.ORDER_LINE),
+      badge: badges.get(WEIRD_ENTITY_IDS.ORDER_LINE),
     },
   ];
 }
 
 function buildRelationships(highlightIds: Set<string>, badges: Map<string, number>): ERRelationship[] {
   return [
-    // #1 + #6 + #8: 入居者 —住む— 部屋 の 1:1 固定 + 役割名が同じエンティティ間に 2 本
+    // #1 + #6 + #8: 顧客 —発注— 注文 の 1:0..1 (実質 1:1 固定) + 参加制約矛盾
+    // 注文側を "zero-one" にすることで縦棒+円 (|○) を実際に描画し、
+    // 「必須と任意の記号が同居している」という #8 の違和感を視覚化する。
     {
-      id: WEIRD_REL_IDS.LIVE,
-      from: WEIRD_ENTITY_IDS.TENANT,
-      to: WEIRD_ENTITY_IDS.ROOM,
-      fromCardinality: "one", // 1 人 1 部屋固定 (シェアハウスなのに変)
-      toCardinality: "one", // 1 部屋 1 人 (シェアハウスなのに変) + 参加制約矛盾
-      label: "住む",
-      highlighted: highlightIds.has(WEIRD_REL_IDS.LIVE),
-      badge: badges.get(WEIRD_REL_IDS.LIVE),
+      id: WEIRD_REL_IDS.PLACE,
+      from: WEIRD_ENTITY_IDS.CUSTOMER,
+      to: WEIRD_ENTITY_IDS.ORDER,
+      fromCardinality: "one", // 顧客側は | のみ (max=min=1)
+      toCardinality: "zero-one", // 注文側は |○ = max=1, min=0 → #8 の視覚的違和感の材料
+      label: "発注",
+      highlighted: highlightIds.has(WEIRD_REL_IDS.PLACE),
+      badge: badges.get(WEIRD_REL_IDS.PLACE),
     },
-    // #6: 別線の「所属」— 意味不明
+    // #6: 別線の「確定」— 「発注」とほぼ同じ意味で読み手には区別不能
+    {
+      id: WEIRD_REL_IDS.CONFIRM,
+      from: WEIRD_ENTITY_IDS.CUSTOMER,
+      to: WEIRD_ENTITY_IDS.ORDER,
+      fromCardinality: "one-many",
+      toCardinality: "one",
+      label: "確定",
+      dashed: true,
+      highlighted: highlightIds.has(WEIRD_REL_IDS.CONFIRM),
+      badge: badges.get(WEIRD_REL_IDS.CONFIRM),
+    },
+    // #2: 顧客 ⟷ 商品 が直接 N:M (別途 注文明細 が存在するのに迂回してない)。
+    // 自動ルーティングで 顧客 right → 水平 → 商品 bottom の L 字。
+    // (routingHint="vertical" は 配送先/カテゴリ を貫通するため使わない。
+    // 現状の水平優先ルーティングは 注文 box を通るが白 fill で隠れる。)
+    {
+      id: WEIRD_REL_IDS.FAVORITE,
+      from: WEIRD_ENTITY_IDS.CUSTOMER,
+      to: WEIRD_ENTITY_IDS.PRODUCT,
+      fromCardinality: "zero-many",
+      toCardinality: "zero-many",
+      label: "購入",
+      highlighted: highlightIds.has(WEIRD_REL_IDS.FAVORITE),
+      badge: badges.get(WEIRD_REL_IDS.FAVORITE),
+    },
+    // #7: カテゴリ ⇔ サブカテゴリ の相互参照 (自己参照にすべきを別エンティティに分けて循環)
+    {
+      id: WEIRD_REL_IDS.HIERARCHY,
+      from: WEIRD_ENTITY_IDS.CATEGORY,
+      to: WEIRD_ENTITY_IDS.SUBCATEGORY,
+      fromCardinality: "one-many",
+      toCardinality: "one-many",
+      label: "階層",
+      highlighted: highlightIds.has(WEIRD_REL_IDS.HIERARCHY),
+      badge: badges.get(WEIRD_REL_IDS.HIERARCHY),
+    },
+    // 通常の関連: 商品 → カテゴリ
     {
       id: WEIRD_REL_IDS.BELONG,
-      from: WEIRD_ENTITY_IDS.TENANT,
-      to: WEIRD_ENTITY_IDS.ROOM,
+      from: WEIRD_ENTITY_IDS.PRODUCT,
+      to: WEIRD_ENTITY_IDS.CATEGORY,
       fromCardinality: "one-many",
       toCardinality: "one",
       label: "所属",
-      dashed: true,
-      highlighted: highlightIds.has(WEIRD_REL_IDS.BELONG),
-      badge: badges.get(WEIRD_REL_IDS.BELONG),
+      highlighted: false,
     },
-    // #2: 入居者 ⟷ 共用設備 が直接 N:M
+    // #4: 注文 —明細— 注文明細 (識別関係のはずが PK 継承なし)
     {
-      id: WEIRD_REL_IDS.USE,
-      from: WEIRD_ENTITY_IDS.TENANT,
-      to: WEIRD_ENTITY_IDS.FACILITY,
-      fromCardinality: "zero-many",
-      toCardinality: "zero-many",
-      label: "利用",
-      highlighted: highlightIds.has(WEIRD_REL_IDS.USE),
-      badge: badges.get(WEIRD_REL_IDS.USE),
-    },
-    // #7: 入居者 —保証— 保証人 (循環参照)
-    {
-      id: WEIRD_REL_IDS.GUARANTEE,
-      from: WEIRD_ENTITY_IDS.TENANT,
-      to: WEIRD_ENTITY_IDS.GUARANTOR,
-      fromCardinality: "one-many",
-      toCardinality: "one-many",
-      label: "保証",
-      highlighted: highlightIds.has(WEIRD_REL_IDS.GUARANTEE),
-      badge: badges.get(WEIRD_REL_IDS.GUARANTEE),
-    },
-    // #4: 家賃履歴 —記録— 入居者 (二重線 = 識別関係のはずが PK 継承なし)
-    {
-      id: WEIRD_REL_IDS.PAYMENT_OF,
-      from: WEIRD_ENTITY_IDS.TENANT,
-      to: WEIRD_ENTITY_IDS.PAYMENT,
+      id: WEIRD_REL_IDS.LINE_OF,
+      from: WEIRD_ENTITY_IDS.ORDER,
+      to: WEIRD_ENTITY_IDS.ORDER_LINE,
       fromCardinality: "one",
       toCardinality: "one-many",
-      label: "記録",
+      label: "明細",
       isIdentifying: true,
-      highlighted: highlightIds.has(WEIRD_REL_IDS.PAYMENT_OF),
-      badge: badges.get(WEIRD_REL_IDS.PAYMENT_OF),
+      highlighted: highlightIds.has(WEIRD_REL_IDS.LINE_OF),
+      badge: badges.get(WEIRD_REL_IDS.LINE_OF),
     },
-    // #9: 家賃履歴 —紐付く— 契約書 だけ IDEF1X 記法 (● / P) で描く
+    // #9: 商品 — レビュー だけ IDEF1X 記法 (● / P) で描く。
+    // routingHint="horizontal" で 商品 right → 水平 → 下 → レビュー top の L 字にする。
+    // (未指定だと垂直ドミナントになり、縦区間が商品 cx=1050 から出て 購入線の縦区間と重なる)
     {
-      id: WEIRD_REL_IDS.CONTRACT_OF,
-      from: WEIRD_ENTITY_IDS.PAYMENT,
-      to: WEIRD_ENTITY_IDS.CONTRACT,
-      fromCardinality: "one-many",
-      toCardinality: "one",
-      label: "紐付く",
+      id: WEIRD_REL_IDS.REVIEW_OF,
+      from: WEIRD_ENTITY_IDS.PRODUCT,
+      to: WEIRD_ENTITY_IDS.REVIEW,
+      fromCardinality: "one",
+      toCardinality: "one-many",
+      label: "対象",
       notation: "idef1x",
-      highlighted: highlightIds.has(WEIRD_REL_IDS.CONTRACT_OF),
-      badge: badges.get(WEIRD_REL_IDS.CONTRACT_OF),
+      routingHint: "horizontal",
+      highlighted: highlightIds.has(WEIRD_REL_IDS.REVIEW_OF),
+      badge: badges.get(WEIRD_REL_IDS.REVIEW_OF),
     },
   ];
 }
@@ -216,8 +254,8 @@ function buildRelationships(highlightIds: Set<string>, badges: Map<string, numbe
 /** highlightAnomalies: 表示中の違和感番号のセット (1..9)。空なら通常表示 */
 export function WeirdERDiagram({
   highlightAnomalies = new Set<number>(),
-  title = "シェアハウス「たいてっく荘」運営システム ER 図",
-  caption = "作: たいてっく / モデル: 架空。この ER 図には 9 つの明らかにおかしい箇所があります。",
+  title = "架空 EC サイト運営システム ER 図",
+  caption,
 }: {
   highlightAnomalies?: Set<number>;
   title?: string;
@@ -248,7 +286,7 @@ export function WeirdERDiagram({
       caption={caption}
       entities={entities}
       relationships={relationships}
-      width={1200}
+      width={1400}
       height={780}
       notation="ie"
     />

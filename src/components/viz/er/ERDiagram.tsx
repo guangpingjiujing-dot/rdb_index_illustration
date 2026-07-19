@@ -42,6 +42,9 @@ export type ERRelationship = {
   notation?: ERNotation;
   /** 自己参照ループの描画側 (`right` = 右側にループ、`top` = 上側にループ、既定 `right`) */
   loopSide?: "right" | "top";
+  /** 直交ルーティングの主軸を強制する (`horizontal` = 源が左右辺から出る、`vertical` = 源が上下辺から出る)。
+   * 未指定なら自動判定 (エンティティ間の gap の大小で判定)。 */
+  routingHint?: "horizontal" | "vertical";
 };
 
 export type ERDiagramProps = {
@@ -64,7 +67,7 @@ const STROKE_COLOR = "#0a0a0a";
 const MUTED_COLOR = "#6b6b68";
 const BG_COLOR = "#ffffff";
 const WEAK_INSET = 5;
-const PARALLEL_SPACING = 44; // 同一エンティティ間の複数関連の平行オフセット幅
+const PARALLEL_SPACING = 68; // 同一エンティティ間の複数関連の平行オフセット幅 (鳥足の縦広がり 22px + マージン)
 
 function clamp(v: number, lo: number, hi: number): number {
   return Math.min(Math.max(v, lo), hi);
@@ -163,11 +166,19 @@ function CardinalityMarker({
   }
 
   if (notation === "idef1x") {
-    // 円は線に沿って エンティティ端から 18 単位、ラベル文字はさらに 14 単位先
+    // 円は線に沿って エンティティ端から 18 単位、ラベル文字はさらに 14 単位先。
+    // 文字は線とかぶらないよう線に対して垂直方向に 14 単位ずらす。
     const cx = x + dx * 18;
     const cy = y + dy * 18;
-    const lx = x + dx * 34;
-    const ly = y + dy * 34;
+    const perpDx = -dy;
+    const perpDy = dx;
+    const LABEL_LINE_OFFSET = 34;
+    const LABEL_PERP_OFFSET = 10;
+    const lx = x + dx * LABEL_LINE_OFFSET + perpDx * LABEL_PERP_OFFSET;
+    const ly = y + dy * LABEL_LINE_OFFSET + perpDy * LABEL_PERP_OFFSET;
+    const labelBg = (
+      <rect x={lx - 9} y={ly - 10} width={18} height={20} fill={BG_COLOR} />
+    );
     return (
       <g>
         {mark === "one" && (
@@ -176,23 +187,29 @@ function CardinalityMarker({
         {mark === "zero-one" && (
           <>
             <circle cx={cx} cy={cy} r={6} fill={BG_COLOR} stroke={color} strokeWidth={1.4} />
+            {labelBg}
             <text x={lx} y={ly + 5} textAnchor="middle" fontSize="14" fontFamily="monospace" fontWeight="700" fill={color}>Z</text>
           </>
         )}
         {mark === "one-many" && (
           <>
             <circle cx={cx} cy={cy} r={6} fill={color} />
+            {labelBg}
             <text x={lx} y={ly + 5} textAnchor="middle" fontSize="14" fontFamily="monospace" fontWeight="700" fill={color}>P</text>
           </>
         )}
         {mark === "zero-many" && (
           <>
             <circle cx={cx} cy={cy} r={6} fill={BG_COLOR} stroke={color} strokeWidth={1.4} />
+            {labelBg}
             <text x={lx} y={ly + 5} textAnchor="middle" fontSize="14" fontFamily="monospace" fontWeight="700" fill={color}>M</text>
           </>
         )}
         {mark === "many" && (
-          <text x={cx} y={cy + 5} textAnchor="middle" fontSize="14" fontFamily="monospace" fontWeight="700" fill={color}>N</text>
+          <>
+            {labelBg}
+            <text x={lx} y={ly + 5} textAnchor="middle" fontSize="14" fontFamily="monospace" fontWeight="700" fill={color}>N</text>
+          </>
         )}
       </g>
     );
@@ -359,8 +376,8 @@ function EntityBox({
 /**
  * 自己参照 (再帰関連) のループを描画する。
  * ループはエンティティの右辺 (loopSide=right、既定) or 上辺 (loopSide=top) から出て
- * ぐるっと同じ辺の少し離れた点に戻る半円状のパス。
- * 両端にカーディナリティマーカーを配置する。
+ * コ 型に折り返して同じ辺に戻る直交ルーティング。
+ * カーディナリティマーカーが線と重ならないよう、2 端点を辺の両端近くに配置する。
  */
 function SelfReferenceLoop({
   entity,
@@ -375,41 +392,48 @@ function SelfReferenceLoop({
   const color = rel.highlighted ? HIGHLIGHT_COLOR : STROKE_COLOR;
   const strokeWidth = rel.highlighted ? 2.5 : 1.5;
   const side = rel.loopSide ?? "right";
-  const loopReach = 60;
+  const loopReach = 80;
 
-  // 右辺 or 上辺の 2 点を選び、その 2 点を結ぶ半円上の弧
+  // 右辺 or 上辺の 2 端点 (辺の両端寄りに配置してマーカー同士を離す)
   let p1: { x: number; y: number };
   let p2: { x: number; y: number };
-  let control: { x: number; y: number };
+  let corner1: { x: number; y: number };
+  let corner2: { x: number; y: number };
+  let labelPos: { x: number; y: number };
   let tangent1: number; // p1 の外向き接線角度
   let tangent2: number; // p2 の外向き接線角度
 
   if (side === "top") {
-    const midX = box.cx;
-    p1 = { x: midX - 40, y: box.y };
-    p2 = { x: midX + 40, y: box.y };
-    control = { x: midX, y: box.y - loopReach };
+    // 上辺の左右両寄りから出る Π (コ を 90 度回した) 型
+    const inset = Math.min(50, box.w * 0.3);
+    p1 = { x: box.x + inset, y: box.y };
+    p2 = { x: box.x + box.w - inset, y: box.y };
+    corner1 = { x: p1.x, y: box.y - loopReach };
+    corner2 = { x: p2.x, y: box.y - loopReach };
+    labelPos = { x: box.cx, y: box.y - loopReach - 10 };
     tangent1 = -Math.PI / 2; // 上向き
     tangent2 = -Math.PI / 2; // 上向き
   } else {
-    // right
-    const midY = box.cy;
-    p1 = { x: box.x + box.w, y: midY - 30 };
-    p2 = { x: box.x + box.w, y: midY + 30 };
-    control = { x: box.x + box.w + loopReach, y: midY };
+    // 右辺の上下両寄りから出る コ 型
+    const inset = Math.max(24, Math.min(40, box.h * 0.25));
+    p1 = { x: box.x + box.w, y: box.y + inset };
+    p2 = { x: box.x + box.w, y: box.y + box.h - inset };
+    corner1 = { x: box.x + box.w + loopReach, y: p1.y };
+    corner2 = { x: box.x + box.w + loopReach, y: p2.y };
+    labelPos = { x: box.x + box.w + loopReach + 12, y: box.cy };
     tangent1 = 0; // 右向き
     tangent2 = 0; // 右向き
   }
 
-  // 3 次ベジェ 2 制御点 (ループの膨らみを綺麗に)
-  const mid = { x: (p1.x + p2.x) / 2, y: (p1.y + p2.y) / 2 };
-  const c1 = { x: p1.x + (control.x - mid.x) * 0.8, y: p1.y + (control.y - mid.y) * 0.6 };
-  const c2 = { x: p2.x + (control.x - mid.x) * 0.8, y: p2.y + (control.y - mid.y) * 0.6 };
+  // 直交パス: p1 → corner1 → corner2 → p2 (L 字 + 直線 + L 字)
+  const pathD = `M ${p1.x} ${p1.y} L ${corner1.x} ${corner1.y} L ${corner2.x} ${corner2.y} L ${p2.x} ${p2.y}`;
+
+  const labelAnchor = side === "top" ? "middle" : "start";
 
   return (
     <g>
       <path
-        d={`M ${p1.x} ${p1.y} C ${c1.x} ${c1.y} ${c2.x} ${c2.y} ${p2.x} ${p2.y}`}
+        d={pathD}
         fill="none"
         stroke={color}
         strokeWidth={strokeWidth}
@@ -419,17 +443,17 @@ function SelfReferenceLoop({
       {rel.label && (
         <g>
           <rect
-            x={control.x - rel.label.length * 8 - 6}
-            y={control.y - 12}
+            x={labelPos.x - (labelAnchor === "middle" ? rel.label.length * 8 + 6 : 4)}
+            y={labelPos.y - 12}
             width={rel.label.length * 16 + 12}
             height={22}
             fill={BG_COLOR}
             stroke="none"
           />
           <text
-            x={control.x}
-            y={control.y + 4}
-            textAnchor="middle"
+            x={labelPos.x}
+            y={labelPos.y + 4}
+            textAnchor={labelAnchor}
             fontSize="13"
             fontWeight="600"
             fill={STROKE_COLOR}
@@ -491,7 +515,11 @@ function RelationshipLine({
     Math.min(fromBox.x + fromBox.w, toBox.x + toBox.w) -
     Math.max(fromBox.x, toBox.x);
   let horizontalDominant: boolean;
-  if (vertOverlap > 0 && horizOverlap <= 0) {
+  if (rel.routingHint === "horizontal") {
+    horizontalDominant = true;
+  } else if (rel.routingHint === "vertical") {
+    horizontalDominant = false;
+  } else if (vertOverlap > 0 && horizOverlap <= 0) {
     horizontalDominant = true; // 縦重なりあり → 水平ルーティング
   } else if (horizOverlap > 0 && vertOverlap <= 0) {
     horizontalDominant = false; // 横重なりあり → 垂直ルーティング

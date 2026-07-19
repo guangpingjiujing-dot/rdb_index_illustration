@@ -118,12 +118,21 @@ function TopicIndex() {
 
         {categories.map((c) => {
           const items = dataModelingTopicsIn(c.key);
+          const flagship =
+            c.key === "er-diagram"
+              ? {
+                  path: c.path,
+                  label: "変なER図",
+                  sub: "9 つの違和感を数える旗艦ページ",
+                }
+              : undefined;
           return (
             <CategoryGroup
               key={c.key}
               label={c.label}
               hubPath={c.path}
               items={items}
+              flagship={flagship}
             />
           );
         })}
@@ -136,10 +145,12 @@ function CategoryGroup({
   label,
   hubPath,
   items,
+  flagship,
 }: {
   label: string;
   hubPath: string;
   items: DataModelingTopic[];
+  flagship?: { path: string; label: string; sub: string };
 }) {
   return (
     <div className="mt-12 first:mt-0">
@@ -155,6 +166,29 @@ function CategoryGroup({
         </Link>
       </div>
       <ul className="mt-4 divide-y divide-[var(--border)] border-b border-[var(--border)]">
+        {flagship && (
+          <li>
+            <Link
+              href={flagship.path}
+              className="group flex items-start justify-between gap-4 py-5 px-2 -mx-2 bg-[var(--foreground)]/[0.03] hover:bg-[var(--foreground)]/[0.06] transition-colors"
+            >
+              <div className="min-w-0 flex-1">
+                <div className="flex items-baseline gap-3 flex-wrap">
+                  <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--foreground)]">
+                    旗艦
+                  </span>
+                  <span className="text-lg font-bold group-hover:underline underline-offset-4">
+                    {flagship.label}
+                  </span>
+                </div>
+                <p className="mt-2 text-sm text-[var(--muted-foreground)] leading-relaxed">
+                  {flagship.sub}
+                </p>
+              </div>
+              <span className="text-xs text-[var(--muted-foreground)]">→</span>
+            </Link>
+          </li>
+        )}
         {items.map((t) => (
           <li key={t.slug}>
             <Link

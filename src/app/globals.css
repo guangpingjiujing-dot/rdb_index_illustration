@@ -26,6 +26,24 @@
   --accent: #0a0a0a;
 }
 
+/* 変なER図 旗艦ページ専用の変な家風ダークテーマ。
+   `<div data-theme="weird-er">` でスコープされ、他ページには波及しない。
+   ER 図 (SVG) 自体は明色パレットのまま (SVG 内は白背景・黒線)。
+   ダーク化されるのは周辺の h1・段落・セクションボーダー等のみ。 */
+[data-theme="weird-er"] {
+  --background: #14100e;
+  --foreground: #f0e5d0;
+  --muted: #1e1a17;
+  --muted-foreground: #a3947c;
+  --border: #2e2823;
+  --border-strong: #6b5c4a;
+  --card: #1a1614;
+  --primary: #f0e5d0;
+  --primary-foreground: #14100e;
+  --primary-soft: #2e2823;
+  --accent: #e07a3c;
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
