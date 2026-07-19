@@ -5,6 +5,7 @@ import { TopicJsonLd } from "@/components/seo/JsonLd";
 import { FAQ } from "@/components/layout/FAQ";
 import { ERDiagram } from "@/components/viz/er/ERDiagram";
 import { WeirdERDiagram } from "@/components/viz/er/WeirdERDiagram";
+import { CardinalityQuiz } from "@/components/viz/er/CardinalityQuiz";
 import { findTopic } from "@/content/topics";
 
 const slug = "optionality";
@@ -135,6 +136,17 @@ export default function Page() {
         ]}
         caption="両端に円 (○) が付く。部署なしの内定者、社員 0 人の新設部署、どちらも許容する構造。"
       />
+
+      <h2>試してみる: 円 (○) と縦棒 (|) の切り替えで業務ルールがどう変わるか</h2>
+      <p>
+        {" "}
+        <Link href="/data-modeling/er-diagram/cardinality">カーディナリティ ページ</Link>
+        {" "}と同じ 3 シナリオを、今度は <strong>下限側の記号 (○ vs |) のみ</strong> 切り替えられる形で用意した。
+        上限側の記号 (鳥足の有無) は各シナリオの業務仕様に合わせて固定してある。
+        「0 個も許すのか、必ず 1 個以上必要か」の差が、現実世界のどのルールに直結しているかを試してほしい。
+      </p>
+
+      <CardinalityQuiz mode="min" />
 
       <h2>参加制約を DB 上で表現する: FK 制約</h2>
       <p>
