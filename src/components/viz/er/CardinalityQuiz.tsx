@@ -56,7 +56,7 @@ const PROBLEMS: Problem[] = [
     id: "customer-order",
     title: "問 1: 顧客 と 注文",
     description:
-      "EC サイトの顧客と注文の関連。初期状態は「1 人の顧客は 1 個以上の注文を持ち、1 つの注文は必ず 1 人の顧客に紐付く」設計。ボタンで両端の記号を変えると、成立する現実世界のルールがどう変わるかを試せる。",
+      "EC サイトの顧客と注文の関連。初期状態は「1 人の顧客は 1 個以上の注文を持ち、1 つの注文は必ず 1 人の顧客に紐付く」設計。各エンティティの内側のボタンで記号を切り替えると、成立する現実世界のルールがどう変わるかを試せる。",
     from: {
       id: "cust",
       label: "顧客",
@@ -255,27 +255,27 @@ function ProblemCard({ problem }: { problem: Problem }) {
         </p>
       </div>
 
-      <div className="my-4">
+      <div className="relative my-4">
         <ERDiagram
           title={`${problem.from.label} — ${problem.relLabel} — ${problem.to.label}`}
-          width={720}
-          height={220}
+          width={1000}
+          height={260}
           entities={[
             {
               id: problem.from.id,
               label: problem.from.label,
               x: 60,
-              y: 60,
-              width: 260,
+              y: 70,
+              width: 220,
               attributes: problem.from.attributes,
               primaryKey: problem.from.primaryKey,
             },
             {
               id: problem.to.id,
               label: problem.to.label,
-              x: 420,
-              y: 60,
-              width: 260,
+              x: 720,
+              y: 70,
+              width: 220,
               attributes: problem.to.attributes,
               primaryKey: problem.to.primaryKey,
             },
@@ -291,15 +291,42 @@ function ProblemCard({ problem }: { problem: Problem }) {
           ]}
           notation="ie"
         />
+        {/* md+ のみ: エンティティ辺の外側にフローティング。
+            viewBox 座標 (1000x260, entity 右辺 x=280 / 左辺 x=720、線 y≈120) を
+            親コンテナの %/固定値に換算して配置。VizFrame の header+padding があるので
+            縦は少し下 (top: 55%) にオフセットしている。 */}
+        <div className="pointer-events-none absolute inset-0 hidden md:block">
+          <div
+            className="pointer-events-auto absolute"
+            style={{ left: "30%", top: "55%", transform: "translateY(-50%)" }}
+          >
+            <FloatingToggle
+              entityLabel={problem.from.label}
+              value={fromCard}
+              onChange={changeFrom}
+            />
+          </div>
+          <div
+            className="pointer-events-auto absolute"
+            style={{ right: "30%", top: "55%", transform: "translateY(-50%)" }}
+          >
+            <FloatingToggle
+              entityLabel={problem.to.label}
+              value={toCard}
+              onChange={changeTo}
+            />
+          </div>
+        </div>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2">
-        <SideToggle
+      {/* mobile フォールバック: フローティングは狭幅では収まらないので、下に並べる */}
+      <div className="grid gap-4 grid-cols-2 md:hidden">
+        <FloatingToggle
           entityLabel={problem.from.label}
           value={fromCard}
           onChange={changeFrom}
         />
-        <SideToggle
+        <FloatingToggle
           entityLabel={problem.to.label}
           value={toCard}
           onChange={changeTo}
@@ -426,7 +453,7 @@ function GuessButton({
   );
 }
 
-function SideToggle({
+function FloatingToggle({
   entityLabel,
   value,
   onChange,
@@ -436,12 +463,11 @@ function SideToggle({
   onChange: (v: CardinalityMark) => void;
 }) {
   return (
-    <div>
-      <div className="mb-2 text-xs text-[var(--muted-foreground)]">
-        <span className="font-bold text-[var(--foreground)]">{entityLabel}</span>{" "}
-        側の記号
+    <div className="flex flex-col items-center gap-1">
+      <div className="whitespace-nowrap rounded-sm bg-[var(--background)] px-1 text-[10px] font-bold text-[var(--muted-foreground)]">
+        {entityLabel} 側
       </div>
-      <div className="flex flex-wrap gap-2">
+      <div className="flex gap-1 rounded-sm bg-[var(--background)] p-1 shadow-sm ring-1 ring-[var(--border)]">
         {CARD_OPTIONS.map((opt) => {
           const active = value === opt.value;
           return (
@@ -450,19 +476,15 @@ function SideToggle({
               type="button"
               onClick={() => onChange(opt.value)}
               aria-pressed={active}
+              title={opt.reading}
               className={
-                "flex flex-col items-start gap-0.5 border px-3 py-1.5 text-left transition-colors " +
+                "flex h-8 w-8 items-center justify-center border font-mono text-sm font-bold leading-none transition-colors " +
                 (active
                   ? "border-[var(--foreground)] bg-[var(--foreground)] text-[var(--background)]"
-                  : "border-[var(--border-strong)] text-[var(--foreground)] hover:bg-[var(--muted)]/60")
+                  : "border-[var(--border)] bg-[var(--background)] text-[var(--foreground)] hover:bg-[var(--muted)]")
               }
             >
-              <span className="font-mono text-base font-bold leading-none">
-                {opt.symbol}
-              </span>
-              <span className="text-[10px] leading-none opacity-80">
-                {opt.reading}
-              </span>
+              {opt.symbol}
             </button>
           );
         })}

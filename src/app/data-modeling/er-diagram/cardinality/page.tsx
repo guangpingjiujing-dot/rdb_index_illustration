@@ -77,7 +77,7 @@ export default function Page() {
 
       <ERDiagram
         title="1:1 の例 — 社員と社員証"
-        width={700}
+        width={820}
         height={220}
         entities={[
           {
@@ -92,7 +92,7 @@ export default function Page() {
           {
             id: "card",
             label: "社員証",
-            x: 420,
+            x: 540,
             y: 60,
             width: 220,
             attributes: ["社員証ID", "有効期限"],
@@ -126,7 +126,7 @@ export default function Page() {
 
       <ERDiagram
         title="1:N の例 — 部長と部下"
-        width={700}
+        width={820}
         height={220}
         entities={[
           {
@@ -141,7 +141,7 @@ export default function Page() {
           {
             id: "sub",
             label: "部下",
-            x: 420,
+            x: 540,
             y: 60,
             width: 220,
             attributes: ["部下ID", "氏名", "部長ID"],
@@ -178,7 +178,7 @@ export default function Page() {
 
       <ERDiagram
         title="N:M の例 — 学生と履修科目"
-        width={700}
+        width={820}
         height={220}
         entities={[
           {
@@ -193,7 +193,7 @@ export default function Page() {
           {
             id: "cls",
             label: "科目",
-            x: 420,
+            x: 540,
             y: 60,
             width: 220,
             attributes: ["科目ID", "科目名"],
