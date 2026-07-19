@@ -5,6 +5,7 @@ import { TopicJsonLd } from "@/components/seo/JsonLd";
 import { FAQ } from "@/components/layout/FAQ";
 import { ERDiagram } from "@/components/viz/er/ERDiagram";
 import { WeirdERDiagram } from "@/components/viz/er/WeirdERDiagram";
+import { WeakEntityQuiz } from "@/components/viz/er/WeakEntityQuiz";
 import { findTopic } from "@/content/topics";
 
 const slug = "weak-entity";
@@ -151,6 +152,15 @@ export default function Page() {
           <strong>会計期 — 期別集計</strong> (主キー: 期ID + 集計項目)
         </li>
       </ul>
+
+      <h2>練習問題: 弱か強か</h2>
+      <p>
+        3 つの ER 図を用意した。それぞれ子側のエンティティが <strong>弱エンティティ</strong> か
+        {" "}<strong>強エンティティ</strong> か、主キーの構造を見て判定してほしい。
+        本サイトは IE 記法なので視覚記号のヒントはない — 主キー欄が親のキーを含んでいるかどうかがすべて。
+      </p>
+
+      <WeakEntityQuiz />
 
       <h2>変なER図 との対応: 違和感 #7「配送先」が独立主キーで単独存在</h2>
 
