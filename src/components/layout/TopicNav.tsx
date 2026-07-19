@@ -47,6 +47,21 @@ export function TopicNav({
             {g.label}
           </div>
           <ul className="border-l border-[var(--border)]">
+            {g.key === "er-diagram" && (
+              <li>
+                <Link
+                  href="/data-modeling/er-diagram"
+                  className="group flex items-center gap-2 border-l-2 -ml-px border-transparent px-3 py-1.5 leading-snug text-[var(--foreground)] hover:border-[var(--border-strong)] hover:bg-[var(--muted)]/60 transition-colors"
+                >
+                  <span className="text-[9px] font-bold uppercase tracking-widest text-[var(--muted-foreground)] group-hover:text-[var(--foreground)]">
+                    旗艦
+                  </span>
+                  <span className="font-semibold group-hover:underline underline-offset-4">
+                    変なER図
+                  </span>
+                </Link>
+              </li>
+            )}
             {g.items.map((t) => {
               const active = t.slug === currentSlug;
               return (
