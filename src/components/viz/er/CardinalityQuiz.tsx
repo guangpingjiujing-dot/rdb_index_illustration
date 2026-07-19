@@ -8,6 +8,7 @@ import {
 type Rule = {
   text: string;
   isTrue: (from: CardinalityMark, to: CardinalityMark) => boolean;
+  explanation: string;
 };
 
 type Problem = {
@@ -74,22 +75,32 @@ const PROBLEMS: Problem[] = [
       {
         text: "1 人の顧客は複数の注文 (2 個以上) を持てる",
         isTrue: (_f, t) => maxOf(t) === "N",
+        explanation:
+          "「1 顧客から複数注文にたどれる」= 注文側の最大 N。注文側の記号に鳥足 (|＜ か ○＜) があれば O。",
       },
       {
         text: "注文したことがない顧客も登録してよい",
         isTrue: (_f, t) => minOf(t) === 0,
+        explanation:
+          "「注文 0 個の顧客がいてよい」= 注文側の最小 0。注文側の記号に円 (|○ か ○＜) があれば O。",
       },
       {
         text: "1 つの注文は必ずちょうど 1 人の顧客に紐付く",
         isTrue: (f) => maxOf(f) === 1 && minOf(f) === 1,
+        explanation:
+          "「必ずちょうど 1 人」= 顧客側の最大 1 かつ最小 1。顧客側が | の場合のみ O。",
       },
       {
         text: "1 つの注文が複数の顧客に共同で紐付く (共同購入) ことがあってよい",
         isTrue: (f) => maxOf(f) === "N",
+        explanation:
+          "「1 注文に複数顧客」= 顧客側の最大 N。顧客側の記号に鳥足 (|＜ か ○＜) があれば O。",
       },
       {
         text: "どの顧客にも紐付かない注文が登録できる",
         isTrue: (f) => minOf(f) === 0,
+        explanation:
+          "「顧客 0 の注文がいてよい」= 顧客側の最小 0。顧客側の記号に円 (|○ か ○＜) があれば O。",
       },
     ],
   },
@@ -116,22 +127,32 @@ const PROBLEMS: Problem[] = [
       {
         text: "1 人の学生は同時に複数の科目を履修できる",
         isTrue: (_f, t) => maxOf(t) === "N",
+        explanation:
+          "「1 学生が複数科目」= 科目側の最大 N。科目側の記号に鳥足 (|＜ か ○＜) があれば O。",
       },
       {
         text: "1 つの科目を同時に複数の学生が履修できる",
         isTrue: (f) => maxOf(f) === "N",
+        explanation:
+          "「1 科目に複数学生」= 学生側の最大 N。学生側の記号に鳥足 (|＜ か ○＜) があれば O。",
       },
       {
         text: "1 科目も履修していない学生が存在してよい",
         isTrue: (_f, t) => minOf(t) === 0,
+        explanation:
+          "「履修 0 の学生がいてよい」= 科目側の最小 0。科目側の記号に円 (|○ か ○＜) があれば O。",
       },
       {
         text: "履修者が 0 人の科目が存在してよい",
         isTrue: (f) => minOf(f) === 0,
+        explanation:
+          "「履修者 0 の科目がいてよい」= 学生側の最小 0。学生側の記号に円 (|○ か ○＜) があれば O。",
       },
       {
         text: "1 人の学生が履修できる科目は最大 1 つまで",
         isTrue: (_f, t) => maxOf(t) === 1,
+        explanation:
+          "「学生あたり最大 1 科目」= 科目側の最大 1。科目側の記号に鳥足がない (| か |○) 場合のみ O。",
       },
     ],
   },
@@ -158,18 +179,26 @@ const PROBLEMS: Problem[] = [
       {
         text: "1 人の社員は 1 つの部署にしか所属できない (兼務なし)",
         isTrue: (_f, t) => maxOf(t) === 1,
+        explanation:
+          "「社員あたり最大 1 部署」= 部署側の最大 1。部署側の記号に鳥足がない (| か |○) 場合のみ O。",
       },
       {
         text: "1 つの部署に複数の社員が所属できる",
         isTrue: (f) => maxOf(f) === "N",
+        explanation:
+          "「1 部署に複数社員」= 社員側の最大 N。社員側の記号に鳥足 (|＜ か ○＜) があれば O。",
       },
       {
         text: "どこの部署にも所属していない社員 (配属前の内定者) を登録してよい",
         isTrue: (_f, t) => minOf(t) === 0,
+        explanation:
+          "「所属部署 0 の社員がいてよい」= 部署側の最小 0。部署側の記号に円 (|○ か ○＜) があれば O。",
       },
       {
         text: "所属社員が 0 人の部署 (新設直後) が存在してよい",
         isTrue: (f) => minOf(f) === 0,
+        explanation:
+          "「所属社員 0 の部署がいてよい」= 社員側の最小 0。社員側の記号に円 (|○ か ○＜) があれば O。",
       },
     ],
   },
@@ -306,45 +335,49 @@ function ProblemCard({ problem }: { problem: Problem }) {
             const showResult = revealAll || g !== undefined;
             const correct = g !== undefined && g === truth;
             return (
-              <li
-                key={i}
-                className="flex flex-wrap items-center gap-3 py-3 text-sm leading-relaxed"
-              >
-                <span className="min-w-0 flex-1">{rule.text}</span>
-                <span className="flex flex-shrink-0 items-center gap-2">
-                  <GuessButton
-                    active={g === "O"}
-                    reveal={revealAll}
-                    isTruth={truth === "O"}
-                    onClick={() => guess(i, "O")}
-                    label="O"
-                  />
-                  <GuessButton
-                    active={g === "X"}
-                    reveal={revealAll}
-                    isTruth={truth === "X"}
-                    onClick={() => guess(i, "X")}
-                    label="X"
-                  />
-                  <span
-                    className={
-                      "min-w-[6em] text-xs font-bold " +
-                      (showResult
-                        ? correct || revealAll
-                          ? "text-[var(--foreground)]"
-                          : "text-[var(--muted-foreground)]"
-                        : "text-transparent")
-                    }
-                  >
-                    {revealAll
-                      ? `正解: ${truth}`
-                      : showResult
-                        ? correct
-                          ? "正解"
-                          : `不正解 (正解: ${truth})`
-                        : "未回答"}
+              <li key={i} className="py-3 text-sm leading-relaxed">
+                <div className="flex items-center gap-3">
+                  <span className="min-w-0 flex-1">{rule.text}</span>
+                  <span className="flex flex-shrink-0 items-center gap-2">
+                    <GuessButton
+                      active={g === "O"}
+                      reveal={revealAll}
+                      isTruth={truth === "O"}
+                      onClick={() => guess(i, "O")}
+                      label="O"
+                    />
+                    <GuessButton
+                      active={g === "X"}
+                      reveal={revealAll}
+                      isTruth={truth === "X"}
+                      onClick={() => guess(i, "X")}
+                      label="X"
+                    />
+                    <span
+                      className={
+                        "block w-[9em] text-right text-xs font-bold " +
+                        (showResult
+                          ? correct || revealAll
+                            ? "text-[var(--foreground)]"
+                            : "text-[var(--muted-foreground)]"
+                          : "text-transparent")
+                      }
+                    >
+                      {revealAll
+                        ? `正解: ${truth}`
+                        : showResult
+                          ? correct
+                            ? "正解"
+                            : `不正解 (正解: ${truth})`
+                          : "未回答"}
+                    </span>
                   </span>
-                </span>
+                </div>
+                {showResult && (
+                  <p className="mt-2 text-xs text-[var(--muted-foreground)] leading-relaxed">
+                    {rule.explanation}
+                  </p>
+                )}
               </li>
             );
           })}
