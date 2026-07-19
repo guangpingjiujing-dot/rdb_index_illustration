@@ -23,6 +23,64 @@ const faq = [
   },
 ];
 
+const NOTATION_ROWS: Array<{
+  element: string;
+  ie: string;
+  idef1x: string;
+  chen: string;
+}> = [
+  { element: "エンティティ", ie: "四角", idef1x: "角丸四角", chen: "四角" },
+  {
+    element: "弱エンティティ",
+    ie: "二重四角",
+    idef1x: "実線識別関係で判別",
+    chen: "二重四角",
+  },
+  { element: "関連", ie: "線", idef1x: "線", chen: "菱形" },
+  {
+    element: "1 (必須、max=min=1)",
+    ie: "縦棒 |",
+    idef1x: "親端: 無印 (default)",
+    chen: "1",
+  },
+  {
+    element: "0..1 (任意、max=1, min=0)",
+    ie: "| ○",
+    idef1x: "子端: ● + Z",
+    chen: "0,1",
+  },
+  {
+    element: "0..N (任意 + 多、min=0)",
+    ie: "○ 鳥足",
+    idef1x: "子端: ● 単独 (子端の default)",
+    chen: "0,N",
+  },
+  {
+    element: "1..N (必須 + 多、min=1)",
+    ie: "| 鳥足",
+    idef1x: "子端: ● + P",
+    chen: "1,N",
+  },
+  {
+    element: "識別関係",
+    ie: "主キー継承で判別",
+    idef1x: "実線",
+    chen: "二重線",
+  },
+  {
+    element: "非識別関係",
+    ie: "主キー独立で判別",
+    idef1x: "破線",
+    chen: "単線",
+  },
+  {
+    element: "属性",
+    ie: "エンティティ内に列挙",
+    idef1x: "エンティティ内に列挙",
+    chen: "楕円で外に描く",
+  },
+];
+
 export default function Page() {
   return (
     <TopicLayout section="data-modeling" slug={slug}>
@@ -44,7 +102,8 @@ export default function Page() {
       <NotationCompare />
 
       <h2>記号の対応表</h2>
-      <div className="not-prose my-6 overflow-x-auto">
+      {/* デスクトップ: 通常の 4 列 table */}
+      <div className="not-prose my-6 hidden md:block">
         <table className="min-w-full border border-[var(--border-strong)] text-sm">
           <thead className="bg-[var(--muted)]">
             <tr>
@@ -55,68 +114,54 @@ export default function Page() {
             </tr>
           </thead>
           <tbody className="font-mono">
-            <tr>
-              <td className="border-b border-[var(--border)] px-3 py-2">エンティティ</td>
-              <td className="border-b border-[var(--border)] px-3 py-2">四角</td>
-              <td className="border-b border-[var(--border)] px-3 py-2">角丸四角</td>
-              <td className="border-b border-[var(--border)] px-3 py-2">四角</td>
-            </tr>
-            <tr>
-              <td className="border-b border-[var(--border)] px-3 py-2">弱エンティティ</td>
-              <td className="border-b border-[var(--border)] px-3 py-2">二重四角</td>
-              <td className="border-b border-[var(--border)] px-3 py-2">実線識別関係で判別</td>
-              <td className="border-b border-[var(--border)] px-3 py-2">二重四角</td>
-            </tr>
-            <tr>
-              <td className="border-b border-[var(--border)] px-3 py-2">関連</td>
-              <td className="border-b border-[var(--border)] px-3 py-2">線</td>
-              <td className="border-b border-[var(--border)] px-3 py-2">線</td>
-              <td className="border-b border-[var(--border)] px-3 py-2">菱形</td>
-            </tr>
-            <tr>
-              <td className="border-b border-[var(--border)] px-3 py-2">1 (必須、max=min=1)</td>
-              <td className="border-b border-[var(--border)] px-3 py-2">縦棒 |</td>
-              <td className="border-b border-[var(--border)] px-3 py-2">親端: 無印 (default)</td>
-              <td className="border-b border-[var(--border)] px-3 py-2">1</td>
-            </tr>
-            <tr>
-              <td className="border-b border-[var(--border)] px-3 py-2">0..1 (任意、max=1, min=0)</td>
-              <td className="border-b border-[var(--border)] px-3 py-2">| ○</td>
-              <td className="border-b border-[var(--border)] px-3 py-2">子端: ● + Z</td>
-              <td className="border-b border-[var(--border)] px-3 py-2">0,1</td>
-            </tr>
-            <tr>
-              <td className="border-b border-[var(--border)] px-3 py-2">0..N (任意 + 多、min=0)</td>
-              <td className="border-b border-[var(--border)] px-3 py-2">○ 鳥足</td>
-              <td className="border-b border-[var(--border)] px-3 py-2">子端: ● 単独 (子端の default)</td>
-              <td className="border-b border-[var(--border)] px-3 py-2">0,N</td>
-            </tr>
-            <tr>
-              <td className="border-b border-[var(--border)] px-3 py-2">1..N (必須 + 多、min=1)</td>
-              <td className="border-b border-[var(--border)] px-3 py-2">| 鳥足</td>
-              <td className="border-b border-[var(--border)] px-3 py-2">子端: ● + P</td>
-              <td className="border-b border-[var(--border)] px-3 py-2">1,N</td>
-            </tr>
-            <tr>
-              <td className="border-b border-[var(--border)] px-3 py-2">識別関係</td>
-              <td className="border-b border-[var(--border)] px-3 py-2">主キー継承で判別</td>
-              <td className="border-b border-[var(--border)] px-3 py-2">実線</td>
-              <td className="border-b border-[var(--border)] px-3 py-2">二重線</td>
-            </tr>
-            <tr>
-              <td className="border-b border-[var(--border)] px-3 py-2">非識別関係</td>
-              <td className="border-b border-[var(--border)] px-3 py-2">主キー独立で判別</td>
-              <td className="border-b border-[var(--border)] px-3 py-2">破線</td>
-              <td className="border-b border-[var(--border)] px-3 py-2">単線</td>
-            </tr>
-            <tr>
-              <td className="px-3 py-2">属性</td>
-              <td className="px-3 py-2">エンティティ内に列挙</td>
-              <td className="px-3 py-2">エンティティ内に列挙</td>
-              <td className="px-3 py-2">楕円で外に描く</td>
-            </tr>
+            {NOTATION_ROWS.map((row, i) => {
+              const isLast = i === NOTATION_ROWS.length - 1;
+              const cellCls = isLast
+                ? "px-3 py-2"
+                : "border-b border-[var(--border)] px-3 py-2";
+              return (
+                <tr key={row.element}>
+                  <td className={cellCls}>{row.element}</td>
+                  <td className={cellCls}>{row.ie}</td>
+                  <td className={cellCls}>{row.idef1x}</td>
+                  <td className={cellCls}>{row.chen}</td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
+      </div>
+
+      {/* モバイル: 各要素を stacked card として縦に並べる */}
+      <div className="not-prose my-6 md:hidden space-y-3">
+        {NOTATION_ROWS.map((row) => (
+          <div
+            key={row.element}
+            className="border border-[var(--border-strong)] bg-[var(--card)] p-3"
+          >
+            <div className="text-sm font-bold mb-2">{row.element}</div>
+            <dl className="space-y-1 text-xs font-mono">
+              <div className="flex gap-2">
+                <dt className="text-[var(--muted-foreground)] font-sans font-bold min-w-[5em]">
+                  IE
+                </dt>
+                <dd>{row.ie}</dd>
+              </div>
+              <div className="flex gap-2">
+                <dt className="text-[var(--muted-foreground)] font-sans font-bold min-w-[5em]">
+                  IDEF1X
+                </dt>
+                <dd>{row.idef1x}</dd>
+              </div>
+              <div className="flex gap-2">
+                <dt className="text-[var(--muted-foreground)] font-sans font-bold min-w-[5em]">
+                  Chen
+                </dt>
+                <dd>{row.chen}</dd>
+              </div>
+            </dl>
+          </div>
+        ))}
       </div>
 
       <p className="text-sm text-[var(--muted-foreground)]">

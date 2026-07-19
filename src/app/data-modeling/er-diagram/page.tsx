@@ -102,7 +102,7 @@ export default function ErDiagramHub() {
               </span>
             </h1>
             <p className="mt-8 text-base md:text-lg text-[var(--foreground)]/90 leading-relaxed">
-              下に、明らかにおかしい ER 図が 1 枚あります。9 つの違和感が仕込まれています。全て指摘できますか？
+              下に、明らかにおかしい ER 図が 1 枚あります。仕込まれているのは 9 つの違和感。
               「なんとなく変」で止まっていた感覚を、ER 図の概念で 1 つずつ言語化していきましょう。
             </p>
           </div>
