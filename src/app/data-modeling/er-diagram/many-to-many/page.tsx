@@ -5,6 +5,7 @@ import { TopicJsonLd } from "@/components/seo/JsonLd";
 import { FAQ } from "@/components/layout/FAQ";
 import { ERDiagram } from "@/components/viz/er/ERDiagram";
 import { WeirdERDiagram } from "@/components/viz/er/WeirdERDiagram";
+import { Practice } from "@/components/viz/datamodel/Practice";
 import { findTopic } from "@/content/topics";
 
 const slug = "many-to-many";
@@ -153,6 +154,164 @@ export default function Page() {
           <strong>属性</strong>: 「成績」「支払い済みフラグ」など対応固有のデータを置く場所がない
         </li>
       </ul>
+
+      <h2>練習問題</h2>
+      <p>
+        別の題材で自分でも試してみる。答えを見る前に、どんな連関実体を作ればいいか、
+        主キーや FK、追加すべき属性をノートに書き出してみてほしい。
+      </p>
+
+      <Practice
+        title="社員 と プロジェクト の N:M を連関実体で分解する"
+        question={
+          <>
+            以下の ER 図では「社員」と「プロジェクト」が N:M で直接繋がっている
+            (1 人の社員は複数プロジェクトに参加し、1 プロジェクトには複数社員が参加する)。
+            このままでは <strong>「誰がいつ、どの役割でそのプロジェクトに参加したか」を記録する場所がない</strong>。
+            連関実体を挟んで N:M を分解した ER 図を描け。連関実体の <strong>名前・主キー・追加属性</strong> を明示すること。
+          </>
+        }
+        problemNode={
+          <ERDiagram
+            title="分解前 — 社員 ⇔ プロジェクト の N:M"
+            width={720}
+            height={220}
+            entities={[
+              {
+                id: "emp",
+                label: "社員",
+                x: 60,
+                y: 60,
+                width: 220,
+                attributes: ["社員ID", "氏名"],
+                primaryKey: ["社員ID"],
+              },
+              {
+                id: "prj",
+                label: "プロジェクト",
+                x: 440,
+                y: 60,
+                width: 220,
+                attributes: ["プロジェクトID", "プロジェクト名"],
+                primaryKey: ["プロジェクトID"],
+              },
+            ]}
+            relationships={[
+              {
+                from: "emp",
+                to: "prj",
+                fromCardinality: "zero-many",
+                toCardinality: "zero-many",
+                label: "参加",
+              },
+            ]}
+            caption="両端に鳥足 = N:M。参加日・役割などの「対応固有の属性」を格納する場所がまだない。"
+          />
+        }
+        answer={
+          <>
+            <p className="mb-3">
+              連関実体を <strong>「参加」</strong> とし、両側から FK を借りて
+              <strong>(社員ID, プロジェクトID) の複合主キー</strong> で行を一意に識別する。
+              対応固有の属性として <strong>役割</strong>・<strong>参加開始日</strong> をここに持たせる。
+              こうすると「田中さんが 4/1 から新Webサイトにリーダーとして参加している」といった情報が
+              1 行で表現できる。
+            </p>
+            <ERDiagram
+              title="分解後 — 連関実体「参加」を挟む"
+              width={900}
+              height={260}
+              entities={[
+                {
+                  id: "emp2",
+                  label: "社員",
+                  x: 40,
+                  y: 60,
+                  width: 200,
+                  attributes: ["社員ID", "氏名"],
+                  primaryKey: ["社員ID"],
+                },
+                {
+                  id: "join",
+                  label: "参加",
+                  x: 350,
+                  y: 60,
+                  width: 220,
+                  attributes: [
+                    "社員ID",
+                    "プロジェクトID",
+                    "役割",
+                    "参加開始日",
+                  ],
+                  primaryKey: ["社員ID", "プロジェクトID"],
+                  isWeak: true,
+                },
+                {
+                  id: "prj2",
+                  label: "プロジェクト",
+                  x: 680,
+                  y: 60,
+                  width: 200,
+                  attributes: ["プロジェクトID", "プロジェクト名"],
+                  primaryKey: ["プロジェクトID"],
+                },
+              ]}
+              relationships={[
+                {
+                  from: "emp2",
+                  to: "join",
+                  fromCardinality: "one",
+                  toCardinality: "zero-many",
+                  isIdentifying: true,
+                },
+                {
+                  from: "prj2",
+                  to: "join",
+                  fromCardinality: "one",
+                  toCardinality: "zero-many",
+                  isIdentifying: true,
+                },
+              ]}
+              caption="連関実体「参加」に 2 本の FK が入り、それが複合主キー ((社員ID, プロジェクトID)) を構成する。役割・参加開始日 のような対応固有の属性はこの連関実体にだけ置ける。"
+            />
+            <p className="mt-3">下は 3 テーブルにサンプルデータを載せた例。</p>
+          </>
+        }
+        answerTables={[
+          {
+            name: "参加",
+            columns: ["社員ID", "プロジェクトID", "役割", "参加開始日"],
+            rows: [
+              ["E01", "P01", "リーダー", "2026-04-01"],
+              ["E01", "P02", "メンバー", "2026-05-01"],
+              ["E02", "P01", "メンバー", "2026-04-15"],
+              ["E03", "P03", "リーダー", "2026-06-01"],
+            ],
+            primaryKey: ["社員ID", "プロジェクトID"],
+            wide: true,
+          },
+          {
+            name: "社員",
+            columns: ["社員ID", "氏名"],
+            rows: [
+              ["E01", "田中"],
+              ["E02", "山田"],
+              ["E03", "佐藤"],
+            ],
+            primaryKey: ["社員ID"],
+          },
+          {
+            name: "プロジェクト",
+            columns: ["プロジェクトID", "プロジェクト名"],
+            rows: [
+              ["P01", "新Webサイト"],
+              ["P02", "社内システム"],
+              ["P03", "データ移行"],
+            ],
+            primaryKey: ["プロジェクトID"],
+          },
+        ]}
+      />
 
       <h2>変なER図 との対応: 違和感 #5「顧客×商品」に中間実体なし</h2>
 

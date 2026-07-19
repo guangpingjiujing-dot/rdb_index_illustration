@@ -6,23 +6,27 @@ import type { ColorGroup } from "./FDColorTable";
 
 /**
  * 練習問題ブロック。
- * - 問題テーブルは常時表示
+ * - 問題は NormalizedTable (テーブル) か problemNode (任意 ReactNode、ER 図等) のどちらか
  * - 解答は <details> で折りたたみ (JS 不要、SEO/AEOにも優しい)
- * - 解答テーブルは複数持てる (2NF/3NF は分割になるため)
+ * - 解答テーブルは 0..N (2NF/3NF は分割なので複数、解答が ER 図の場合は 0 も可)
  */
 export function Practice({
   title,
   question,
   problem,
+  problemNode,
   answer,
-  answerTables,
+  answerTables = [],
   colorGroups,
 }: {
   title: string;
   question: React.ReactNode;
-  problem: NormalizedTable;
+  /** テーブル形式の問題。problemNode が指定されている場合は無視される。 */
+  problem?: NormalizedTable;
+  /** 任意 ReactNode 形式の問題 (ER 図など)。指定されていれば problem より優先。 */
+  problemNode?: React.ReactNode;
   answer: React.ReactNode;
-  answerTables: NormalizedTable[];
+  answerTables?: NormalizedTable[];
   colorGroups?: ColorGroup[];
 }) {
   const wide = answerTables.filter((t) => t.wide);
@@ -39,7 +43,11 @@ export function Practice({
           {question}
         </div>
 
-        <NormalizedTableView data={problem} colorGroups={colorGroups} />
+        {problemNode
+          ? problemNode
+          : problem && (
+              <NormalizedTableView data={problem} colorGroups={colorGroups} />
+            )}
 
         <details className="group border border-[var(--border-strong)] bg-[var(--muted)]/40">
           <summary className="cursor-pointer list-none px-4 py-3 text-sm font-bold text-[var(--foreground)] hover:bg-[var(--muted)] transition-colors flex items-center gap-2">
