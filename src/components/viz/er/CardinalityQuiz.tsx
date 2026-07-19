@@ -334,6 +334,25 @@ function ProblemCard({ problem }: { problem: Problem }) {
             const g = guesses[i];
             const showResult = revealAll || g !== undefined;
             const correct = g !== undefined && g === truth;
+            const buttonFill = (label: Guess): "none" | "correct" | "wrong" => {
+              if (revealAll) return label === truth ? "correct" : "none";
+              if (g === label) return label === truth ? "correct" : "wrong";
+              return "none";
+            };
+            let resultText = "未回答";
+            let resultColor = "text-transparent";
+            if (revealAll) {
+              resultText = `正解: ${truth}`;
+              resultColor = "text-blue-600";
+            } else if (g !== undefined) {
+              if (correct) {
+                resultText = "正解";
+                resultColor = "text-blue-600";
+              } else {
+                resultText = "不正解";
+                resultColor = "text-red-600";
+              }
+            }
             return (
               <li key={i} className="py-3 text-sm leading-relaxed">
                 <div className="flex items-center gap-3">
@@ -341,35 +360,23 @@ function ProblemCard({ problem }: { problem: Problem }) {
                   <span className="flex flex-shrink-0 items-center gap-2">
                     <GuessButton
                       active={g === "O"}
-                      reveal={revealAll}
-                      isTruth={truth === "O"}
+                      fill={buttonFill("O")}
                       onClick={() => guess(i, "O")}
                       label="O"
                     />
                     <GuessButton
                       active={g === "X"}
-                      reveal={revealAll}
-                      isTruth={truth === "X"}
+                      fill={buttonFill("X")}
                       onClick={() => guess(i, "X")}
                       label="X"
                     />
                     <span
                       className={
-                        "block w-[9em] text-right text-xs font-bold " +
-                        (showResult
-                          ? correct || revealAll
-                            ? "text-[var(--foreground)]"
-                            : "text-[var(--muted-foreground)]"
-                          : "text-transparent")
+                        "block w-[5em] text-right text-xs font-bold " +
+                        resultColor
                       }
                     >
-                      {revealAll
-                        ? `正解: ${truth}`
-                        : showResult
-                          ? correct
-                            ? "正解"
-                            : `不正解 (正解: ${truth})`
-                          : "未回答"}
+                      {resultText}
                     </span>
                   </span>
                 </div>
@@ -389,18 +396,21 @@ function ProblemCard({ problem }: { problem: Problem }) {
 
 function GuessButton({
   active,
-  reveal,
-  isTruth,
+  fill,
   onClick,
   label,
 }: {
   active: boolean;
-  reveal: boolean;
-  isTruth: boolean;
+  fill: "none" | "correct" | "wrong";
   onClick: () => void;
   label: "O" | "X";
 }) {
-  const highlighted = active || (reveal && isTruth);
+  const style =
+    fill === "correct"
+      ? "border-blue-600 bg-blue-600 text-white"
+      : fill === "wrong"
+        ? "border-red-600 bg-red-600 text-white"
+        : "border-[var(--border-strong)] text-[var(--foreground)] hover:bg-[var(--muted)]/60";
   return (
     <button
       type="button"
@@ -408,9 +418,7 @@ function GuessButton({
       aria-pressed={active}
       className={
         "flex h-8 w-8 items-center justify-center rounded-full border text-sm font-bold transition-colors " +
-        (highlighted
-          ? "border-[var(--foreground)] bg-[var(--foreground)] text-[var(--background)]"
-          : "border-[var(--border-strong)] text-[var(--foreground)] hover:bg-[var(--muted)]/60")
+        style
       }
     >
       {label}
