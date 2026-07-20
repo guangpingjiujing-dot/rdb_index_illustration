@@ -18,9 +18,12 @@ type Group = {
 export function TopicNav({
   section,
   currentSlug,
+  hideOtherSection = false,
 }: {
   section: SectionKey;
   currentSlug?: string;
+  /** true にすると末尾の「他のシリーズ」ブロックを描画しない (Hub で両セクションを並べる時に使う) */
+  hideOtherSection?: boolean;
 }) {
   const groups: Group[] =
     section === "rdb-index"
@@ -85,17 +88,19 @@ export function TopicNav({
         </div>
       ))}
 
-      <div className="mt-8 border-t border-[var(--border)] pt-6">
-        <div className="mb-2 text-[10px] font-bold uppercase tracking-wider text-[var(--muted-foreground)]">
-          他のシリーズ
+      {!hideOtherSection && (
+        <div className="mt-8 border-t border-[var(--border)] pt-6">
+          <div className="mb-2 text-[10px] font-bold uppercase tracking-wider text-[var(--muted-foreground)]">
+            他のシリーズ
+          </div>
+          <Link
+            href={otherMeta.path}
+            className="block px-3 py-1.5 text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--muted)]/60"
+          >
+            {otherMeta.shortLabel} →
+          </Link>
         </div>
-        <Link
-          href={otherMeta.path}
-          className="block px-3 py-1.5 text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--muted)]/60"
-        >
-          {otherMeta.shortLabel} →
-        </Link>
-      </div>
+      )}
     </nav>
   );
 }

@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { Container } from "@/components/ui/Container";
 import { MentorCTA } from "@/components/cta/MentorCTA";
 import { HubHomeJsonLd } from "@/components/seo/JsonLd";
+import { HubTopicNav } from "@/components/layout/HubTopicNav";
 import { site } from "@/lib/site";
 import { sections } from "@/content/sections";
 
@@ -23,10 +24,20 @@ export default function Home() {
   return (
     <>
       <HubHomeJsonLd />
-      <Hero />
-      <TwoPillars />
-      <MentorSection />
-      <WhyThisSite />
+      {/* lg+: 左サイドバーに両セクションのトピック一覧を常時表示。mobile は非表示 (Header 内のドロワーで代替想定) */}
+      <div className="lg:grid lg:grid-cols-[15rem_minmax(0,1fr)]">
+        <aside className="hidden lg:block border-r border-[var(--border)]">
+          <div className="sticky top-14 max-h-[calc(100vh-3.5rem)] overflow-y-auto p-6">
+            <HubTopicNav />
+          </div>
+        </aside>
+        <div className="min-w-0">
+          <Hero />
+          <TwoPillars />
+          <MentorSection />
+          <WhyThisSite />
+        </div>
+      </div>
     </>
   );
 }
@@ -46,14 +57,13 @@ function Hero() {
             <p className="mt-6 max-w-xl text-base md:text-lg text-[var(--muted-foreground)] leading-relaxed">
               教科書で挫折しがちな概念を、実際に触れる図解と辞書的な厳密な定義で解説します。
               新人エンジニアの独学から、IPAデータベーススペシャリスト対策まで、必要な深さで読める2本柱の学習サイト。
-              新企画{" "}
               <Link
                 href="/data-modeling/er-diagram"
                 className="underline underline-offset-4 hover:text-[var(--foreground)]"
               >
                 「変なER図」
-              </Link>{" "}
-              で ER 図の読み方の謎解きから入る学習動線もあります。
+              </Link>
+              では、よくある EC サイトのデータを使って、間違った ER 図を直しながら ER 図を読み解く力を身につけられます。
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <Link
@@ -77,6 +87,12 @@ function Hero() {
                   データモデリング (近日公開)
                 </span>
               )}
+              <Link
+                href="/data-modeling/er-diagram"
+                className="inline-flex items-center gap-2 bg-[#c53030] text-white px-6 py-3 text-sm font-bold hover:bg-[#a52a2a]"
+              >
+                「変なER図」に挑戦 →
+              </Link>
             </div>
           </div>
           <HeroVisual />
