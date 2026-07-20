@@ -49,7 +49,7 @@ export const ANOMALY_TARGETS: Record<number, { entityIds?: string[]; relIds?: st
   9: { relIds: [WEIRD_REL_IDS.LINE_OF] }, // 参加制約矛盾 (親側 min=0 vs 子側 min=1 で両立不能)
 };
 
-function buildEntities(highlightIds: Set<string>, badges: Map<string, number>): EREntity[] {
+function buildEntities(highlightIds: Set<string>, badges: Map<string, number[]>): EREntity[] {
   return [
     // 配送先 - #3 独立主キーで親なし。左下に配置して孤立感を出す
     {
@@ -159,7 +159,7 @@ function buildEntities(highlightIds: Set<string>, badges: Map<string, number>): 
   ];
 }
 
-function buildRelationships(highlightIds: Set<string>, badges: Map<string, number>): ERRelationship[] {
+function buildRelationships(highlightIds: Set<string>, badges: Map<string, number[]>): ERRelationship[] {
   return [
     // #3 + #4: 顧客 —発注— 注文 の 1:0..1 (実質 1:1 固定) + 役割名重複
     // 注文側 "zero-one" (|○) は #4 の「最大 1 に固定」の材料 (最大基数が両側とも 1)。
@@ -265,22 +265,24 @@ export function WeirdERDiagram({
   caption?: string;
 }) {
   const highlightIds = new Set<string>();
-  const badges = new Map<string, number>();
+  const badges = new Map<string, number[]>();
+  const push = (id: string, n: number) => {
+    highlightIds.add(id);
+    const list = badges.get(id);
+    if (list) {
+      if (!list.includes(n)) list.push(n);
+    } else {
+      badges.set(id, [n]);
+    }
+  };
   for (const n of highlightAnomalies) {
     const targets = ANOMALY_TARGETS[n];
     if (!targets) continue;
-    for (const id of targets.entityIds ?? []) {
-      highlightIds.add(id);
-      // 同じ id に複数バッジが乗る場合は小さい番号を優先
-      const existing = badges.get(id);
-      if (existing === undefined || n < existing) badges.set(id, n);
-    }
-    for (const id of targets.relIds ?? []) {
-      highlightIds.add(id);
-      const existing = badges.get(id);
-      if (existing === undefined || n < existing) badges.set(id, n);
-    }
+    for (const id of targets.entityIds ?? []) push(id, n);
+    for (const id of targets.relIds ?? []) push(id, n);
   }
+  // バッジは昇順で描画
+  for (const list of badges.values()) list.sort((a, b) => a - b);
   const entities = buildEntities(highlightIds, badges);
   const relationships = buildRelationships(highlightIds, badges);
   return (

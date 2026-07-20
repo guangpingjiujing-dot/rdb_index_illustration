@@ -22,8 +22,8 @@ export type EREntity = {
   isWeak?: boolean;
   /** ハイライト (旗艦ページの答え合わせで違和感箇所を強調) */
   highlighted?: boolean;
-  /** ハイライト時に付ける番号バッジ */
-  badge?: number;
+  /** ハイライト時に付ける番号バッジ。同一要素に複数の違和感がぶら下がる場合は配列で複数個並べる */
+  badge?: number | number[];
 };
 
 export type ERRelationship = {
@@ -37,7 +37,7 @@ export type ERRelationship = {
   /** true にすると線が破線になる (非識別関係の視覚化に補助的に使う) */
   dashed?: boolean;
   highlighted?: boolean;
-  badge?: number;
+  badge?: number | number[];
   /** 特定の関連だけ記法を変える (旗艦ページで「記法混在」の違和感を仕込むため) */
   notation?: ERNotation;
   /** 自己参照ループの描画側 (`right` = 右側にループ、`top` = 上側にループ、既定 `right`) */
@@ -276,6 +276,48 @@ function CardinalityMarker({
   );
 }
 
+/**
+ * 番号バッジ。同一要素に複数の違和感が乗る場合は values を配列で渡すと横並びで描画する。
+ * (cx, cy) は「単一バッジのときの円中心」= 配列の中央。奇数個なら中央要素が (cx, cy)、
+ * 偶数個ならその中間に来る。
+ */
+function BadgeGroup({
+  cx,
+  cy,
+  values,
+}: {
+  cx: number;
+  cy: number;
+  values: number[];
+}) {
+  const r = 12;
+  const gap = 4;
+  const step = 2 * r + gap;
+  return (
+    <g>
+      {values.map((v, i) => {
+        const x = cx + (i - (values.length - 1) / 2) * step;
+        return (
+          <g key={`${v}-${i}`}>
+            <circle cx={x} cy={cy} r={r} fill={HIGHLIGHT_COLOR} />
+            <text
+              x={x}
+              y={cy + 4}
+              textAnchor="middle"
+              fontSize="13"
+              fontWeight="700"
+              fontFamily="sans-serif"
+              fill="#ffffff"
+            >
+              {v}
+            </text>
+          </g>
+        );
+      })}
+    </g>
+  );
+}
+
 function EntityBox({
   entity,
   showAttrs,
@@ -358,20 +400,11 @@ function EntityBox({
       )}
       {/* 番号バッジ (答え合わせ時) */}
       {entity.highlighted && entity.badge !== undefined && (
-        <g>
-          <circle cx={box.x + box.w - 12} cy={box.y - 12} r={12} fill={HIGHLIGHT_COLOR} />
-          <text
-            x={box.x + box.w - 12}
-            y={box.y - 8}
-            textAnchor="middle"
-            fontSize="13"
-            fontWeight="700"
-            fontFamily="sans-serif"
-            fill="#ffffff"
-          >
-            {entity.badge}
-          </text>
-        </g>
+        <BadgeGroup
+          cx={box.x + box.w - 12}
+          cy={box.y - 12}
+          values={Array.isArray(entity.badge) ? entity.badge : [entity.badge]}
+        />
       )}
     </g>
   );
@@ -719,20 +752,11 @@ function RelationshipLine({
         </g>
       )}
       {rel.highlighted && rel.badge !== undefined && (
-        <g>
-          <circle cx={midX} cy={midY - 22} r={12} fill={HIGHLIGHT_COLOR} />
-          <text
-            x={midX}
-            y={midY - 18}
-            textAnchor="middle"
-            fontSize="13"
-            fontWeight="700"
-            fontFamily="sans-serif"
-            fill="#ffffff"
-          >
-            {rel.badge}
-          </text>
-        </g>
+        <BadgeGroup
+          cx={midX}
+          cy={midY - 22}
+          values={Array.isArray(rel.badge) ? rel.badge : [rel.badge]}
+        />
       )}
     </g>
   );
