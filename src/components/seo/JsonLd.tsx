@@ -141,6 +141,11 @@ export function HubHomeJsonLd() {
 export function SectionHubJsonLd({ section }: { section: SectionKey }) {
   const sectionMeta = sections[section];
   const items = topicsInSection(section);
+  const author = {
+    "@type": "Person",
+    name: site.author.name,
+    url: `${site.url}/about`,
+  };
   const data: object[] = [
     {
       "@context": "https://schema.org",
@@ -155,6 +160,8 @@ export function SectionHubJsonLd({ section }: { section: SectionKey }) {
         headline: t.title,
         url: `${site.url}${t.path}`,
         abstract: t.definition,
+        image: `${site.url}${t.path}/opengraph-image`,
+        author,
       })),
     },
     {
@@ -194,6 +201,11 @@ export function CategoryHubJsonLd({
   const sectionMeta = sections["data-modeling"];
   const categoryMeta = dataModelingCategories[category];
   const items = dataModelingTopicsIn(category);
+  const author = {
+    "@type": "Person",
+    name: site.author.name,
+    url: `${site.url}/about`,
+  };
   const data: object[] = [
     {
       "@context": "https://schema.org",
@@ -212,6 +224,8 @@ export function CategoryHubJsonLd({
         headline: t.title,
         url: `${site.url}${t.path}`,
         abstract: t.definition,
+        image: `${site.url}${t.path}/opengraph-image`,
+        author,
       })),
     },
     {
@@ -297,8 +311,7 @@ export function TopicJsonLd({
 }) {
   const topic = findTopic(section, slug);
   if (!topic) return null;
-  const sectionMeta = sections[topic.section];
-  const ogImageUrl = `${site.url}${sectionMeta.path}/opengraph-image`;
+  const ogImageUrl = `${site.url}${topic.path}/opengraph-image`;
   const data: object[] = [
     {
       "@context": "https://schema.org",
