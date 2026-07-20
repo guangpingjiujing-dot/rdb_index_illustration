@@ -45,9 +45,8 @@ export const books: Book[] = [
     id: "raku-erd-lesson",
     title: "楽々ERDレッスン (CodeZine BOOKS)",
     author: "羽生章洋",
-    // TODO: 正式 ASIN を Amazon で確定して差し替え (現在は書籍検索用の書名検索 URL を仮設定)
-    amazonUrl:
-      "https://www.amazon.co.jp/s?k=%E6%A5%BD%E3%80%85ERD%E3%83%AC%E3%83%83%E3%82%B9%E3%83%B3&tag=taitech-22",
+    asin: "4798110663",
+    amazonUrl: "https://www.amazon.co.jp/dp/4798110663?tag=taitech-22",
     description:
       "ER 図をどう「使える設計」に落とすか、実務の判断まで踏み込んだ入門書。エンティティの切り出しから多対多の扱いまで具体例が豊富。",
     recommended: true,
