@@ -65,37 +65,39 @@ function Hero() {
               </Link>
               では、よくある EC サイトのデータを使って、間違った ER 図を直しながら ER 図を読み解く力を身につけられます。
             </p>
-            <div className="mt-8 flex flex-wrap gap-3">
-              <Link
-                href={sections["rdb-index"].path}
-                className="inline-flex items-center gap-2 bg-[var(--foreground)] text-white px-6 py-3 text-sm font-bold hover:bg-[#262626]"
-              >
-                RDBインデックスから見る →
-              </Link>
-              {DATA_MODELING_READY ? (
-                <Link
-                  href={sections["data-modeling"].path}
-                  className="inline-flex items-center gap-2 border border-[var(--foreground)] px-6 py-3 text-sm font-bold hover:bg-[var(--muted)]"
-                >
-                  データモデリングから見る →
-                </Link>
-              ) : (
-                <span
-                  aria-disabled="true"
-                  className="inline-flex items-center gap-2 border border-[var(--border)] px-6 py-3 text-sm font-bold text-[var(--muted-foreground)] cursor-not-allowed"
-                >
-                  データモデリング (近日公開)
-                </span>
-              )}
-              <Link
-                href="/data-modeling/er-diagram"
-                className="inline-flex items-center gap-2 bg-[#c53030] text-white px-6 py-3 text-sm font-bold hover:bg-[#a52a2a]"
-              >
-                「変なER図」に挑戦 →
-              </Link>
-            </div>
           </div>
           <HeroVisual />
+        </div>
+
+        {/* CTA row: Hero 2 カラム grid の外に出して full width を使う (3 ボタンが narrow な text col で改行するのを回避) */}
+        <div className="mt-10 flex flex-wrap gap-3">
+          <Link
+            href={sections["rdb-index"].path}
+            className="inline-flex items-center gap-2 bg-[var(--foreground)] text-white px-5 py-3 text-sm font-bold hover:bg-[#262626]"
+          >
+            RDBインデックスから見る →
+          </Link>
+          {DATA_MODELING_READY ? (
+            <Link
+              href={sections["data-modeling"].path}
+              className="inline-flex items-center gap-2 border border-[var(--foreground)] px-5 py-3 text-sm font-bold hover:bg-[var(--muted)]"
+            >
+              データモデリングから見る →
+            </Link>
+          ) : (
+            <span
+              aria-disabled="true"
+              className="inline-flex items-center gap-2 border border-[var(--border)] px-5 py-3 text-sm font-bold text-[var(--muted-foreground)] cursor-not-allowed"
+            >
+              データモデリング (近日公開)
+            </span>
+          )}
+          <Link
+            href="/data-modeling/er-diagram"
+            className="inline-flex items-center gap-2 bg-[#c53030] text-white px-5 py-3 text-sm font-bold hover:bg-[#a52a2a]"
+          >
+            「変なER図」に挑戦 →
+          </Link>
         </div>
       </Container>
     </section>
