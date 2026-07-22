@@ -137,18 +137,6 @@ export default function OGImage() {
           <div
             style={{
               display: "flex",
-              color: "#e07a3c",
-              fontSize: 18,
-              fontWeight: 700,
-              letterSpacing: 6,
-              marginBottom: 20,
-            }}
-          >
-            変な家 オマージュ企画
-          </div>
-          <div
-            style={{
-              display: "flex",
               fontSize: 96,
               fontWeight: 800,
               lineHeight: 1.05,
