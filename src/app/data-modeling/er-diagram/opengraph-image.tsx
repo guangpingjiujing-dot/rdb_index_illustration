@@ -1,262 +1,51 @@
 import { ImageResponse } from "next/og";
+import fs from "node:fs";
+import path from "node:path";
 
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 export const alt = "変なER図｜あなたには、この ER 図の異常さがわかりますか？";
 
 /**
- * 旗艦ページ専用 OG 画像。
+ * 旗艦ページ専用 OG 画像。変な ER 図の全景 PNG を丸ごとキャンバスに載せる。
  *
- * Satori (next/og) は SVG の <text> ノードを未サポートのため、
- * 全ての文字は HTML div として描画する。ER 図のパーツ (箱・線) は
- * div の flex/absolute positioning で組む。
+ * 経緯: WeirdERDiagram の SVG を Satori 経由でラスタライズしようとしたが、
+ * Satori (next/og) は SVG 内の `<text>` 要素と複雑な path を安定的に扱えず、
+ * 「Input buffer has corrupt header」で prerender エラーになった。
+ * 代わりに事前に生成した PNG (`public/og/weird-er-diagram.png`) を読み込んで
+ * `<img>` として貼り、ImageResponse でそのまま出力する。
  */
 export default function OGImage() {
+  const pngPath = path.join(
+    process.cwd(),
+    "public",
+    "og",
+    "weird-er-diagram.png",
+  );
+  const buffer = fs.readFileSync(pngPath);
+  const dataUrl = `data:image/png;base64,${buffer.toString("base64")}`;
   return new ImageResponse(
     (
       <div
         style={{
-          height: "100%",
           width: "100%",
+          height: "100%",
           display: "flex",
           background: "#fafafa",
-          fontFamily: "sans-serif",
+          alignItems: "center",
+          justifyContent: "center",
         }}
       >
-        {/* 左半分: ミニ ER 図 */}
-        <div
-          style={{
-            width: 560,
-            height: "100%",
-            display: "flex",
-            position: "relative",
-            background: "#f2f2f0",
-            borderRight: "1px solid #d9d9d5",
-          }}
-        >
-          {/* 配送先 (弱、変) — 左上 */}
-          <MiniEntity
-            style={{ left: 40, top: 30 }}
-            label="配送先"
-            attrs={["配送先ID"]}
-            weak
-            highlight
-          />
-          {/* 商品 — 右上 */}
-          <MiniEntity
-            style={{ left: 320, top: 30 }}
-            label="商品"
-            attrs={["商品ID"]}
-          />
-          {/* 顧客 (属性破綻、変) — 中央左 */}
-          <MiniEntity
-            style={{ left: 40, top: 200 }}
-            label="顧客"
-            attrs={["顧客ID", "注文履歴JSON", "カート内商品ID配列", "血液型"]}
-            highlight
-          />
-          {/* 注文 — 中央右 */}
-          <MiniEntity
-            style={{ left: 320, top: 220 }}
-            label="注文"
-            attrs={["注文ID", "注文日"]}
-          />
-          {/* オレンジバッジ (9) */}
-          <div
-            style={{
-              position: "absolute",
-              top: 20,
-              right: 20,
-              width: 56,
-              height: 56,
-              borderRadius: 28,
-              background: "#e07a3c",
-              color: "#ffffff",
-              fontSize: 32,
-              fontWeight: 800,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            9
-          </div>
-          {/* オレンジの "発注" 変な線 */}
-          <div
-            style={{
-              position: "absolute",
-              top: 250,
-              left: 220,
-              width: 100,
-              height: 4,
-              background: "#e07a3c",
-              display: "flex",
-            }}
-          />
-          {/* オレンジの "購入" 変な N:M 線 */}
-          <div
-            style={{
-              position: "absolute",
-              top: 100,
-              left: 180,
-              width: 200,
-              height: 4,
-              background: "#e07a3c",
-              transform: "rotate(-25deg)",
-              transformOrigin: "left center",
-              display: "flex",
-            }}
-          />
-          {/* フッター */}
-          <div
-            style={{
-              position: "absolute",
-              bottom: 24,
-              left: 40,
-              fontSize: 14,
-              color: "#6b6b68",
-              letterSpacing: 2,
-              display: "flex",
-            }}
-          >
-            架空 EC サイト「たいてっくストア」運営システム
-          </div>
-        </div>
-
-        {/* 右半分: タイトル */}
-        <div
-          style={{
-            flex: 1,
-            height: "100%",
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-            padding: "56px 56px",
-          }}
-        >
-          <div
-            style={{
-              display: "flex",
-              fontSize: 96,
-              fontWeight: 800,
-              lineHeight: 1.05,
-              color: "#0a0a0a",
-              letterSpacing: -1,
-            }}
-          >
-            変なER図
-          </div>
-          <div
-            style={{
-              display: "flex",
-              fontSize: 28,
-              fontWeight: 700,
-              lineHeight: 1.4,
-              color: "#0a0a0a",
-              marginTop: 32,
-            }}
-          >
-            あなたには、この ER 図の
-          </div>
-          <div
-            style={{
-              display: "flex",
-              fontSize: 28,
-              fontWeight: 700,
-              lineHeight: 1.4,
-              color: "#0a0a0a",
-            }}
-          >
-            異常さがわかりますか？
-          </div>
-          <div
-            style={{
-              display: "flex",
-              fontSize: 20,
-              color: "#6b6b68",
-              marginTop: 32,
-              paddingTop: 20,
-              borderTop: "1px solid #d9d9d5",
-            }}
-          >
-            9 つの違和感、全て指摘できますか？
-          </div>
-          <div
-            style={{
-              display: "flex",
-              fontSize: 14,
-              color: "#6b6b68",
-              marginTop: "auto",
-              letterSpacing: 3,
-            }}
-          >
-            taitech.dev / データモデリング体系 / ER図
-          </div>
-        </div>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={dataUrl}
+          alt={alt}
+          width={size.width}
+          height={size.height}
+          style={{ objectFit: "contain", width: "100%", height: "100%" }}
+        />
       </div>
     ),
-    { ...size }
-  );
-}
-
-function MiniEntity({
-  style,
-  label,
-  attrs,
-  weak,
-  highlight,
-}: {
-  style: React.CSSProperties;
-  label: string;
-  attrs: string[];
-  weak?: boolean;
-  highlight?: boolean;
-}) {
-  const strokeColor = highlight ? "#e07a3c" : "#0a0a0a";
-  const strokeWidth = highlight ? 3 : 2;
-  const baseStyle: React.CSSProperties = {
-    position: "absolute",
-    width: 200,
-    background: "#ffffff",
-    border: `${strokeWidth}px solid ${strokeColor}`,
-    display: "flex",
-    flexDirection: "column",
-    padding: weak ? 4 : 0,
-  };
-  if (weak) {
-    baseStyle.boxShadow = `inset 0 0 0 ${strokeWidth}px ${strokeColor}, inset 0 0 0 ${strokeWidth * 2}px #ffffff`;
-  }
-  return (
-    <div style={{ ...baseStyle, ...style }}>
-      <div
-        style={{
-          display: "flex",
-          padding: "8px 12px",
-          fontSize: 18,
-          fontWeight: 700,
-          color: "#0a0a0a",
-          justifyContent: "center",
-          borderBottom: "1px solid #d9d9d5",
-        }}
-      >
-        {label}
-      </div>
-      <div style={{ display: "flex", flexDirection: "column", padding: "6px 12px" }}>
-        {attrs.map((a) => (
-          <div
-            key={a}
-            style={{
-              display: "flex",
-              fontSize: 12,
-              color: "#0a0a0a",
-              fontFamily: "monospace",
-              lineHeight: 1.6,
-            }}
-          >
-            {a}
-          </div>
-        ))}
-      </div>
-    </div>
+    { ...size },
   );
 }
